@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="Avalonia.Xaml.Interactions" />
+    <PackageReference Include="Avalonia.Xaml.Interactivity" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Material.Icons.Avalonia" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SukiUI\SukiUI\SukiUI.csproj" />
+  </ItemGroup>
+</Project>

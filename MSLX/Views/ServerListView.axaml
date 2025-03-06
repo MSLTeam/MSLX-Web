@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Views.ServerListView"
+             xmlns:vm="clr-namespace:MSLX.ViewModels"
+             x:DataType="vm:ServerListViewModel">
+  <Design.DataContext>
+    <vm:ServerListViewModel/>
+  </Design.DataContext>
+
+  <Grid Margin="10">
+    <suki:GlassCard>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Classes="Title" Content="{Binding Title}"/>
+        <ScrollViewer Grid.Row="1">
+          <ItemsControl ItemsSource="{Binding ServerList}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <suki:GlassCard Margin="5">
+                  <StackPanel>
+                    <TextBlock FontSize="18" FontWeight="Bold">
+                      <Run Text="#"/>
+                      <Run Text="{Binding ID}"/>
+                      <Run Text="{Binding Name}"/>
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                      <TextBlock Text="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).StatusText}"/>
+                      <TextBlock Text="{Binding Status}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                      <TextBlock Text="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).CoreText}"/>
+                      <TextBlock Text="{Binding Core}"/>
+                    </StackPanel>
+                    <Grid Margin="0,10,0,0">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                      </Grid.RowDefinitions>
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*"/>
+                          <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Classes="Flat" Padding="12,0,12,0" Command="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).RunServerCommand}" CommandParameter="{Binding ID}" Content="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).RunServerText}"/>
+                        <Button Grid.Column="1" Margin="5,0,0,0">
+                          <mi:MaterialIcon Foreground="{DynamicResource SukiPrimaryColor}" Kind="Settings"/>
+                        </Button>
+                      </Grid>
+                      <Grid Grid.Row="1" Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*"/>
+                          <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Padding="12,0,12,0">
+                          <StackPanel Orientation="Horizontal">
+                            <mi:MaterialIcon Foreground="{DynamicResource SukiPrimaryColor}" Kind="FolderOutline"/>
+                            <TextBlock Margin="3,0,0,0" Text="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).OpenDirectory}"/>
+                          </StackPanel>
+                        </Button>
+                        <Button Grid.Column="1" Margin="5,0,0,0">
+                          <mi:MaterialIcon Foreground="{DynamicResource SukiPrimaryColor}" Kind="Delete"/>
+                        </Button>
+                      </Grid>
+                    </Grid>
+                    <!--
+                    <Button Margin="5,0,0,0">
+                      <mi:MaterialIcon Foreground="{DynamicResource SukiPrimaryColor}" Kind="MoreCircleOutline"/>
+                      <Button.ContextMenu>
+                        <ContextMenu>
+                          <MenuItem Header="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).OpenDirectory, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+                          <MenuItem Header="222"/>
+                        </ContextMenu>
+                      </Button.ContextMenu>
+                    </Button>
+                    -->
+                  </StackPanel>
+                </suki:GlassCard>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel/>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+    </suki:GlassCard>
+  </Grid>
+</UserControl>

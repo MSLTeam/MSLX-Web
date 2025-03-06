@@ -1,0 +1,41 @@
+<suki:SukiWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:views="clr-namespace:MSLX.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="MSLX.Views.MainWindow"
+        xmlns:vm="using:MSLX.ViewModels"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="550" MinHeight="400"
+        Width="1000" Height="600"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="MSLX" >
+  <suki:SukiWindow.LogoContent>
+    <mi:MaterialIcon Width="20"
+                           Height="20"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource SukiPrimaryColor}"
+                           Kind="Dog">
+      <mi:MaterialIcon.Transitions>
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="{DynamicResource ShortAnimationDuration}" />
+        </Transitions>
+      </mi:MaterialIcon.Transitions>
+    </mi:MaterialIcon>
+  </suki:SukiWindow.LogoContent>
+  <!--
+  <suki:SukiWindow.TitleBarContextMenu>
+    <ContextMenu>
+      <MenuItem Header="Exit">
+        <MenuItem.Icon>
+          <mi:MaterialIcon Kind="Close" />
+        </MenuItem.Icon>
+      </MenuItem>
+    </ContextMenu>
+  </suki:SukiWindow.TitleBarContextMenu>
+  -->
+  <views:MainView />
+</suki:SukiWindow>

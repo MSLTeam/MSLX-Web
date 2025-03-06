@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Views.HomeView"
+             xmlns:vm="clr-namespace:MSLX.ViewModels"
+             x:DataType="vm:HomeViewModel">
+  <i:Interaction.Behaviors>
+    <ia:EventTriggerBehavior EventName="Loaded">
+      <ia:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+    </ia:EventTriggerBehavior>
+  </i:Interaction.Behaviors>
+  <Design.DataContext>
+    <vm:HomeViewModel/>
+  </Design.DataContext>
+
+  <Grid Margin="10">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <StackPanel>
+      <suki:GlassCard>
+        <StackPanel>
+          <Label Classes="Title" Content="{Binding Announcement}"/>
+          <TextBox Text="{Binding AnnouncementContent}" IsReadOnly="True" Focusable="False"/>
+        </StackPanel>
+      </suki:GlassCard>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Height="64" Orientation="Horizontal" HorizontalAlignment="Right">
+      <!--
+      <Button Content="{Binding P2PBtn}" Margin="0,0,10,0"/>
+      -->
+      <Button Classes="Flat" FontSize="18" FontWeight="DemiBold" Command="{Binding StartServerCommand}" Content="{Binding StartServerText}" MinWidth="200"/>
+    </StackPanel>
+  </Grid>
+</UserControl>
