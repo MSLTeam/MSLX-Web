@@ -1,3 +1,3 @@
 [submodule "SukiUI"]
 	path = SukiUI
-	url = git://github.com/MSLTeam/SukiUI.git
+	url = https://github.com/MSLTeam/SukiUI.git
