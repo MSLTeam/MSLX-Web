@@ -2,9 +2,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SukiUI.Controls;
+using SukiUI.Dialogs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MSLX.ViewModels;
+using MSLX.Utils;
 
 namespace MSLX.ViewModels
 {
@@ -19,14 +22,14 @@ namespace MSLX.ViewModels
         // public string ServerSettings { get; } = "服务器设置";
         // public string DeleteServer { get; } = "删除服务器";
 
-        public class ServerInfo
+        public class LServerInfo
         {
             public int ID { get; set; }
             public string Name { get; set; }
             public bool Status { get; set; }
             public string Core { get; set; }
 
-            public ServerInfo(int id, string name, bool status, string core)
+            public LServerInfo(int id, string name, bool status, string core)
             {
                 ID = id;
                 Name = name;
@@ -36,16 +39,10 @@ namespace MSLX.ViewModels
         }
 
         [ObservableProperty]
-        private ObservableCollection<ServerInfo> _serverList = [];
+        private ObservableCollection<LServerInfo> _serverList = [];
 
         public ServerListViewModel()
         {
-            ServerList.Add(new ServerInfo(1, "服务器1", true, "paper1.21.4.jar"));
-            ServerList.Add(new ServerInfo(1, "服务器1", true, "paper1.21.4.jar"));
-            ServerList.Add(new ServerInfo(1, "服务器1", true, "paper1.21.4.jar"));
-            ServerList.Add(new ServerInfo(1, "服务器1", true, "paper1.21.4.jar"));
-            ServerList.Add(new ServerInfo(1, "服务器1", true, "paper1.21.4.jar"));
-            ServerList.Add(new ServerInfo(1, "服务器1", true, "paper1.21.4.jar"));
         }
 
         [ObservableProperty]
@@ -83,6 +80,80 @@ namespace MSLX.ViewModels
                 _openWindows.Add(id, sukiWindow);
                 sukiWindow.Show();
 #endif
+            }
+        }
+
+        [RelayCommand]
+        private void RefreshList()
+        {
+            var servers = Utility.ConfigService.GetServerList();
+            ServerList.Clear();
+            foreach (var server in servers)
+            {
+                ServerList.Add(new LServerInfo(server.ID, server.Name, false, server.Core));
+            }
+        }
+
+        [RelayCommand]
+        private void AddServer()
+        {
+            StackPanel stackPanel = new StackPanel()
+            {
+                Children =
+                {
+                    new TextBlock()
+                    {
+                        Text = "服务器名称"
+                    },
+                    new TextBox()
+                    {
+                        Name = "ServerName"
+                    },
+                    new TextBlock()
+                    {
+                        Text = "服务器运行目录"
+                    },
+                    new TextBox()
+                    {
+                        Name = "ServerBase"
+                    },
+                    new TextBlock()
+                    {
+                        Text = "核心"
+                    },
+                    new TextBox()
+                    {
+                        Name = "ServerCore"
+                    },
+                    new TextBlock()
+                    {
+                        Text = "Java"
+                    },
+                    new TextBox()
+                    {
+                        Name = "ServerJava"
+                    }
+                }
+            };
+            MainViewModel.DialogManager.CreateDialog().WithTitle("添加服务器").WithContent(stackPanel).WithActionButton("确定", _ =>
+            {
+                var serverName = stackPanel.Children.OfType<TextBox>().First(x => x.Name == "ServerName").Text;
+                var serverBase = stackPanel.Children.OfType<TextBox>().First(x => x.Name == "ServerBase").Text;
+                var serverCore = stackPanel.Children.OfType<TextBox>().First(x => x.Name == "ServerCore").Text;
+                var serverJava = stackPanel.Children.OfType<TextBox>().First(x => x.Name == "ServerJava").Text;
+                ServerList.Add(new LServerInfo(Utility.ConfigService.GenerateServerId(), serverName, false, serverCore));
+                Utility.ConfigService.CreateServer(new Models.MCServerModel.ServerInfo(Utility.ConfigService.GenerateServerId(), serverName, serverBase, serverJava, serverCore, 0, 0, string.Empty));
+                MainViewModel.DialogManager.DismissDialog();
+            }).WithActionButton("关闭", _ => { }, true).TryShow();
+        }
+
+        [RelayCommand]
+        private void DelServer(object parameter)
+        {
+            if (parameter is int id)
+            {
+                Utility.ConfigService.DeleteServer(id);
+                refreshListCommand.Execute(null);
             }
         }
     }

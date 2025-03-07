@@ -14,12 +14,15 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <suki:SukiSideMenu Grid.Column="0" IsSelectedItemContentMovable="False" ItemsSource="{Binding MainPages}" SelectedItem="{Binding ActivePage}">
-    <suki:SukiSideMenu.ItemTemplate>
-      <DataTemplate>
-        <suki:SukiSideMenuItem Classes="Compact" Header="{Binding Name}">
-        </suki:SukiSideMenuItem>
-      </DataTemplate>
-    </suki:SukiSideMenu.ItemTemplate>
-  </suki:SukiSideMenu>
+  <Grid>
+    <suki:SukiSideMenu Grid.Column="0" IsSelectedItemContentMovable="False" ItemsSource="{Binding MainPages}" SelectedItem="{Binding ActivePage}">
+      <suki:SukiSideMenu.ItemTemplate>
+        <DataTemplate>
+          <suki:SukiSideMenuItem Classes="Compact" Header="{Binding Name}">
+          </suki:SukiSideMenuItem>
+        </DataTemplate>
+      </suki:SukiSideMenu.ItemTemplate>
+    </suki:SukiSideMenu>
+    <suki:SukiDialogHost Manager="{Binding DialogManager}"/>
+  </Grid>
 </UserControl>

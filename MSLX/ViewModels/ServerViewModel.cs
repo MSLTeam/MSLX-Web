@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MSLX.Models;
+using MSLX.Utils;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -8,14 +10,15 @@ namespace MSLX.ViewModels
 {
     public partial class ServerViewModel : ViewModelBase
     {
+        private static MCServerModel.ServerInfo ServerInfo { get; set; }
+
         // 添加无参数构造函数，否则axaml会报错
         public ServerViewModel() : this(0) { }
 
         public ServerViewModel(int id)
         {
             ID = id;
-            Debug.WriteLine(ID);
-            Debug.WriteLine(AppDomain.CurrentDomain.BaseDirectory + "Server");
+            ServerInfo = Utility.ConfigService.GetServer(ID);
         }
 
         public int ID { get; set; }
@@ -53,9 +56,9 @@ namespace MSLX.ViewModels
             {
                 ServerProcess.StartInfo= new ProcessStartInfo()
                 {
-                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory + "Server",
-                    FileName = "java",
-                    Arguments = "-jar paper-1.8.8.jar",
+                    WorkingDirectory = ServerInfo.Base,
+                    FileName = ServerInfo.Java,
+                    Arguments = $"-jar {ServerInfo.Core}",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardInput = true,

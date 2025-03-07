@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -26,6 +27,7 @@ public partial class App : Application
             {
                 DataContext = new MainViewModel()
             };
+            desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {

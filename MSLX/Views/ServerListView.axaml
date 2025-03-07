@@ -10,10 +10,15 @@
              x:Class="MSLX.Views.ServerListView"
              xmlns:vm="clr-namespace:MSLX.ViewModels"
              x:DataType="vm:ServerListViewModel">
+  <i:Interaction.Behaviors>
+    <ia:EventTriggerBehavior EventName="Loaded">
+      <ia:InvokeCommandAction Command="{Binding RefreshListCommand}"/>
+    </ia:EventTriggerBehavior>
+  </i:Interaction.Behaviors>
   <Design.DataContext>
     <vm:ServerListViewModel/>
   </Design.DataContext>
-
+    
   <Grid Margin="10">
     <suki:GlassCard>
       <Grid>
@@ -67,7 +72,7 @@
                             <TextBlock Margin="3,0,0,0" Text="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).OpenDirectory}"/>
                           </StackPanel>
                         </Button>
-                        <Button Grid.Column="1" Margin="5,0,0,0">
+                        <Button Grid.Column="1" Margin="5,0,0,0" Command="{Binding $parent[ItemsControl].((vm:ServerListViewModel)DataContext).DelServerCommand}" CommandParameter="{Binding ID}">
                           <mi:MaterialIcon Foreground="{DynamicResource SukiPrimaryColor}" Kind="Delete"/>
                         </Button>
                       </Grid>
@@ -94,6 +99,14 @@
             </ItemsControl.ItemsPanel>
           </ItemsControl>
         </ScrollViewer>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Spacing="5">
+          <Button Padding="10" Command="{Binding RefreshListCommand}">
+            <mi:MaterialIcon Kind="Refresh"/>
+          </Button>
+          <Button Padding="10" Command="{Binding AddServerCommand}">
+            <mi:MaterialIcon Kind="Add"/>
+          </Button>
+        </StackPanel>
       </Grid>
     </suki:GlassCard>
   </Grid>

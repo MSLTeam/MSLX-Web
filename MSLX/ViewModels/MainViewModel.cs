@@ -3,11 +3,14 @@ using Material.Icons;
 using SukiUI.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
+using SukiUI.Dialogs;
 
 namespace MSLX.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    public static ISukiDialogManager DialogManager { get; } = new SukiDialogManager();
+    
     private readonly ObservableCollection<SukiSideMenuItem> _mainPages = new()
     {
         new SukiSideMenuItem
@@ -33,18 +36,18 @@ public partial class MainViewModel : ViewModelBase
             Header = "内网映射",
             Icon = new MaterialIcon()
             {
-                Kind = MaterialIconKind.ViewList,
+                Kind = MaterialIconKind.NavigationVariant,
             },
-            PageContent = new ServerListViewModel(),
+            PageContent = new AboutViewModel(),
         },
         new SukiSideMenuItem
         {
             Header = "点对点联机",
             Icon = new MaterialIcon()
             {
-                Kind = MaterialIconKind.ViewList,
+                Kind = MaterialIconKind.SwapHorizontalBold,
             },
-            PageContent = new ServerListViewModel(),
+            PageContent = new AboutViewModel(),
         },
         new SukiSideMenuItem
         {
