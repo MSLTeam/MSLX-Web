@@ -7,8 +7,8 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="MSLX.Views.ServerListView"
-             xmlns:vm="clr-namespace:MSLX.ViewModels"
+             x:Class="MSLX.Core.Views.ServerListView"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:DataType="vm:ServerListViewModel">
   <i:Interaction.Behaviors>
     <ia:EventTriggerBehavior EventName="Loaded">

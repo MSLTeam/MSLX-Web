@@ -6,8 +6,8 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="MSLX.Views.HomeView"
-             xmlns:vm="clr-namespace:MSLX.ViewModels"
+             x:Class="MSLX.Core.Views.HomeView"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:DataType="vm:HomeViewModel">
   <i:Interaction.Behaviors>
     <ia:EventTriggerBehavior EventName="Loaded">

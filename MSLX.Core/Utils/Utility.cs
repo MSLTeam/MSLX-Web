@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MSLX.Utils
+namespace MSLX.Core.Utils
 {
     public class Utility
     {

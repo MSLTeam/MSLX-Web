@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MSLX.Core.Utils;
 using MSLX.Models;
-using MSLX.Utils;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace MSLX.ViewModels
+namespace MSLX.Core.ViewModels
 {
     public partial class ServerViewModel : ViewModelBase
     {

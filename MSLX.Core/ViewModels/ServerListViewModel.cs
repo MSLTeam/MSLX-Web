@@ -6,10 +6,10 @@ using SukiUI.Dialogs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MSLX.ViewModels;
-using MSLX.Utils;
+using MSLX.Core.ViewModels;
+using MSLX.Core.Utils;
 
-namespace MSLX.ViewModels
+namespace MSLX.Core.ViewModels
 {
     public partial class ServerListViewModel : ViewModelBase
     {

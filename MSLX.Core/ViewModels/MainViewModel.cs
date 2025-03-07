@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SukiUI.Dialogs;
 
-namespace MSLX.ViewModels;
+namespace MSLX.Core.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {

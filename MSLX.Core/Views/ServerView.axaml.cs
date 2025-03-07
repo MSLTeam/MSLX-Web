@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 
-namespace MSLX.Views;
+namespace MSLX.Core.Views;
 
 public partial class ServerView : UserControl
 {

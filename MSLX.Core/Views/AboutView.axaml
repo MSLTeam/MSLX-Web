@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="MSLX.Views.AboutView"
-             xmlns:vm="clr-namespace:MSLX.ViewModels"
+             x:Class="MSLX.Core.Views.AboutView"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:DataType="vm:AboutViewModel">
   Welcome to Avalonia!
 </UserControl>

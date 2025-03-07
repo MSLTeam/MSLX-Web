@@ -6,12 +6,12 @@ using System.Linq;
 using System.Threading;
 using static MSLX.Models.MCServerModel;
 
-namespace MSLX.Utils
+namespace MSLX.Core.Utils
 {
     public class ConfigService : IDisposable
     {
-        private readonly string _configPath = Path.Combine("MSLX", "config.json");
-        private readonly string _serverListPath = Path.Combine("MSLX", "ServerList.json");
+        private readonly string _configPath = Path.Combine("Configs", "config.json");
+        private readonly string _serverListPath = Path.Combine("Configs", "ServerList.json");
 
         // 缓存对象
         private JObject _configCache;

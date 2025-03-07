@@ -5,8 +5,8 @@
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="MSLX.Views.ServerView"
-             xmlns:vm="clr-namespace:MSLX.ViewModels"
+             x:Class="MSLX.Core.Views.ServerView"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:DataType="vm:ServerViewModel">
   <Design.DataContext>
     <vm:ServerViewModel/>

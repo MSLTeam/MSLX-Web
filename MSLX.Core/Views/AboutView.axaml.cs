@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace MSLX.Views;
+namespace MSLX.Core.Views;
 
 public partial class AboutView : UserControl
 {

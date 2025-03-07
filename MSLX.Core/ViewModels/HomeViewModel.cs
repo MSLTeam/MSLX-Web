@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 
-namespace MSLX.ViewModels
+namespace MSLX.Core.ViewModels
 {
     public partial class HomeViewModel : ViewModelBase
     {

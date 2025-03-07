@@ -1,10 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.Messaging;
-using MSLX.ViewModels;
+using MSLX.Core.ViewModels;
 using SukiUI.Controls;
 
-namespace MSLX.Views;
+namespace MSLX.Core.Views;
 
 public partial class MainWindow : SukiWindow
 {

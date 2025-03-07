@@ -1,5 +1,6 @@
 ﻿using System;
 using Avalonia;
+using MSLX.Core;
 
 namespace MSLX.Desktop;
 
