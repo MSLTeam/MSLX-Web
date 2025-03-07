@@ -10,8 +10,8 @@ namespace MSLX.Utils
 {
     public class ConfigService : IDisposable
     {
-        private readonly string _configPath = "MSLX\\config.json";
-        private readonly string _serverListPath = "MSLX\\ServerList.json";
+        private readonly string _configPath = Path.Combine("MSLX", "config.json");
+        private readonly string _serverListPath = Path.Combine("MSLX", "ServerList.json");
 
         // 缓存对象
         private JObject _configCache;

@@ -11,20 +11,10 @@
         WindowStartupLocation="CenterScreen"
         MinWidth="550" MinHeight="400"
         Width="1000" Height="600"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/logo.ico"
         Title="MSLX" Closing="SukiWindow_Closing">
   <suki:SukiWindow.LogoContent>
-    <mi:MaterialIcon Width="20"
-                           Height="20"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource SukiPrimaryColor}"
-                           Kind="Dog">
-      <mi:MaterialIcon.Transitions>
-        <Transitions>
-          <BrushTransition Property="Foreground" Duration="{DynamicResource ShortAnimationDuration}" />
-        </Transitions>
-      </mi:MaterialIcon.Transitions>
-    </mi:MaterialIcon>
+    <Image Source="/Assets/logo.ico" Height="20" Width="20"/>
   </suki:SukiWindow.LogoContent>
   <suki:SukiWindow.TitleBarContextMenu>
     <ContextMenu>

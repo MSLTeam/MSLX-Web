@@ -4,6 +4,7 @@
     <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
     One for Windows with net8.0-windows TFM, one for MacOS with net8.0-macos and one with net8.0 TFM for Linux.-->
     <TargetFramework>net8.0</TargetFramework>
+    <ApplicationIcon>Assets/logo.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
@@ -14,6 +15,7 @@
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
+    <AssemblyName>MSLX</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MSLX\MSLX.csproj" />
+    <ProjectReference Include="..\MSLX.Core\MSLX.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\" />
   </ItemGroup>
 </Project>
