@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>12</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
@@ -25,6 +25,7 @@
     <PackageReference Include="Avalonia.Xaml.Interactions" />
     <PackageReference Include="Avalonia.Xaml.Interactivity" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Dotnet.Bundle" />
     <PackageReference Include="Material.Icons.Avalonia" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>

@@ -7,6 +7,7 @@
     <ApplicationIcon>Assets/logo.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <BuiltAssembly>false</BuiltAssembly>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,7 +18,20 @@
     <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
     <AssemblyName>MSLX</AssemblyName>
   </PropertyGroup>
-
+  
+  <PropertyGroup>
+    <CFBundleName>MSLX</CFBundleName> <!-- 同时定义 .app 文件名 -->
+    <CFBundleDisplayName>MSLX</CFBundleDisplayName>
+    <CFBundleIdentifier>cn.mslmc</CFBundleIdentifier>
+    <CFBundleVersion>1.0.0</CFBundleVersion>
+    <CFBundleShortVersionString>1.0.0</CFBundleShortVersionString>
+    <CFBundlePackageType>APPL</CFBundlePackageType>
+    <CFBundleSignature>????</CFBundleSignature>
+    <CFBundleExecutable>MSLX</CFBundleExecutable>
+    <CFBundleIconFile>logo.icns</CFBundleIconFile> <!-- 将从输出目录复制 -->
+    <NSPrincipalClass>MSLX</NSPrincipalClass>
+    <NSHighResolutionCapable>true</NSHighResolutionCapable>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -25,6 +39,7 @@
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Dotnet.Bundle" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,5 +48,17 @@
 
   <ItemGroup>
     <Folder Include="Assets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MSLX.icns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\logo.icns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="logo.icns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
