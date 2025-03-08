@@ -4,7 +4,7 @@
     <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
     One for Windows with net8.0-windows TFM, one for MacOS with net8.0-macos and one with net8.0 TFM for Linux.-->
     <TargetFramework>net8.0</TargetFramework>
-    <ApplicationIcon>Assets/logo.ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <BuiltAssembly>false</BuiltAssembly>
@@ -18,7 +18,7 @@
     <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
     <AssemblyName>MSLX</AssemblyName>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <CFBundleName>MSLX</CFBundleName> <!-- 同时定义 .app 文件名 -->
     <CFBundleDisplayName>MSLX</CFBundleDisplayName>
@@ -32,11 +32,11 @@
     <NSPrincipalClass>MSLX</NSPrincipalClass>
     <NSHighResolutionCapable>true</NSHighResolutionCapable>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Remove="bundle-osx.bat" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -49,10 +49,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MSLX.Core\MSLX.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\" />
   </ItemGroup>
 
   <ItemGroup>
