@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
-using MSLX;
+using MSLX.Core;
 
 internal sealed partial class Program
 {

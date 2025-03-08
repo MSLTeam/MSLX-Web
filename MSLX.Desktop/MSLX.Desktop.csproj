@@ -32,6 +32,11 @@
     <NSPrincipalClass>MSLX</NSPrincipalClass>
     <NSHighResolutionCapable>true</NSHighResolutionCapable>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="bundle-osx.bat" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -51,12 +56,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="MSLX.icns">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\logo.icns">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="logo.icns">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

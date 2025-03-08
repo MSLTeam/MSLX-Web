@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSLX.Core", "MSLX.Core\MSLX.Core.csproj", "{EBFA8512-1EA5-4D8C-B4AC-AB5B48A6D568}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E1BFAE3D-08CF-5322-3DCC-A88E0863D9C2} = {E1BFAE3D-08CF-5322-3DCC-A88E0863D9C2}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSLX.Desktop", "MSLX.Desktop\MSLX.Desktop.csproj", "{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}"
 EndProject
@@ -31,6 +28,10 @@ Global
 		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E8D5A62-414E-4059-83E8-E2B90148BB3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8D5A62-414E-4059-83E8-E2B90148BB3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E8D5A62-414E-4059-83E8-E2B90148BB3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8D5A62-414E-4059-83E8-E2B90148BB3E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1BFAE3D-08CF-5322-3DCC-A88E0863D9C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1BFAE3D-08CF-5322-3DCC-A88E0863D9C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1BFAE3D-08CF-5322-3DCC-A88E0863D9C2}.Release|Any CPU.ActiveCfg = Release|Any CPU

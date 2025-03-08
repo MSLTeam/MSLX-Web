@@ -11,6 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MSLX\MSLX.csproj" />
+    <ProjectReference Include="..\MSLX.Core\MSLX.Core.csproj" />
   </ItemGroup>
 </Project>
