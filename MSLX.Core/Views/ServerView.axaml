@@ -3,7 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
              xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:aeb="clr-namespace:MSLX.Core.Behaviors;assembly=MSLX.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MSLX.Core.Views.ServerView"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
@@ -17,7 +21,11 @@
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <TextBox Text="{Binding ServerLogs}" VerticalContentAlignment="Top" IsReadOnly="True" TextChanged="ServerLogsBox_TextChanged"/>
+    <ae:TextEditor FontSize="14" FontFamily="Cascadia Code,Consolas,Menlo,Monospace">
+      <i:Interaction.Behaviors>
+        <aeb:DocumentTextBindingBehavior Text="{Binding ServerLogs, Mode=TwoWay}"/>
+      </i:Interaction.Behaviors>
+    </ae:TextEditor>
     <Grid Grid.Row="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>

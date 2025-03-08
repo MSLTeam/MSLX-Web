@@ -10,7 +10,7 @@ namespace MSLX.Core.ViewModels
 {
     public partial class ServerViewModel : ViewModelBase
     {
-        private static MCServerModel.ServerInfo ServerInfo { get; set; }
+        private static MCServerModel.ServerInfo? ServerInfo { get; set; }
 
         // 添加无参数构造函数，否则axaml会报错
         public ServerViewModel() : this(0) { }
@@ -22,7 +22,7 @@ namespace MSLX.Core.ViewModels
         }
 
         public int ID { get; set; }
-        public Process ServerProcess { get; set; } = new Process();
+        public Process? ServerProcess { get; set; }
         public string SendCmdBtn { get; } = "发送";
 
         [ObservableProperty]
@@ -34,6 +34,8 @@ namespace MSLX.Core.ViewModels
         [ObservableProperty]
         private string _serverLogs = "Logs";
 
+
+
         [RelayCommand]
         private void RunServer()
         {
@@ -41,7 +43,7 @@ namespace MSLX.Core.ViewModels
             {
                 try
                 {
-                    ServerProcess.StandardInput.WriteLine("stop");
+                    ServerProcess?.StandardInput.WriteLine("stop");
                     return;
                 }
                 catch
@@ -52,9 +54,11 @@ namespace MSLX.Core.ViewModels
             ServerLogs = string.Empty;
             Debug.WriteLine(ID);
             ControlServerBtn = "关服";
+            if (ServerInfo == null) return;
             Task.Run(async () =>
             {
-                ServerProcess.StartInfo= new ProcessStartInfo()
+                ServerProcess = new Process();
+                ServerProcess.StartInfo = new ProcessStartInfo()
                 {
                     WorkingDirectory = ServerInfo.Base,
                     FileName = ServerInfo.Java,
@@ -92,7 +96,7 @@ namespace MSLX.Core.ViewModels
         {
             try
             {
-                ServerProcess.StandardInput.WriteLine(CmdSendToServer);
+                ServerProcess?.StandardInput.WriteLine(CmdSendToServer);
                 CmdSendToServer = string.Empty;
             }
             catch

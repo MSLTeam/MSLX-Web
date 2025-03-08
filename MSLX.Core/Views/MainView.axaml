@@ -15,7 +15,7 @@
   </Design.DataContext>
 
   <Grid>
-    <suki:SukiSideMenu Grid.Column="0" IsSelectedItemContentMovable="False" ItemsSource="{Binding MainPages}" SelectedItem="{Binding ActivePage}">
+    <suki:SukiSideMenu IsSelectedItemContentMovable="False" ItemsSource="{Binding MainPages}" SelectedItem="{Binding ActivePage}">
       <suki:SukiSideMenu.ItemTemplate>
         <DataTemplate>
           <suki:SukiSideMenuItem Classes="Compact" Header="{Binding Name}">

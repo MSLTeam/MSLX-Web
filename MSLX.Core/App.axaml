@@ -11,9 +11,14 @@
         <local:ViewLocator/>
     </Application.DataTemplates>
 
+  <Application.Resources>
+    <x:Double x:Key="ControlContentThemeFontSize">12</x:Double>
+  </Application.Resources>
+
     <Application.Styles>
       <sukiUi:SukiTheme ThemeColor="Blue" Locale="zh-CN"/>
       <mi:MaterialIconStyles/>
+      <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
       <Style Selector="Label.Title">
         <Setter Property="FontSize" Value="24"/>
         <Setter Property="FontWeight" Value="Bold"/>
