@@ -40,7 +40,6 @@ public partial class ServerView : UserControl
             });
         }
     }
-    */
 
     private void ServerLogsBox_TextChanged(object sender, TextChangedEventArgs e)
     {
@@ -52,4 +51,5 @@ public partial class ServerView : UserControl
             }
         });
     }
+    */
 }

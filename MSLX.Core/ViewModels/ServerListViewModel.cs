@@ -6,8 +6,9 @@ using SukiUI.Dialogs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MSLX.Core.ViewModels;
 using MSLX.Core.Utils;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MSLX.Core.ViewModels
 {
@@ -22,11 +23,19 @@ namespace MSLX.Core.ViewModels
         // public string ServerSettings { get; } = "服务器设置";
         // public string DeleteServer { get; } = "删除服务器";
 
-        public class LServerInfo
+        public ServerListViewModel() { }
+
+        public class LServerInfo: INotifyPropertyChanged
         {
             public int ID { get; set; }
             public string Name { get; set; }
-            public bool Status { get; set; }
+            private bool _status;
+            public bool Status
+            {
+                get => _status;
+                set => SetField(ref _status, value);
+            }
+            
             public string Core { get; set; }
 
             public LServerInfo(int id, string name, bool status, string core)
@@ -36,14 +45,22 @@ namespace MSLX.Core.ViewModels
                 Status = status;
                 Core = core;
             }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+            protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+            {
+                if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+                field = value;
+                OnPropertyChanged(propertyName);
+                return true;
+            }
         }
 
         [ObservableProperty]
         private ObservableCollection<LServerInfo> _serverList = [];
-
-        public ServerListViewModel()
-        {
-        }
 
         [ObservableProperty]
         private ObservableCollection<ServerViewModel> _serverViews = [];
@@ -69,7 +86,12 @@ namespace MSLX.Core.ViewModels
                 }
                 var sukiWindow = new SukiWindow
                 {
+                    Title = ServerList.FirstOrDefault(x => x.ID == id)?.Name ?? "Server",
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Width = 1200,
+                    Height = 700,
+                    MinWidth = 550,
+                    MinHeight = 400,
                     Content = serverView
                 };
                 sukiWindow.Closed += (_, _) =>

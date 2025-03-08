@@ -36,7 +36,7 @@
       <!--
       <Button Content="{Binding P2PBtn}" Margin="0,0,10,0"/>
       -->
-      <Button Classes="Flat" FontSize="18" FontWeight="DemiBold" Command="{Binding StartServerCommand}" Content="{Binding StartServerText}" MinWidth="200"/>
+      <Button IsEnabled="False" Classes="Flat" FontSize="18" FontWeight="DemiBold" Command="{Binding StartServerCommand}" Content="{Binding StartServerText}" MinWidth="200"/>
     </StackPanel>
   </Grid>
 </UserControl>

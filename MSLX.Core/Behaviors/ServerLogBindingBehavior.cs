@@ -6,12 +6,12 @@ using AvaloniaEdit.Utils;
 
 namespace MSLX.Core.Behaviors
 {
-    public class DocumentTextBindingBehavior : Behavior<TextEditor>
+    public class ServerLogBindingBehavior : Behavior<TextEditor>
     {
         private TextEditor? _textEditor;
 
         public static readonly StyledProperty<string> TextProperty =
-            AvaloniaProperty.Register<DocumentTextBindingBehavior, string>(nameof(Text));
+            AvaloniaProperty.Register<ServerLogBindingBehavior, string>(nameof(Text));
 
         public string Text
         {
@@ -27,6 +27,7 @@ namespace MSLX.Core.Behaviors
             {
                 _textEditor = textEditor;
                 _textEditor.TextChanged += TextChanged;
+                _textEditor.Options.AllowScrollBelowDocument=false;
                 this.GetObservable(TextProperty).Subscribe(TextPropertyChanged);
             }
         }
@@ -53,9 +54,10 @@ namespace MSLX.Core.Behaviors
         {
             if (_textEditor != null && _textEditor.Document != null && text != null)
             {
-                var caretOffset = _textEditor.CaretOffset;
+                //var caretOffset = _textEditor.CaretOffset;
                 _textEditor.Document.Text = text;
-                _textEditor.CaretOffset = caretOffset;
+                _textEditor.ScrollToEnd();
+                //_textEditor.CaretOffset = caretOffset;
             }
         }
     }

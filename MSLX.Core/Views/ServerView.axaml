@@ -23,7 +23,7 @@
     </Grid.RowDefinitions>
     <ae:TextEditor FontSize="14" FontFamily="Cascadia Code,Consolas,Menlo,Monospace">
       <i:Interaction.Behaviors>
-        <aeb:DocumentTextBindingBehavior Text="{Binding ServerLogs, Mode=TwoWay}"/>
+        <aeb:ServerLogBindingBehavior Text="{Binding ServerLogs, Mode=TwoWay}"/>
       </i:Interaction.Behaviors>
     </ae:TextEditor>
     <Grid Grid.Row="1">
@@ -32,9 +32,9 @@
         <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
       <TextBox Text="{Binding CmdSendToServer}"/>
-      <StackPanel Grid.Column="1" Orientation="Horizontal">
-        <Button Content="{Binding SendCmdBtn}" Command="{Binding SendCmdToServerCommand}"/>
-        <Button Content="{Binding ControlServerBtn}" Command="{Binding RunServerCommand}"/>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+        <Button Content="{Binding SendCmdBtn}" Command="{Binding SendCmdToServerCommand}" Margin="0,5,0,5"/>
+        <Button Content="{Binding ControlServerBtn}" Command="{Binding RunServerCommand}" Margin="0,5,0,5"/>
       </StackPanel>
     </Grid>
   </Grid>

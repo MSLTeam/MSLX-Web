@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using MSLX.Core.Utils;
 using MSLX.Models;
-using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MSLX.Core.ViewModels
@@ -34,8 +34,6 @@ namespace MSLX.Core.ViewModels
         [ObservableProperty]
         private string _serverLogs = "Logs";
 
-
-
         [RelayCommand]
         private void RunServer()
         {
@@ -52,8 +50,12 @@ namespace MSLX.Core.ViewModels
                 }
             }
             ServerLogs = string.Empty;
-            Debug.WriteLine(ID);
+            // Debug.WriteLine(ID);
+
             ControlServerBtn = "关服";
+            var thisserverInList = MainViewModel.ServerListViewModel.ServerList.FirstOrDefault(s => s.ID == ID);
+            if (thisserverInList != null) thisserverInList.Status = true;
+
             if (ServerInfo == null) return;
             Task.Run(async () =>
             {
@@ -79,7 +81,9 @@ namespace MSLX.Core.ViewModels
                 ServerProcess.CancelErrorRead();
                 ServerProcess.OutputDataReceived -= LogReceivedHandler;
                 ServerProcess.ErrorDataReceived -= LogReceivedHandler;
+
                 ControlServerBtn = "开服";
+                if (thisserverInList != null) thisserverInList.Status = false;
             });
         }
 
