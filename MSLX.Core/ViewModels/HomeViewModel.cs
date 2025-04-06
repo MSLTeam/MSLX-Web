@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using MSLX.Core.Utils;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace MSLX.Core.ViewModels
 {
@@ -31,15 +32,15 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private async Task Loaded()
         {
-            var (Success, Data, Message) = await MSLApi.GetDataAsync("/query/notice?query=noticeMd");
-            if (Data == null|| Message == null)
+            var (Success, Data, Message) = await MSLApi.GetDataAsync("/query/notice", queryParameters: new Dictionary<string, string> { { "query", "noticeMd" } });
+            if (Data == null || Message == null)
             {
                 Announcement = "暂无公告";
                 return;
             }
             if (Success)
             {
-                Announcement = JObject.Parse(Data)["noticeMd"]?.ToString() ?? "暂无公告";
+                Announcement = ((JObject)Data)["noticeMd"]?.ToString() ?? "暂无公告";
             }
             else
             {
@@ -55,7 +56,7 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void StartServer()
         {
-            if(_isFullScreen)
+            if (_isFullScreen)
             {
                 WeakReferenceMessenger.Default.Send(new WindowStateMessage(WindowState.Normal));
                 _isFullScreen = false;

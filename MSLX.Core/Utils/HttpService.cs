@@ -13,16 +13,27 @@ namespace MSLX.Core.Utils
 {
     public class MSLApi
     {
-        public async static Task<(bool Success, string? Data, string? Msg)> GetDataAsync(string path)
+        public static string ApiUrl { get; } = "https://api.mslmc.cn/v3";
+
+        /// <summary>
+        /// 快速获取API返回Json里的数据内容
+        /// </summary>
+        /// <param name="path">路径，如“/notice”</param>
+        /// <param name="dataKey">数据键名称，默认通常为“data”</param>
+        /// <param name="queryParameters">query参数，可直接加在路径后面“?query=md”，也可在此通过Dictionary进行设置</param>
+        /// <returns>Success：请求是否成功，包括检测StatusCode和Json里的code，二者必须同时为200，才会返回true；Data：数据内容；Msg：Api返回Json里的message内容</returns>
+        public async static Task<(bool Success, object? Data, string? Msg)> GetDataAsync(string path, string dataKey = "data", Dictionary<string, string>? queryParameters = null)
         {
-            var getResponse = await GetAsync(path);
+            var getResponse = await GetAsync(path, queryParameters);
             if (getResponse.IsSuccessStatusCode)
             {
                 var content = getResponse.Content;
                 if (content == null)
                     return (false, null, "内容为空");
                 var json = JObject.Parse(content);
-                return (true, json["data"]?.ToString(), json["message"]?.ToString());
+                if (json["code"]?.ToString() != "200")
+                    return (false, null, json["message"]?.ToString());
+                return (true, json[dataKey], json["message"]?.ToString());
             }
             else
             {
@@ -30,14 +41,26 @@ namespace MSLX.Core.Utils
             }
         }
 
-        public async static Task<HttpResponse> GetAsync(string path)
+        /// <summary>
+        /// 普通ApiGet请求
+        /// </summary>
+        /// <param name="path">路径，如“/notice”</param>
+        /// <param name="queryParameters">query参数，可直接加在路径后面“?query=md”，也可在此通过Dictionary进行设置</param>
+        /// <returns>Httpservice.HttpResponse</returns>
+        public async static Task<HttpResponse> GetAsync(string path, Dictionary<string, string>? queryParameters)
         {
             using var service = new HttpService();
             // UA可以这样设置，也可以按照下面getRequest里注释掉的方式设置
             service.SetDefaultHeadersUA(UAManager.GetUA(UAManager.UAType.MSLX));
+            string url = ApiUrl + path;
+            if (queryParameters != null && queryParameters.Count > 0)
+            {
+                string queryString = string.Join("&", queryParameters.Select(p => $"{WebUtility.UrlEncode(p.Key)}={WebUtility.UrlEncode(p.Value)}"));
+                url = $"{url}?{queryString}";
+            }
             var getRequest = new HttpRequest
             {
-                Url = "https://api.mslmc.cn/v3" + path,
+                Url = url,
                 Method = HttpMethod.Get
                 /*
                 Headers = new Dictionary<string, string>
@@ -51,13 +74,20 @@ namespace MSLX.Core.Utils
             return getResponse;
         }
 
+        /// <summary>
+        /// 普通ApiPost请求
+        /// </summary>
+        /// <param name="path">路径，如“/notice”</param>
+        /// <param name="postContentType">发送数据类型，如：HttpMethod.Post</param>
+        /// <param name="data">发送数据</param>
+        /// <returns>Httpservice.HttpResponse</returns>
         public async static Task<HttpResponse> PostAsync(string path, PostContentType postContentType, object data)
         {
             using var service = new HttpService();
             service.SetDefaultHeadersUA(UAManager.GetUA(UAManager.UAType.MSLX));
             var postRequest = new HttpRequest
             {
-                Url = "https://api.mslmc.cn/v3" + path,
+                Url = ApiUrl + path,
                 Method = HttpMethod.Post
             };
             /*
