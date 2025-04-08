@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MSLX.Core.Views.FrpService.MSLFrpView"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels.FrpService"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              x:DataType="vm:MSLFrpViewModel">
     <Grid>
         <TabControl>
@@ -41,6 +42,23 @@
                             </Grid>
                         </Grid>
                        
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <suki:GlassCard>
+                                    <StackPanel>
+                                        <TextBlock Text="用户信息" Margin="3" FontWeight="Bold" FontSize="16"/>
+                                        <TextBlock Text="{Binding Username}" Margin="3"></TextBlock>
+                                    </StackPanel>
+                                </suki:GlassCard>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </TabItem>

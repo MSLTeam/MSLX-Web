@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace MSLX.Core.ViewModels.FrpService
 {
@@ -51,13 +52,12 @@ namespace MSLX.Core.ViewModels.FrpService
 
     public partial class MSLFrpViewModel : ViewModelBase
     {
+        [ObservableProperty]
         private ObservableCollection<Tunnel> _tunnels;
-        public ObservableCollection<Tunnel> Tunnels
-        {
-            get => _tunnels;
-            set { _tunnels = value; OnPropertyChanged(); }
-        }
-
+        
+        [ObservableProperty]
+        private string _username = "loading";
+        
         public MSLFrpViewModel()
         {
             Tunnels = new ObservableCollection<Tunnel>
