@@ -55,6 +55,12 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void StartServer()
         {
+            
+        }
+
+        [RelayCommand]
+        private void Test()
+        {
             if (_isFullScreen)
             {
                 WeakReferenceMessenger.Default.Send(new WindowStateMessage(WindowState.Normal));
@@ -65,12 +71,6 @@ namespace MSLX.Core.ViewModels
                 WeakReferenceMessenger.Default.Send(new WindowStateMessage(WindowState.FullScreen));
                 _isFullScreen = true;
             }
-        }
-
-        [RelayCommand]
-        private void Test()
-        {
-            Announcement = "123123";
         }
     }
     public class WindowStateMessage

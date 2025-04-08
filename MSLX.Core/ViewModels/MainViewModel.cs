@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using MSLX.Core.ViewModels.FrpService;
 using SukiUI.Dialogs;
-using Markdown.Avalonia;
 
 namespace MSLX.Core.ViewModels;
 
@@ -118,6 +117,19 @@ public partial class MainViewModel : ViewModelBase
                 App.MainView.MainPages.Add(sukiSideMenuItem);
         }
         App.MainView.ActivePage = sukiSideMenuItem;
+    }
+
+    public static void NavigateRemove<T>() where T : ViewModelBase
+    {
+        if (App.MainView == null) return;
+
+        var page = App.MainView.MainPages.FirstOrDefault(p => p.PageContent is T);
+        if (page != null)
+        {
+            if (App.MainView.ActivePage == page)
+                App.MainView.ActivePage = App.MainView.MainPages.FirstOrDefault();
+            App.MainView.MainPages.Remove(page);
+        }
     }
 
     public static void NavigateRemove(ViewModelBase viewModel)

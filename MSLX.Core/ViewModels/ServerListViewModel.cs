@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Material.Icons.Avalonia;
 using Material.Icons;
+using MSLX.Core.ViewModels.CreateServer;
 
 namespace MSLX.Core.ViewModels
 {
@@ -118,21 +119,21 @@ namespace MSLX.Core.ViewModels
             }
         }
 
-        public static CreateServer.GuideViewModel? GuideViewModel { get; private set; }
-
         [RelayCommand]
         private void AddServer()
         {
-            //MainViewModel.NavigateTo<SettingsViewModel>();
-            if(GuideViewModel == null)
+            MainViewModel.NavigateRemove<GuideViewModel>();
+            MainViewModel.NavigateRemove<FastModeViewModel>();
+            MainViewModel.NavigateTo(new SukiSideMenuItem
             {
-                Create_CreateServerPage();
-            }
-            else
-            {
-                MainViewModel.NavigateRemove(GuideViewModel);
-                Create_CreateServerPage();
-            }
+                Header = "创建服务器",
+                Icon = new MaterialIcon()
+                {
+                    Kind = MaterialIconKind.Add,
+                },
+                PageContent = new GuideViewModel(),
+                IsContentMovable = false
+            }, true, 2);
             /*
             StackPanel stackPanel = new StackPanel()
             {
@@ -183,21 +184,6 @@ namespace MSLX.Core.ViewModels
                 MainViewModel.DialogManager.DismissDialog();
             }).WithActionButton("关闭", _ => { }, true).TryShow();
             */
-        }
-
-        private void Create_CreateServerPage()
-        {
-            GuideViewModel = new CreateServer.GuideViewModel();
-            MainViewModel.NavigateTo(new SukiSideMenuItem
-            {
-                Header = "创建服务器",
-                Icon = new MaterialIcon()
-                {
-                    Kind = MaterialIconKind.Add,
-                },
-                PageContent = GuideViewModel,
-                IsContentMovable = false
-            }, true, 2);
         }
 
         [RelayCommand]
