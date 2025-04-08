@@ -4,9 +4,14 @@
              xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:local="using:MSLX.Core"
              x:Class="MSLX.Core.App"
+             Name="MSLX"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+             <NativeMenu.Menu>
+               <NativeMenu>
+                 <NativeMenuItem Header="关于MSLX" />
+               </NativeMenu>
+             </NativeMenu.Menu>
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
