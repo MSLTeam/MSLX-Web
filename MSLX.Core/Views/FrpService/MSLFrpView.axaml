@@ -38,7 +38,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Button Content="刷新" Classes="Flat" Margin="3" Padding="5" Grid.Column="0" HorizontalContentAlignment="Center" />
-                                <Button Content="删除隧道" Classes="Flat" Background="Red" Margin="3" Padding="5" Grid.Column="1" HorizontalContentAlignment="Center"/>
+                                <Button Content="删除隧道" Classes="Flat Accent" Background="Red" Margin="3" Padding="5" Grid.Column="1" HorizontalContentAlignment="Center"/>
                             </Grid>
                         </Grid>
                        

@@ -14,6 +14,9 @@ namespace MSLX.Core.ViewModels.FrpService
         [ObservableProperty]
         private string _username = "loading";
         
+        [ObservableProperty]
+        private string _usergroup = "loading";
+        
         public MSLFrpViewModel()
         {
             Tunnels = new ObservableCollection<Tunnel>
