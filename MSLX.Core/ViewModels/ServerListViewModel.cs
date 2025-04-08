@@ -9,6 +9,8 @@ using System.Linq;
 using MSLX.Core.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Material.Icons.Avalonia;
+using Material.Icons;
 
 namespace MSLX.Core.ViewModels
 {
@@ -116,11 +118,22 @@ namespace MSLX.Core.ViewModels
             }
         }
 
+        public static CreateServer.GuideViewModel? GuideViewModel { get; private set; }
+
         [RelayCommand]
         private void AddServer()
         {
-            MainViewModel.NavigateTo(new CreateServer.GuideViewModel());
-            return;
+            //MainViewModel.NavigateTo<SettingsViewModel>();
+            if(GuideViewModel == null)
+            {
+                Create_CreateServerPage();
+            }
+            else
+            {
+                MainViewModel.NavigateRemove(GuideViewModel);
+                Create_CreateServerPage();
+            }
+            /*
             StackPanel stackPanel = new StackPanel()
             {
                 Children =
@@ -169,6 +182,22 @@ namespace MSLX.Core.ViewModels
                 Utility.ConfigService.CreateServer(new Models.MCServerModel.ServerInfo(Utility.ConfigService.GenerateServerId(), serverName, serverBase, serverJava, serverCore, 0, 0, string.Empty));
                 MainViewModel.DialogManager.DismissDialog();
             }).WithActionButton("关闭", _ => { }, true).TryShow();
+            */
+        }
+
+        private void Create_CreateServerPage()
+        {
+            GuideViewModel = new CreateServer.GuideViewModel();
+            MainViewModel.NavigateTo(new SukiSideMenuItem
+            {
+                Header = "创建服务器",
+                Icon = new MaterialIcon()
+                {
+                    Kind = MaterialIconKind.Add,
+                },
+                PageContent = GuideViewModel,
+                IsContentMovable = false
+            }, true, 2);
         }
 
         [RelayCommand]
@@ -177,7 +206,7 @@ namespace MSLX.Core.ViewModels
             if (parameter is int id)
             {
                 Utility.ConfigService.DeleteServer(id);
-                refreshListCommand.Execute(null);
+                RefreshListCommand.Execute(null);
             }
         }
     }

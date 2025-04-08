@@ -4,6 +4,7 @@ using SukiUI.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SukiUI.Dialogs;
+using Markdown.Avalonia;
 
 namespace MSLX.Core.ViewModels;
 
@@ -88,30 +89,47 @@ public partial class MainViewModel : ViewModelBase
 
     public static void NavigateTo<T>() where T : ViewModelBase
     {
-        if (App.Instance == null) return;
+        if (App.MainView == null) return;
 
-        var page = App.Instance.MainPages.FirstOrDefault(p => p.PageContent is T);
+        var page = App.MainView.MainPages.FirstOrDefault(p => p.PageContent is T);
         if (page != null)
-            App.Instance.ActivePage = page;
+            App.MainView.ActivePage = page;
     }
 
     public static void NavigateTo(ViewModelBase viewModel)
     {
-        if (App.Instance == null) return;
+        if (App.MainView == null) return;
 
-        // 查找是否已存在该类型的页面
-        var page = App.Instance.MainPages.FirstOrDefault(p => p.PageContent.GetType() == viewModel.GetType());
-        if (page == null)
+        var page = App.MainView.MainPages.FirstOrDefault(p => p.PageContent.GetType() == viewModel.GetType());
+        if (page != null)
+            App.MainView.ActivePage = page;
+    }
+
+    public static void NavigateTo(SukiSideMenuItem sukiSideMenuItem, bool addToSideMenu = false, int insert = -1)
+    {
+        if (App.MainView == null) return;
+
+        if (addToSideMenu)
         {
-            // 创建新页面
-            page = new SukiSideMenuItem
-            {
-                Header = viewModel.GetType().Name.Replace("ViewModel", ""),
-                PageContent = viewModel
-            };
-            App.Instance.MainPages.Add(page);
+            if (insert != -1)
+                App.MainView.MainPages.Insert(insert, sukiSideMenuItem);
+            else
+                App.MainView.MainPages.Add(sukiSideMenuItem);
         }
-        App.Instance.ActivePage = page;
+        App.MainView.ActivePage = sukiSideMenuItem;
+    }
+
+    public static void NavigateRemove(ViewModelBase viewModel)
+    {
+        if (App.MainView == null) return;
+
+        var page = App.MainView.MainPages.FirstOrDefault(p => p.PageContent.GetType() == viewModel.GetType());
+        if (page != null)
+        {
+            if (App.MainView.ActivePage == page)
+                App.MainView.ActivePage = App.MainView.MainPages.FirstOrDefault();
+            App.MainView.MainPages.Remove(page);
+        }
     }
 
     public MainViewModel()

@@ -11,7 +11,7 @@ namespace MSLX.Core;
 
 public partial class App : Application
 {
-    public static MainViewModel Instance { get; private set; } = new MainViewModel();
+    public static MainViewModel MainView { get; private set; } = new MainViewModel();
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -26,7 +26,7 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = Instance
+                DataContext = MainView
             };
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
@@ -34,7 +34,7 @@ public partial class App : Application
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = Instance
+                DataContext = MainView
             };
         }
 
