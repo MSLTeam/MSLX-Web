@@ -8,15 +8,27 @@ namespace MSLX.Core.ViewModels.FrpService
 {
     public partial class MSLFrpViewModel : ViewModelBase
     {
+        // 存储的隧道
         [ObservableProperty]
         private ObservableCollection<Tunnel> _tunnels;
         
+        // 用户信息字段
         [ObservableProperty]
         private string _username = "loading";
         
         [ObservableProperty]
-        private string _usergroup = "loading";
+        private string _userGroup = "普通用户";
         
+        [ObservableProperty]
+        private string _userMaxTunnels = "3";
+        
+        [ObservableProperty]
+        private string _userOutdated = "loading";
+
+        // 选中的隧道
+        [ObservableProperty]
+        private Tunnel _selectedTunnel;
+
         public MSLFrpViewModel()
         {
             Tunnels = new ObservableCollection<Tunnel>

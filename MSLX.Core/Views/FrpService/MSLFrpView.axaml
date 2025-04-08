@@ -24,7 +24,7 @@
                             <suki:GlassCard Margin="0,0,5,0">
                                 <Grid RowDefinitions="Auto * Auto">
                                     <TextBlock Text="选择一条隧道: " FontWeight="Bold" FontSize="16"/>
-                                    <ListBox Margin="0,5,0,0" Grid.Row="1"  ItemsSource="{Binding Tunnels}">
+                                    <ListBox Margin="0,5,0,0" Grid.Row="1"  ItemsSource="{Binding Tunnels}" SelectedItem="{Binding SelectedTunnel}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Foreground="{DynamicResource SukiText}">
@@ -60,13 +60,47 @@
                                 <suki:GlassCard Margin="0,0,0,10">
                                     <StackPanel>
                                         <TextBlock Text="用户信息" Margin="3" FontWeight="Bold" FontSize="16"/>
-                                        <TextBlock Text="{Binding Username}" Margin="3"></TextBlock>
+                                        <TextBlock Margin="3">
+                                            <Run Text="用户名: "></Run>
+                                            <Run Text="{Binding Username}"></Run>
+                                        </TextBlock>
+                                        <TextBlock Margin="3">
+                                            <Run Text="用户组: "></Run>
+                                            <Run Text="{Binding UserGroup}"></Run>
+                                        </TextBlock>
+                                        <TextBlock Margin="3">
+                                            <Run Text="最大隧道数: "></Run>
+                                            <Run Text="{Binding UserMaxTunnels}"></Run>
+                                        </TextBlock>
+                                        <TextBlock Margin="3">
+                                            <Run Text="到期时间: "></Run>
+                                            <Run Text="{Binding UserOutdated}"></Run>
+                                        </TextBlock>
                                     </StackPanel>
                                 </suki:GlassCard>
                             <suki:GlassCard Grid.Row="1" Margin="0,0,0,10">
                                 <StackPanel>
                                     <TextBlock Text="隧道信息" Margin="3" FontWeight="Bold" FontSize="16"/>
-                                    <TextBlock Text="{Binding Username}" Margin="3"></TextBlock>
+                                    <TextBlock Margin="3">
+                                        <Run Text="名称: "/>
+                                        <Run Text="{Binding SelectedTunnel.Name}"/>
+                                    </TextBlock>
+                                    <TextBlock Margin="3">
+                                        <Run Text="状态: "/>
+                                        <Run Text="{Binding SelectedTunnel.Status}"/>
+                                    </TextBlock>
+                                    <TextBlock Margin="3">
+                                        <Run Text="本地端口: "/>
+                                        <Run Text="{Binding SelectedTunnel.LocalPort}"/>
+                                    </TextBlock>
+                                    <TextBlock Margin="3">
+                                        <Run Text="远程端口: "/>
+                                        <Run Text="{Binding SelectedTunnel.RemotePort}"/>
+                                    </TextBlock>
+                                    <TextBlock Margin="3">
+                                        <Run Text="节点: "/>
+                                        <Run Text="{Binding SelectedTunnel.Node}"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </suki:GlassCard>
                             <Grid Grid.Row="2">
