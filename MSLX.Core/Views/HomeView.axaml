@@ -9,6 +9,7 @@
              x:Class="MSLX.Core.Views.HomeView"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             xmlns:ctxt="clr-namespace:ColorTextBlock.Avalonia;assembly=ColorTextBlock.Avalonia"
              x:DataType="vm:HomeViewModel">
   <i:Interaction.Behaviors>
     <ia:EventTriggerBehavior EventName="Loaded">
@@ -27,7 +28,25 @@
     
     <!-- 介系公告区 -->
     <suki:GlassCard Grid.Row="0">
-      <md:MarkdownScrollViewer Markdown="{Binding Announcement}"/>
+      <md:MarkdownScrollViewer Markdown="{Binding Announcement}">
+        <md:MarkdownScrollViewer.Styles>
+          <Style Selector="ctxt|CTextBlock.Heading1">
+            <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
+          </Style>
+          <Style Selector="ctxt|CTextBlock.Heading2">
+            <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
+          </Style>
+          <Style Selector="ctxt|CTextBlock.Heading3">
+            <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
+          </Style>
+          <Style Selector="ctxt|CTextBlock.Heading4">
+            <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
+          </Style>
+          <Style Selector="ctxt|CTextBlock.Heading5">
+            <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
+          </Style>
+        </md:MarkdownScrollViewer.Styles>
+      </md:MarkdownScrollViewer>
     </suki:GlassCard>
     
     <!-- 底部按钮 -->
