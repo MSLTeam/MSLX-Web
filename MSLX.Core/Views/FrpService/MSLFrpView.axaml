@@ -24,11 +24,11 @@
                             <ListBox  ItemsSource="{Binding Tunnels}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Name}" Margin="3" />
-                                            <TextBlock Text="｜" Margin="3"></TextBlock>
-                                            <TextBlock Text="{Binding Node}" Margin="3" />
-                                        </StackPanel>
+                                      <TextBlock Foreground="{DynamicResource SukiText}">
+                                        <Run Text="{Binding Name}"/>
+                                        <Run Text="|"/>
+                                        <Run Text="{Binding Node}"/>
+                                      </TextBlock>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>

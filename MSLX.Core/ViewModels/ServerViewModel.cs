@@ -53,7 +53,7 @@ namespace MSLX.Core.ViewModels
             // Debug.WriteLine(ID);
 
             ControlServerBtn = "关服";
-            var thisserverInList = MainViewModel.ServerListViewModel.ServerList.FirstOrDefault(s => s.ID == ID);
+            var thisserverInList = MainViewModel.ServerListView.ServerList.FirstOrDefault(s => s.ID == ID);
             if (thisserverInList != null) thisserverInList.Status = true;
 
             if (ServerInfo == null) return;

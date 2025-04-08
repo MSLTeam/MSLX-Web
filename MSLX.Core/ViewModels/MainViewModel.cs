@@ -12,7 +12,7 @@ namespace MSLX.Core.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     public static ISukiDialogManager DialogManager { get; } = new SukiDialogManager();
-    public static ServerListViewModel ServerListViewModel { get; } = new ServerListViewModel();
+    public static ServerListViewModel ServerListView { get; } = new ServerListViewModel();
     
     private readonly ObservableCollection<SukiSideMenuItem> _mainPages = new()
     {
@@ -32,7 +32,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 Kind = MaterialIconKind.ViewList,
             },
-            PageContent = ServerListViewModel,
+            PageContent = ServerListView,
         },
         new SukiSideMenuItem
         {

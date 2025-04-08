@@ -26,7 +26,7 @@ public partial class MainWindow : SukiWindow
 
     private void SukiWindow_Closing(object sender, WindowClosingEventArgs e)
     {
-        if (MainViewModel.ServerListViewModel.ServerList.Any(x => x.Status == true))
+        if (MainViewModel.ServerListView.ServerList.Any(x => x.Status == true))
         {
             e.Cancel = true;
             MainViewModel.DialogManager.CreateDialog().WithTitle("警告").WithContent("有服务器正在运行中，请先关闭所有服务器！").WithActionButton("确定", _ => { }, true).TryShow();
