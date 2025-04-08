@@ -119,6 +119,8 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void AddServer()
         {
+            MainViewModel.NavigateTo(new CreateServer.GuideViewModel());
+            return;
             StackPanel stackPanel = new StackPanel()
             {
                 Children =

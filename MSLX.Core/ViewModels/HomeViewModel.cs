@@ -31,7 +31,6 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private async Task Loaded()
         {
-            /*
             var (Success, Data, Message) = await MSLApi.GetDataAsync("/query/notice", queryParameters: new Dictionary<string, string> { { "query", "noticeMd" } });
             if (Data == null || Message == null)
             {
@@ -46,7 +45,6 @@ namespace MSLX.Core.ViewModels
             {
                 Announcement = Message;
             }
-            */
         }
         /*
         public RelayCommand LoadedCommand { get; }
