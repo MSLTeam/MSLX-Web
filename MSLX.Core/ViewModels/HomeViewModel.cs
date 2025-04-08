@@ -27,11 +27,11 @@ namespace MSLX.Core.ViewModels
         }
         */
         public string StartServerText { get; } = "开启服务器";
-        public string P2PBtn { get; } = "点对点联机";
 
         [RelayCommand]
         private async Task Loaded()
         {
+            /*
             var (Success, Data, Message) = await MSLApi.GetDataAsync("/query/notice", queryParameters: new Dictionary<string, string> { { "query", "noticeMd" } });
             if (Data == null || Message == null)
             {
@@ -46,6 +46,7 @@ namespace MSLX.Core.ViewModels
             {
                 Announcement = Message;
             }
+            */
         }
         /*
         public RelayCommand LoadedCommand { get; }

@@ -31,7 +31,7 @@
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
-      <TextBox Text="{Binding CmdSendToServer}"/>
+      <TextBox Watermark="输入指令" Text="{Binding CmdSendToServer}"/>
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
         <Button Content="{Binding SendCmdBtn}" Command="{Binding SendCmdToServerCommand}"/>
         <Button Content="{Binding ControlServerBtn}" Command="{Binding RunServerCommand}"/>
