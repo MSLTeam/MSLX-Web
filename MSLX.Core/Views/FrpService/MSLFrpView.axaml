@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Core.Views.FrpService.MSLFrpView"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels.FrpService"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             x:DataType="vm:MSLFrpViewModel">
+    <Grid>
+        <TabControl>
+            <TabItem Header="我的隧道">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ListBox  ItemsSource="{Binding Tunnels}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}" Margin="3" />
+                                            <TextBlock Text="｜" Margin="3"></TextBlock>
+                                            <TextBlock Text="{Binding Node}" Margin="3" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="刷新" Classes="Flat" Margin="3" Padding="5" Grid.Column="0" HorizontalContentAlignment="Center" />
+                                <Button Content="删除隧道" Classes="Flat" Background="Red" Margin="3" Padding="5" Grid.Column="1" HorizontalContentAlignment="Center"/>
+                            </Grid>
+                        </Grid>
+                       
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <suki:GlassCard>
+                                    <StackPanel>
+                                        <TextBlock Text="用户信息" Margin="3" FontWeight="Bold" FontSize="16"/>
+                                        <TextBlock Text="{Binding Username}" Margin="3"></TextBlock>
+                                    </StackPanel>
+                                </suki:GlassCard>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="创建隧道">
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

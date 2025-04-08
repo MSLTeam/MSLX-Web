@@ -3,6 +3,7 @@ using Material.Icons;
 using SukiUI.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MSLX.Core.ViewModels.FrpService;
 using SukiUI.Dialogs;
 using Markdown.Avalonia;
 
@@ -40,7 +41,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 Kind = MaterialIconKind.NavigationVariant,
             },
-            PageContent = new AboutViewModel(),
+            PageContent = new MSLFrpViewModel(),
         },
         new SukiSideMenuItem
         {
