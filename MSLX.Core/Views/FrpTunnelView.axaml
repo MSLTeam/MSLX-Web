@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:pages="clr-namespace:MSLX.Core.Views.FrpService"
              x:Class="MSLX.Core.Views.FrpTunnelView"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
@@ -13,7 +12,7 @@
         <TabControl>
             <TabItem Header="MSLFrp" >
                 <suki:GlassCard Margin="5" Padding="6">
-                    <pages:MSLFrpView x:DataType="vmFrp:MSLFrpViewModel"/>
+                    <vmFrp:MSLFrpViewModel/>
                 </suki:GlassCard>
             </TabItem>
             <TabItem Header="其它Frp" >
