@@ -1,7 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using static MSLX.Core.Models.FrpService.MSLFrpModel;
 
 namespace MSLX.Core.ViewModels.FrpService
@@ -29,7 +32,8 @@ namespace MSLX.Core.ViewModels.FrpService
         [ObservableProperty]
         private Tunnel _selectedTunnel;
 
-        public MSLFrpViewModel()
+        [RelayCommand]
+        private async Task Loaded()
         {
             Tunnels = new ObservableCollection<Tunnel>
             {
@@ -42,6 +46,11 @@ namespace MSLX.Core.ViewModels.FrpService
                     Node = "Node1"
                 }
             };
+        }
+
+        public MSLFrpViewModel()
+        {
+            
         }
     }
 }
