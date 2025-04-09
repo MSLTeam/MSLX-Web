@@ -15,6 +15,10 @@ namespace MSLX.Core.ViewModels.FrpService
         [ObservableProperty]
         private ObservableCollection<Tunnel> _tunnels;
         
+        // 存储的节点
+        [ObservableProperty]
+        private ObservableCollection<Node> _nodes;
+        
         // 用户信息字段
         [ObservableProperty]
         private string _username = "loading";
@@ -31,6 +35,10 @@ namespace MSLX.Core.ViewModels.FrpService
         // 选中的隧道
         [ObservableProperty]
         private Tunnel _selectedTunnel;
+        
+        // 选中的隧道
+        [ObservableProperty]
+        private Node _selectedNode;
 
         [RelayCommand]
         private async Task Loaded()
@@ -44,6 +52,24 @@ namespace MSLX.Core.ViewModels.FrpService
                     LocalPort = "8080",
                     RemotePort = "80",
                     Node = "Node1"
+                }
+            };
+            
+            Nodes = new ObservableCollection<Node>
+            {
+                new Node()
+                {
+                    Name = "节点1",
+                    Bandwidth = 100,
+                    MaxOpenPort = 100,
+                    MinOpenPort = 100,
+                    NeedRealName = 0,
+                    UdpSupport = 1,
+                    HttpSupport = 0,
+                    KcpSupport = 1,
+                    AllowUserGroup = 1,
+                    Remarks = "节点1的备注信息",
+                    Status = 1,
                 }
             };
         }
