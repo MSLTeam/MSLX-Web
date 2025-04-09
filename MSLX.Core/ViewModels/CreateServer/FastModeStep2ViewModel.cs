@@ -27,7 +27,7 @@ namespace MSLX.Core.ViewModels.CreateServer
             FatherView = fastModeViewModel;
         }
 
-        public string Title { get; set; } = "步骤2 - 确认服务器信息";
+        public string Title { get; set; } = "步骤2 - 确认";
         public string CancelBtn { get; } = "上一步";
         public string NextBtn { get; } = "完成";
 
