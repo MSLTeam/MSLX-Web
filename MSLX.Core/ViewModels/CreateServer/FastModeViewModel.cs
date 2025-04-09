@@ -1,6 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MSLX.Core.Models;
+using MSLX.Core.Views.CreateServer;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +15,39 @@ namespace MSLX.Core.ViewModels.CreateServer
 {
     public partial class FastModeViewModel : ViewModelBase
     {
-        public string Title { get; } = "快速模式";
-        public string CancelBtn { get; } = "取消";
-        public string NextBtn { get; } = "下一步";
-
-
-        [RelayCommand]
-        private void Cancel()
+        // Design time data
+        public FastModeViewModel()
         {
-            MainViewModel.NavigateTo<ServerListViewModel>();
-            MainViewModel.NavigateRemove(this);
+            ServerModel = new CreateServerModel { Name = "Design Time" };
+            Title += $" - {ServerModel.Name}";
         }
 
-        [RelayCommand]
-        private void Next()
+        private CreateServerModel ServerModel { get; set; }
+        public FastModeViewModel(CreateServerModel createServerModel)
         {
+            ServerModel = createServerModel;
+            Title += $" - {ServerModel.Name}";
+            MainContentList.Add(new FastModeStep1View() { DataContext = new FastModeStep1ViewModel(ServerModel, this) });
+            MainContentList.Add(new FastModeStep2View() { DataContext = new FastModeStep2ViewModel(ServerModel, this) });
+            MainContent = MainContentList[0];
+        }
 
+        public ObservableCollection<UserControl> MainContentList { get; set; } = new ObservableCollection<UserControl>();
+
+        [ObservableProperty]
+        private UserControl? _mainContent;
+
+        public string Title { get; set; } = "快速模式";
+
+        public void SetMainContent(UserControl content)
+        {
+            MainContent = content;
+        }
+
+        public void InstallServer()
+        {
+            Debug.WriteLine("InstallServer");
+            Debug.WriteLine(ServerModel.Name);
         }
     }
 }

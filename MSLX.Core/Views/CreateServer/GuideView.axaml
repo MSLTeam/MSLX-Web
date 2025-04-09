@@ -15,10 +15,30 @@
     <Grid RowDefinitions="auto *">
       <Label Classes="Title" Content="{Binding Title}"/>
       <Grid Grid.Row="1" RowDefinitions="* auto">
-        <Grid RowDefinitions="* * *">
-          <RadioButton IsChecked="{Binding IsFastMode}" Content="{Binding FastMode}"/>
-          <RadioButton IsChecked="{Binding IsCustomMode}" Grid.Row="1" Content="{Binding CustomMode}"/>
-          <RadioButton IsChecked="{Binding IsImportMode}" Grid.Row="2" Content="{Binding ImportMode}"/>
+        <Grid RowDefinitions="auto *">
+          <StackPanel Margin="0,10,0,0">
+            <TextBlock Classes="h4" Text="实例名称："/>
+            <TextBox MinWidth="250" Text="{Binding NameText}"/>
+          </StackPanel>
+          <Grid Grid.Row="1" Margin="0,10,0,0" RowDefinitions="auto *">
+            <TextBlock Classes="h4" Text="创建模式："/>
+            <ScrollViewer Grid.Row="1">
+              <StackPanel Spacing="15">
+                <StackPanel Spacing="5">
+                  <RadioButton IsChecked="{Binding IsFastMode}" Grid.Row="1" GroupName="1" VerticalAlignment="Top" Content="{Binding FastMode}"/>
+                  <TextBlock Margin="30,0,0,0" Text="介绍..."/>
+                </StackPanel>
+                <StackPanel Spacing="5">
+                  <RadioButton IsChecked="{Binding IsCustomMode}" Grid.Row="2" GroupName="1" VerticalAlignment="Top" Content="{Binding CustomMode}"/>
+                  <TextBlock Margin="30,0,0,0" Text="介绍..."/>
+                </StackPanel>
+                <StackPanel Spacing="5">
+                  <RadioButton IsChecked="{Binding IsImportMode}" Grid.Row="3" GroupName="1" VerticalAlignment="Top" Content="{Binding ImportMode}"/>
+                  <TextBlock Margin="30,0,0,0" Text="介绍..."/>
+                </StackPanel>
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
         </Grid>
         <Grid Grid.Row="1" Margin="0,10,0,0">
           <Grid.ColumnDefinitions>

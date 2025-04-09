@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Core.Controls.LogViewerControl"
+             xmlns:vm="clr-namespace:MSLX.Core.Controls"
+             x:DataType="vm:LogViewerControlViewModel">
+  <ScrollViewer x:Name="ScrollViewer"
+              VerticalScrollBarVisibility="Auto">
+    <ItemsControl ItemsSource="{Binding LogEntries}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <SelectableTextBlock Text="{Binding Text}"
+                     Foreground="{Binding Color}"
+                     TextWrapping="Wrap"/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </ScrollViewer>
+</UserControl>

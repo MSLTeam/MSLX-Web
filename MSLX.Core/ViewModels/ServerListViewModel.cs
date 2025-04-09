@@ -111,7 +111,8 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void RefreshList()
         {
-            var servers = Utility.ConfigService.GetServerList();
+            
+            var servers = ConfigService.ServerList.GetServerList();
             ServerList.Clear();
             foreach (var server in servers)
             {
@@ -124,6 +125,7 @@ namespace MSLX.Core.ViewModels
         {
             MainViewModel.NavigateRemove<GuideViewModel>();
             MainViewModel.NavigateRemove<FastModeViewModel>();
+            MainViewModel.NavigateRemove<CustomModeViewModel>();
             MainViewModel.NavigateTo(new SukiSideMenuItem
             {
                 Header = "创建服务器",
@@ -191,7 +193,7 @@ namespace MSLX.Core.ViewModels
         {
             if (parameter is int id)
             {
-                Utility.ConfigService.DeleteServer(id);
+                ConfigService.ServerList.DeleteServer(id);
                 RefreshListCommand.Execute(null);
             }
         }

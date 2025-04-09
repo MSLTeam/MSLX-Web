@@ -4,250 +4,298 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using static MSLX.Models.MCServerModel;
+using static MSLX.Core.Models.MCServerModel;
 
 namespace MSLX.Core.Utils
 {
-    public class ConfigService : IDisposable
+    public class ConfigService
     {
-        private readonly string _configPath = Path.Combine(AppContext.BaseDirectory, "Configs", "config.json");
-        private readonly string _serverListPath = Path.Combine(AppContext.BaseDirectory, "Configs", "ServerList.json");
+        public static IConfigService Config { get; } = new IConfigService();
+        public static ServerListConfig ServerList { get; } = new ServerListConfig();
 
-        // 缓存对象
-        private JObject _configCache;
-        private JArray _serverListCache;
-
-        // 读写锁
-        private readonly ReaderWriterLockSlim _configLock = new ReaderWriterLockSlim();
-        private readonly ReaderWriterLockSlim _serverListLock = new ReaderWriterLockSlim();
-
-        public ConfigService()
+        public class IConfigService : IDisposable
         {
-            InitializeFile(_configPath, "{}");
-            InitializeFile(_serverListPath, "[]");
+            private readonly string _configPath = Path.Combine(AppContext.BaseDirectory, "Configs", "config.json");
 
-            // 初始化缓存
-            _configCache = LoadJson<JObject>(_configPath);
-            _serverListCache = LoadJson<JArray>(_serverListPath);
-        }
+            // 缓存对象
+            private JObject _configCache;
 
-        private void InitializeFile(string path, string defaultContent)
-        {
-            var dir = Path.GetDirectoryName(path);
-            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir!);
+            // 读写锁
+            private readonly ReaderWriterLockSlim _configLock = new ReaderWriterLockSlim();
 
-            if (!File.Exists(path))
+            public IConfigService()
             {
-                File.WriteAllText(path, defaultContent);
-            }
-        }
+                InitializeFile(_configPath, "{}");
 
-        public JObject ReadConfig()
-        {
-            _configLock.EnterReadLock();
-            try
-            {
-                return (JObject)_configCache.DeepClone();
+                // 初始化缓存
+                _configCache = LoadJson<JObject>(_configPath);
             }
-            finally
-            {
-                _configLock.ExitReadLock();
-            }
-        }
 
-        public JToken? ReadConfigKey(string key)
-        {
-            _configLock.EnterReadLock();
-            try
+            private void InitializeFile(string path, string defaultContent)
             {
-                return _configCache.TryGetValue(key, out var value) ? value : null;
-            }
-            finally
-            {
-                _configLock.ExitReadLock();
-            }
-        }
+                var dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir!);
 
-        public void WriteConfig(JObject content)
-        {
-            _configLock.EnterWriteLock();
-            try
-            {
-                _configCache = (JObject)content.DeepClone();
-                SaveJson(_configPath, _configCache);
-            }
-            finally
-            {
-                _configLock.ExitWriteLock();
-            }
-        }
-
-        public void WriteConfigKey(string key, JToken value)
-        {
-            _configLock.EnterWriteLock();
-            try
-            {
-                _configCache[key] = value;
-                SaveJson(_configPath, _configCache);
-            }
-            finally
-            {
-                _configLock.ExitWriteLock();
-            }
-        }
-
-        public JArray ReadServerList()
-        {
-            _serverListLock.EnterReadLock();
-            try
-            {
-                return (JArray)_serverListCache.DeepClone();
-            }
-            finally
-            {
-                _serverListLock.ExitReadLock();
-            }
-        }
-
-        public List<ServerInfo> GetServerList()
-        {
-            _serverListLock.EnterReadLock();
-            try
-            {
-                return [.. _serverListCache.Select(s => s.ToObject<ServerInfo>()!)];
-            }
-            finally
-            {
-                _serverListLock.ExitReadLock();
-            }
-        }
-
-        public void WriteServerList(JArray content)
-        {
-            _serverListLock.EnterWriteLock();
-            try
-            {
-                _serverListCache = (JArray)content.DeepClone();
-                SaveJson(_serverListPath, _serverListCache);
-            }
-            finally
-            {
-                _serverListLock.ExitWriteLock();
-            }
-        }
-
-        public bool CreateServer(ServerInfo server)
-        {
-            _serverListLock.EnterWriteLock();
-            try
-            {
-                // 检查ID是否已存在
-                if (_serverListCache.Any(s => s["ID"]?.Value<int>() == server.ID))
+                if (!File.Exists(path))
                 {
-                    return false;
+                    File.WriteAllText(path, defaultContent);
                 }
-
-                // 转换为JObject并添加
-                var serverObject = JObject.FromObject(server);
-                _serverListCache.Add(serverObject);
-
-                SaveJson(_serverListPath, _serverListCache);
-                return true;
             }
-            finally
+
+            public JObject ReadConfig()
             {
-                _serverListLock.ExitWriteLock();
+                _configLock.EnterReadLock();
+                try
+                {
+                    return (JObject)_configCache.DeepClone();
+                }
+                finally
+                {
+                    _configLock.ExitReadLock();
+                }
+            }
+
+            public JToken? ReadConfigKey(string key)
+            {
+                _configLock.EnterReadLock();
+                try
+                {
+                    return _configCache.TryGetValue(key, out var value) ? value : null;
+                }
+                finally
+                {
+                    _configLock.ExitReadLock();
+                }
+            }
+
+            public void WriteConfig(JObject content)
+            {
+                _configLock.EnterWriteLock();
+                try
+                {
+                    _configCache = (JObject)content.DeepClone();
+                    SaveJson(_configPath, _configCache);
+                }
+                finally
+                {
+                    _configLock.ExitWriteLock();
+                }
+            }
+
+            public void WriteConfigKey(string key, JToken value)
+            {
+                _configLock.EnterWriteLock();
+                try
+                {
+                    _configCache[key] = value;
+                    SaveJson(_configPath, _configCache);
+                }
+                finally
+                {
+                    _configLock.ExitWriteLock();
+                }
+            }
+            
+            private T LoadJson<T>(string path) where T : JToken
+            {
+                var content = File.ReadAllText(path);
+                return JToken.Parse(content) as T ?? throw new InvalidDataException("Invalid JSON format");
+            }
+
+            private void SaveJson<T>(string path, T data) where T : JToken
+            {
+                File.WriteAllText(path, data.ToString(Newtonsoft.Json.Formatting.Indented));
+            }
+
+            public void Dispose()
+            {
+                _configLock?.Dispose();
             }
         }
 
-        public bool DeleteServer(int serverId)
+        public class ServerListConfig : IDisposable
         {
-            _serverListLock.EnterWriteLock();
-            try
+            private readonly string _serverListPath = Path.Combine(AppContext.BaseDirectory, "Configs", "ServerList.json");
+
+            // 缓存对象
+            private JArray _serverListCache;
+
+            // 读写锁
+            private readonly ReaderWriterLockSlim _configLock = new ReaderWriterLockSlim();
+            private readonly ReaderWriterLockSlim _serverListLock = new ReaderWriterLockSlim();
+
+            public ServerListConfig()
             {
-                // 查找要删除的服务器
-                var target = _serverListCache
-                    .FirstOrDefault(s => s["ID"]?.Value<int>() == serverId);
+                InitializeFile(_serverListPath, "[]");
 
-                if (target == null) return false;
-
-                _serverListCache.Remove(target);
-                SaveJson(_serverListPath, _serverListCache);
-                return true;
+                // 初始化缓存
+                _serverListCache = LoadJson<JArray>(_serverListPath);
             }
-            finally
+
+            private void InitializeFile(string path, string defaultContent)
             {
-                _serverListLock.ExitWriteLock();
-            }
-        }
+                var dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir!);
 
-        // 可选的更新方法
-        public bool UpdateServer(ServerInfo updatedServer)
-        {
-            _serverListLock.EnterWriteLock();
-            try
+                if (!File.Exists(path))
+                {
+                    File.WriteAllText(path, defaultContent);
+                }
+            }
+
+            public JArray ReadServerList()
             {
-                var target = _serverListCache
-                    .FirstOrDefault(s => s["ID"]?.Value<int>() == updatedServer.ID);
-
-                if (target == null) return false;
-
-                target.Replace(JObject.FromObject(updatedServer));
-                SaveJson(_serverListPath, _serverListCache);
-                return true;
+                _serverListLock.EnterReadLock();
+                try
+                {
+                    return (JArray)_serverListCache.DeepClone();
+                }
+                finally
+                {
+                    _serverListLock.ExitReadLock();
+                }
             }
-            finally
+
+            public List<ServerInfo> GetServerList()
             {
-                _serverListLock.ExitWriteLock();
+                _serverListLock.EnterReadLock();
+                try
+                {
+                    return [.. _serverListCache.Select(s => s.ToObject<ServerInfo>()!)];
+                }
+                finally
+                {
+                    _serverListLock.ExitReadLock();
+                }
             }
-        }
 
-        // 获取单个服务器的方法
-        public ServerInfo? GetServer(int serverId)
-        {
-            _serverListLock.EnterReadLock();
-            try
+            public void WriteServerList(JArray content)
             {
-                return _serverListCache
-                    .FirstOrDefault(s => s["ID"]?.Value<int>() == serverId)
-                    ?.ToObject<ServerInfo>();
+                _serverListLock.EnterWriteLock();
+                try
+                {
+                    _serverListCache = (JArray)content.DeepClone();
+                    SaveJson(_serverListPath, _serverListCache);
+                }
+                finally
+                {
+                    _serverListLock.ExitWriteLock();
+                }
             }
-            finally
+
+            public bool CreateServer(ServerInfo server)
             {
-                _serverListLock.ExitReadLock();
-            }
-        }
+                _serverListLock.EnterWriteLock();
+                try
+                {
+                    // 检查ID是否已存在
+                    if (_serverListCache.Any(s => s["ID"]?.Value<int>() == server.ID))
+                    {
+                        return false;
+                    }
 
-        public int GenerateServerId()
-        {
-            _serverListLock.EnterReadLock();
-            try
+                    // 转换为JObject并添加
+                    var serverObject = JObject.FromObject(server);
+                    _serverListCache.Add(serverObject);
+
+                    SaveJson(_serverListPath, _serverListCache);
+                    return true;
+                }
+                finally
+                {
+                    _serverListLock.ExitWriteLock();
+                }
+            }
+
+            public bool DeleteServer(int serverId)
             {
-                return _serverListCache.Any()
-                    ? _serverListCache.Max(s => s["ID"]!.Value<int>()) + 1
-                    : 1;
+                _serverListLock.EnterWriteLock();
+                try
+                {
+                    // 查找要删除的服务器
+                    var target = _serverListCache
+                        .FirstOrDefault(s => s["ID"]?.Value<int>() == serverId);
+
+                    if (target == null) return false;
+
+                    _serverListCache.Remove(target);
+                    SaveJson(_serverListPath, _serverListCache);
+                    return true;
+                }
+                finally
+                {
+                    _serverListLock.ExitWriteLock();
+                }
             }
-            finally
+
+            // 可选的更新方法
+            public bool UpdateServer(ServerInfo updatedServer)
             {
-                _serverListLock.ExitReadLock();
+                _serverListLock.EnterWriteLock();
+                try
+                {
+                    var target = _serverListCache
+                        .FirstOrDefault(s => s["ID"]?.Value<int>() == updatedServer.ID);
+
+                    if (target == null) return false;
+
+                    target.Replace(JObject.FromObject(updatedServer));
+                    SaveJson(_serverListPath, _serverListCache);
+                    return true;
+                }
+                finally
+                {
+                    _serverListLock.ExitWriteLock();
+                }
             }
-        }
 
-        private T LoadJson<T>(string path) where T : JToken
-        {
-            var content = File.ReadAllText(path);
-            return JToken.Parse(content) as T ?? throw new InvalidDataException("Invalid JSON format");
-        }
+            // 获取单个服务器的方法
+            public ServerInfo? GetServer(int serverId)
+            {
+                _serverListLock.EnterReadLock();
+                try
+                {
+                    return _serverListCache
+                        .FirstOrDefault(s => s["ID"]?.Value<int>() == serverId)
+                        ?.ToObject<ServerInfo>();
+                }
+                finally
+                {
+                    _serverListLock.ExitReadLock();
+                }
+            }
 
-        private void SaveJson<T>(string path, T data) where T : JToken
-        {
-            File.WriteAllText(path, data.ToString(Newtonsoft.Json.Formatting.Indented));
-        }
+            public int GenerateServerId()
+            {
+                _serverListLock.EnterReadLock();
+                try
+                {
+                    return _serverListCache.Any()
+                        ? _serverListCache.Max(s => s["ID"]!.Value<int>()) + 1
+                        : 1;
+                }
+                finally
+                {
+                    _serverListLock.ExitReadLock();
+                }
+            }
 
-        public void Dispose()
-        {
-            _configLock?.Dispose();
-            _serverListLock?.Dispose();
+            private T LoadJson<T>(string path) where T : JToken
+            {
+                var content = File.ReadAllText(path);
+                return JToken.Parse(content) as T ?? throw new InvalidDataException("Invalid JSON format");
+            }
+
+            private void SaveJson<T>(string path, T data) where T : JToken
+            {
+                File.WriteAllText(path, data.ToString(Newtonsoft.Json.Formatting.Indented));
+            }
+
+            public void Dispose()
+            {
+                _configLock?.Dispose();
+                _serverListLock?.Dispose();
+            }
         }
     }
 }

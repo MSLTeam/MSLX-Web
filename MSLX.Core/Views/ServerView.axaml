@@ -3,11 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
-             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
              xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-             xmlns:aeb="clr-namespace:MSLX.Core.Behaviors;assembly=MSLX.Core"
+             xmlns:ctrl="clr-namespace:MSLX.Core.Controls;assembly=MSLX.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MSLX.Core.Views.ServerView"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
@@ -21,19 +20,22 @@
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <ae:TextEditor FontSize="14" FontFamily="Cascadia Code,Consolas,Menlo,Monospace">
-      <i:Interaction.Behaviors>
-        <aeb:ServerLogBindingBehavior Text="{Binding ServerLogs, Mode=TwoWay}"/>
-      </i:Interaction.Behaviors>
-    </ae:TextEditor>
-    <Grid Grid.Row="1">
+    <ctrl:LogViewerControl DataContext="{Binding LogViewer}"/>
+    <Grid Margin="0,5,0,0" Grid.Row="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
-      <TextBox Watermark="输入指令" Text="{Binding CmdSendToServer}"/>
+      <TextBox Watermark="输入指令" IsEnabled="{Binding ServerEnable}" Text="{Binding CmdSendToServer}">
+        <i:Interaction.Behaviors>
+          <ia:EventTriggerBehavior EventName="KeyDown">
+            <ia:InvokeCommandAction Command="{Binding TBSendCmdToServerCommand}"
+                                    PassEventArgsToCommand="True"/>
+          </ia:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
+      </TextBox>
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
-        <Button Content="{Binding SendCmdBtn}" Command="{Binding SendCmdToServerCommand}"/>
+        <Button Content="{Binding SendCmdBtn}" IsEnabled="{Binding ServerEnable}" Command="{Binding SendCmdToServerCommand}"/>
         <Button Content="{Binding ControlServerBtn}" Command="{Binding RunServerCommand}"/>
       </StackPanel>
     </Grid>
