@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using Material.Icons.Avalonia;
+using MSLX.Core.Models;
 using SukiUI.Controls;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,9 @@ namespace MSLX.Core.ViewModels.CreateServer
         [ObservableProperty]
         private bool _isImportMode = false;
 
+        [ObservableProperty]
+        private string _nameText = "MCServer";
+
         [RelayCommand]
         private void Cancel()
         {
@@ -37,6 +41,10 @@ namespace MSLX.Core.ViewModels.CreateServer
         [RelayCommand]
         private void Next()
         {
+            CreateServerModel createServerModel = new CreateServerModel
+            {
+                Name = NameText,
+            };
             if (IsFastMode)
             {
                 // Navigate to FastModeViewModel
@@ -47,7 +55,7 @@ namespace MSLX.Core.ViewModels.CreateServer
                     {
                         Kind = MaterialIconKind.Add,
                     },
-                    PageContent = new FastModeViewModel(),
+                    PageContent = new FastModeViewModel(createServerModel),
                     IsContentMovable = false
                 }, true, 2);
                 MainViewModel.NavigateRemove(this);
@@ -55,7 +63,17 @@ namespace MSLX.Core.ViewModels.CreateServer
             else if (IsCustomMode)
             {
                 // Navigate to CustomModeViewModel
-                MainViewModel.NavigateTo<HomeViewModel>();
+                MainViewModel.NavigateTo(new SukiSideMenuItem
+                {
+                    Header = "经典模式",
+                    Icon = new MaterialIcon()
+                    {
+                        Kind = MaterialIconKind.Add,
+                    },
+                    PageContent = new CustomModeViewModel(createServerModel),
+                    IsContentMovable = false
+                }, true, 2);
+                MainViewModel.NavigateRemove(this);
             }
             else if (IsImportMode)
             {

@@ -14,17 +14,7 @@
   <suki:GlassCard Margin="10">
     <Grid RowDefinitions="auto *">
       <Label Classes="Title" Content="{Binding Title}"/>
-      <Grid Grid.Row="1" RowDefinitions="* auto">
-        <Grid Margin="0,10,0,0">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="*"/>
-          </Grid.ColumnDefinitions>
-          <Button Content="{Binding CancelBtn}" Command="{Binding CancelCommand}"/>
-          <Button Content="{Binding NextBtn}" Command="{Binding NextCommand}" Grid.Column="2" Classes="Flat"/>
-        </Grid>
-      </Grid>
+      <UserControl Grid.Row="1" Content="{Binding MainContent}"/>
     </Grid>
   </suki:GlassCard>
 </UserControl>

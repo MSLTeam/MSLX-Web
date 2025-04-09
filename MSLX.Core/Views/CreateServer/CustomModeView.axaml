@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Core.Views.CreateServer.CustomModeView"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels.CreateServer"
+             x:DataType="vm:CustomModeViewModel">
+  <Design.DataContext>
+    <vm:CustomModeViewModel/>
+  </Design.DataContext>
+
+  <suki:GlassCard Margin="10">
+    <Grid RowDefinitions="auto * auto">
+      <Label Classes="Title" Content="{Binding Title}"/>
+      <ScrollViewer Grid.Row="1">
+        <StackPanel Spacing="15">
+          <StackPanel>
+            <TextBlock Classes="h4" Text="服务器目录"/>
+            <TextBox Text="{Binding ServerPath}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="h4" Text="Java"/>
+            <TextBox Text="{Binding ServerJava}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="h4" Text="服务端"/>
+            <TextBox Text="{Binding ServerCore}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="h4" Text="最小内存"/>
+            <TextBox Text="{Binding ServerMinMem}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="h4" Text="最大内存"/>
+            <TextBox Text="{Binding ServerMaxMem}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="h4" Text="高级参数"/>
+            <TextBox Text="{Binding ServerArgs}"/>
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+      <Grid Grid.Row="2" Margin="0,10,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="10"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="{Binding CancelBtn}" Command="{Binding CancelCommand}"/>
+        <Button Content="{Binding NextBtn}" Command="{Binding NextCommand}" Grid.Column="2" Classes="Flat"/>
+      </Grid>
+    </Grid>
+  </suki:GlassCard>
+</UserControl>
