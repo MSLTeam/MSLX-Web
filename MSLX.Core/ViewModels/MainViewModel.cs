@@ -5,12 +5,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using MSLX.Core.ViewModels.FrpService;
 using SukiUI.Dialogs;
+using SukiUI.Toasts;
 
 namespace MSLX.Core.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     public static ISukiDialogManager DialogManager { get; } = new SukiDialogManager();
+    public static ISukiToastManager ToastManager { get; } = new SukiToastManager();
     public static ServerListViewModel ServerListView { get; } = new ServerListViewModel();
     
     private readonly ObservableCollection<SukiSideMenuItem> _mainPages = new()

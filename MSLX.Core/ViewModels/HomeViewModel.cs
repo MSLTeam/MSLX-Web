@@ -6,6 +6,8 @@ using MSLX.Core.Utils;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using SukiUI.Toasts;
+using SukiUI.Controls;
 
 namespace MSLX.Core.ViewModels
 {
@@ -61,6 +63,11 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void Test()
         {
+            MainViewModel.ToastManager.Queue(new SukiToast
+            {
+                Title = "测试"
+            });
+            return;
             if (_isFullScreen)
             {
                 WeakReferenceMessenger.Default.Send(new WindowStateMessage(WindowState.Normal));

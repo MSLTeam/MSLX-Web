@@ -23,6 +23,8 @@
         </DataTemplate>
       </suki:SukiSideMenu.ItemTemplate>
     </suki:SukiSideMenu>
+    
     <suki:SukiDialogHost Manager="{Binding DialogManager}"/>
+    <suki:SukiToastHost Manager="{Binding ToastManager}"/>
   </Grid>
 </UserControl>
