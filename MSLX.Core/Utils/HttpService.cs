@@ -130,6 +130,109 @@ namespace MSLX.Core.Utils
             return postResponse;
         }
     }
+    
+    public class MSLUser
+    {
+        public static string ApiUrl { get; } = "https://user.mslmc.net/api";
+        
+        /// <summary>
+        /// 普通ApiGet请求
+        /// </summary>
+        /// <param name="path">路径，如“/notice”</param>
+        /// <param name="queryParameters">query参数，可直接加在路径后面“?query=md”，也可在此通过Dictionary进行设置</param>
+        /// <returns>Httpservice.HttpResponse</returns>
+        public async static Task<HttpResponse> GetAsync(string path, Dictionary<string, string>? queryParameters, Dictionary<string, string>? headers = null)
+        {
+            using var service = new HttpService();
+            // UA可以这样设置，也可以按照下面getRequest里注释掉的方式设置
+            service.SetDefaultHeadersUA(UAManager.GetUA(UAManager.UAType.MSLX));
+            string url = ApiUrl + path;
+            if (queryParameters != null && queryParameters.Count > 0)
+            {
+                string queryString = string.Join("&", queryParameters.Select(p => $"{WebUtility.UrlEncode(p.Key)}={WebUtility.UrlEncode(p.Value)}"));
+                url = $"{url}?{queryString}";
+            }
+            var getRequest = new HttpRequest
+            {
+                Url = url,
+                Method = HttpMethod.Get,
+                /*
+                Headers = new Dictionary<string, string>
+                {
+                    ["User-Agent"] = UAManager.GetUA(UAManager.UAType.MSLX)
+                }
+                */
+            };
+            if (headers != null)
+            {
+                getRequest.Headers = headers;
+            }
+            var getResponse = await service.SendAsync(getRequest);
+            service.Dispose();
+            return getResponse;
+        }
+
+        /// <summary>
+        /// 普通ApiPost请求
+        /// </summary>
+        /// <param name="path">路径，如“/notice”</param>
+        /// <param name="postContentType">发送数据类型，如：HttpMethod.Post</param>
+        /// <param name="data">发送数据</param>
+        /// <param name="headers">请求头</param>
+        /// <returns>Httpservice.HttpResponse</returns>
+        public async static Task<HttpResponse> PostAsync(string path, PostContentType postContentType, object data, Dictionary<string, string>? headers = null)
+        {
+            using var service = new HttpService();
+            service.SetDefaultHeadersUA(UAManager.GetUA(UAManager.UAType.MSLX));
+            var postRequest = new HttpRequest
+            {
+                Url = ApiUrl + path,
+                Method = HttpMethod.Post
+            };
+            /*
+            // POST JSON示例
+            var postRequest = new HttpService.HttpRequest
+            {
+                ContentType=PostContentType.Json,
+                Data = new { Name = "Test", Value = 123 }
+            };
+
+            // POST 表单示例
+            var formRequest = new HttpService.HttpRequest
+            {
+                ContentType = PostContentType.FormUrlEncoded,
+                Data = new Dictionary<string, string>
+                {
+                    ["username"] = "test",
+                    ["password"] = "123456"
+                }
+            };
+
+            // POST TEXT示例
+            var textRequest = new HttpService.HttpRequest
+            {
+                ContentType = PostContentType.Text,
+                Data = "123123"
+            };
+
+            // POST OCTET示例
+            var octetRequest = new HttpService.HttpRequest
+            {
+                ContentType = PostContentType.Octet,
+                Data = new byte[] { 0x01, 0x02, 0x03 }
+            };
+            */
+            postRequest.ContentType = postContentType;
+            postRequest.Data = data;
+            if (headers != null)
+            {
+                postRequest.Headers = headers;
+            }
+            var postResponse = await service.SendAsync(postRequest);
+            service.Dispose();
+            return postResponse;
+        }
+    }
 
     public class HttpService : IDisposable
     {
