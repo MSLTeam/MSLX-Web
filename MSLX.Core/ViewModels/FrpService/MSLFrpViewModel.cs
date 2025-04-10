@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MSLX.Core.Utils;
 using Newtonsoft.Json.Linq;
+using SukiUI.Controls;
 using SukiUI.Toasts;
 using static MSLX.Core.Models.FrpService.MSLFrpModel;
 
@@ -124,6 +125,14 @@ namespace MSLX.Core.ViewModels.FrpService
                 JObject json = JObject.Parse(response.Content);
                 if ((int)json["code"] == 200)
                 {
+                    MainViewModel.ToastManager
+                        .CreateToast()
+                        .OfType(NotificationType.Information).WithTitle("登录成功！")
+                        .WithContent("成功的道理")
+                        .Dismiss().After(TimeSpan.FromSeconds(3))
+                        .Dismiss().ByClicking().OfType(NotificationType.Success)
+                        .Queue();
+                        
                     ShowMainPage = true;
                     Console.WriteLine("获取MSL用户信息成功！");
                     Username = (string)json["data"]["name"];
