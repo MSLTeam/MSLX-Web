@@ -15,7 +15,31 @@
         </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
     <Grid>
-        <TabControl>
+        <Grid IsVisible="{Binding !ShowMainPage}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <Image Source="../../Assets/logo.ico" Width="64" Margin="0,0,0,10"></Image>
+                <TextBlock Text="在使用MSL Frp服务之前，请先登录您的MSL账户" FontSize="18" FontWeight="Bold" Margin="0,0,0,30"/>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="邮箱: " FontSize="15" Margin="0,0,3,0"/>
+                    <TextBox MinWidth="200" Text="{Binding Account}"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,0">
+                    <TextBlock VerticalAlignment="Center" Text="密码: " FontSize="15"  Margin="0,0,3,0"/>
+                    <TextBox MinWidth="200" PasswordChar="*" Text="{Binding Password}"/>
+                </StackPanel>
+                <StackPanel Margin="0,3,0,20" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <ToggleSwitch IsChecked="{Binding IsSaveLoginStatus}"/>
+                    <TextBlock Text="保存登录状态" VerticalAlignment="Center"></TextBlock>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button Width="100" Classes="Flat" Content="登录" Command="{Binding LoginByPasswordCommand}"/>
+                    <Button Width="100" Content="注册" Margin="10,0,0,0"/>
+                </StackPanel>
+               
+            </StackPanel>
+            
+        </Grid>
+        <TabControl IsVisible="{Binding ShowMainPage}">
             <TabItem Header="我的隧道">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
@@ -127,6 +151,9 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Foreground="{DynamicResource SukiText}">
+                                                <Run Text="["/>
+                                                <Run Text="{Binding Type}"/>
+                                                <Run Text="]"/>
                                                 <Run Text="{Binding Name}"/>
                                                 <Run Text="@"/>
                                                 <Run Text="{Binding Bandwidth}"/>
@@ -165,9 +192,9 @@
                                         <TextBlock VerticalAlignment="Center" Text="协议类型: " Margin="3"/>
                                         <ComboBox MinWidth="150" Margin="3">
                                             <ComboBoxItem>tcp</ComboBoxItem>
-                                            <ComboBoxItem>udp</ComboBoxItem>
-                                            <ComboBoxItem>http</ComboBoxItem>
-                                            <ComboBoxItem>https</ComboBoxItem>
+                                            <ComboBoxItem IsEnabled="{Binding SelectedNode.UdpSupport}">udp</ComboBoxItem>
+                                            <ComboBoxItem IsEnabled="{Binding SelectedNode.HttpSupport}">http</ComboBoxItem>
+                                            <ComboBoxItem IsEnabled="{Binding SelectedNode.HttpSupport}">https</ComboBoxItem>
                                         </ComboBox>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
