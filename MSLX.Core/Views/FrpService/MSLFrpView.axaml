@@ -142,7 +142,7 @@
                                 </StackPanel>
                             </suki:GlassCard>
                             <Grid Grid.Row="2">
-                                <Button Content="选择该隧道" Width="150" Classes="Flat" FontSize="18" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10"/>
+                                <Button Content="选择该隧道" Command="{Binding SetTunnelConfigCommand}" Width="150" Classes="Flat" FontSize="18" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10"/>
                             </Grid>
                         </Grid>
                     </Grid>

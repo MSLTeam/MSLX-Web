@@ -269,6 +269,40 @@ namespace MSLX.Core.ViewModels.FrpService
         }
         
         [RelayCommand]
+        private async Task SetTunnelConfig()
+        {
+            if (SelectedTunnel == null)
+            {
+                MessageService.ShowToast("错误", "请选择一条隧道！", NotificationType.Error);
+            }
+            else
+            {
+                try
+                {
+                    HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/getTunnelConfig",  new Dictionary<string, string>()
+                    {
+                        ["id"] = SelectedTunnel.Id.ToString()
+                    }, new Dictionary<string, string>()
+                    {
+                        ["Authorization"] = $"Bearer {token}"
+                    });
+                    JObject json = JObject.Parse(response.Content);
+                    if ((int)json["code"] == 200)
+                    {
+                        MessageService.ShowToast("隧道配置成功", json["data"].ToString(), NotificationType.Success);
+                    }
+                    else
+                    {
+                        MessageService.ShowToast("隧道配置失败", json["msg"].ToString(), NotificationType.Error);
+                    }
+                }catch (Exception ex)
+                {
+                    MessageService.ShowToast("隧道配置失败", ex.Message, NotificationType.Error);
+                }
+            }
+        }
+        
+        [RelayCommand]
         private async Task DeleteTunnel()
         {
             if (SelectedTunnel == null)
