@@ -4,6 +4,42 @@ namespace MSLX.Core.Utils
 {
     public class StringHelper
     {
+        private static readonly Random _random = new Random();
+
+        /// <summary>
+        /// 生成指定长度的随机字符串（可选前缀）
+        /// </summary>
+        /// <param name="length">随机字符串长度</param>
+        /// <param name="prefix">可选前缀（默认无）</param>
+        public static string GenerateRandomString(int length, string prefix = null)
+        {
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "长度不能为负数");
+            }
+
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var randomChars = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                randomChars[i] = chars[_random.Next(chars.Length)];
+            }
+
+            return (prefix ?? "") + new string(randomChars);
+        }
+
+        /// <summary>
+        /// 生成指定范围内的随机整数（包含起始和结束值）
+        /// </summary>
+        public static int GetRandomNumber(int start, int end)
+        {
+            if (start > end)
+            {
+                throw new ArgumentOutOfRangeException(nameof(start), "起始值不能大于结束值");
+            }
+            return _random.Next(start, end + 1);
+        }
+
         /// <summary>
         /// 将秒级时间戳转换为DateTime类型（基于UTC+8时区）
         /// </summary>

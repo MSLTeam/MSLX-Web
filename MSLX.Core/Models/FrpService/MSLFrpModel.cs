@@ -10,7 +10,9 @@ namespace MSLX.Core.Models.FrpService
     {
         public class Tunnel
         {
+            public required int Id { get; set; }
             public required string Name { get; set; }
+            public required string Remarks { get; set; }
             public required string Status { get; set; }
             public required string LocalPort { get; set; }
             public required string RemotePort { get; set; }
@@ -19,6 +21,7 @@ namespace MSLX.Core.Models.FrpService
 
         public class Node
         {
+            public required int Id { get; set; }
             public required int AllowUserGroup { get; set; }
             public required string Type { get; set; }
             public required int Bandwidth { get; set; }

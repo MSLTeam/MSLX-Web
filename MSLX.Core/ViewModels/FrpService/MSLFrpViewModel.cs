@@ -17,6 +17,10 @@ namespace MSLX.Core.ViewModels.FrpService
 {
     public partial class MSLFrpViewModel : ViewModelBase
     {
+        // tabcontrol
+        [ObservableProperty]
+        private int _tabIndex;
+        
         // 存储的隧道
         [ObservableProperty]
         private ObservableCollection<Tunnel> _tunnels;
@@ -61,10 +65,32 @@ namespace MSLX.Core.ViewModels.FrpService
         
         // 节点ID到名称映射字典
         private Dictionary<int, string> _nodeMap = new Dictionary<int, string>();
+        
+        // 创建节点相关字段
+        [ObservableProperty]
+        private string _createName;
+        
+        [ObservableProperty]
+        private int _createType = 0;
+        
+        [ObservableProperty]
+        private string _createLocalIp = "127.0.0.1";
+        
+        [ObservableProperty]
+        private string _createLocalPort = "25565";
+        
+        [ObservableProperty]
+        private string _createRemotePort;
+        
+        [ObservableProperty]
+        private string _createBindDomain;
+        
 
         [RelayCommand]
         private async Task Loaded()
         {
+            CreateRemotePort = StringHelper.GetRandomNumber(10240, 60000).ToString();
+            CreateName = StringHelper.GenerateRandomString(6, "MSLX_");
             if (ConfigService.Config.ReadConfigKey("MSLUserToken") != null)
             {
                 token = ConfigService.Config.ReadConfigKey("MSLUserToken")?.ToString();
@@ -125,13 +151,7 @@ namespace MSLX.Core.ViewModels.FrpService
                 JObject json = JObject.Parse(response.Content);
                 if ((int)json["code"] == 200)
                 {
-                    MainViewModel.ToastManager
-                        .CreateToast()
-                        .OfType(NotificationType.Information).WithTitle("登录成功！")
-                        .WithContent("成功的道理")
-                        .Dismiss().After(TimeSpan.FromSeconds(3))
-                        .Dismiss().ByClicking().OfType(NotificationType.Success)
-                        .Queue();
+                    MessageService.ShowToast("登录成功！","成功登录到MSL Frp服务", NotificationType.Success);
                         
                     ShowMainPage = true;
                     Console.WriteLine("获取MSL用户信息成功！");
@@ -186,6 +206,7 @@ namespace MSLX.Core.ViewModels.FrpService
                             // 填充到节点列表数据
                             Nodes.Add(new Node()
                             {
+                                Id = (int)nodeItem["id"],
                                 AllowUserGroup = (int)nodeItem["allow_user_group"],
                                 Type = (int)nodeItem["allow_user_group"]==0?"免费":(int)nodeItem["allow_user_group"]==1?"高级":"超级",
                                 Bandwidth = (int)nodeItem["bandwidth"],
@@ -209,6 +230,7 @@ namespace MSLX.Core.ViewModels.FrpService
             }
         }
         
+        [RelayCommand]
         private async Task GetTunnels()
         {
             try
@@ -228,7 +250,9 @@ namespace MSLX.Core.ViewModels.FrpService
                             string nodeName = _nodeMap.ContainsKey(nodeId) ? _nodeMap[nodeId] : "未知节点";
                             Tunnels.Add(new Tunnel()
                             {
+                                Id = (int)tunnel["id"],
                                 Name = (string)tunnel["name"],
+                                Remarks = (string)tunnel["remarks"],
                                 Status = (int)tunnel["status"] == 0 ? "隧道未启动" : "隧道已在线",
                                 LocalPort = (string)tunnel["local_port"],
                                 RemotePort = (string)tunnel["remote_port"],
@@ -241,6 +265,87 @@ namespace MSLX.Core.ViewModels.FrpService
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+        
+        [RelayCommand]
+        private async Task DeleteTunnel()
+        {
+            if (SelectedTunnel == null)
+            {
+                MessageService.ShowToast("错误", "请选择一条隧道！", NotificationType.Error);
+            }
+            else
+            {
+                try
+                {
+                    HttpService.HttpResponse response = await MSLUser.PostAsync("/frp/deleteTunnel", HttpService.PostContentType.Json, new Dictionary<string, string>()
+                    {
+                        ["id"] = SelectedTunnel.Id.ToString()
+                    }, new Dictionary<string, string>()
+                    {
+                        ["Authorization"] = $"Bearer {token}"
+                    });
+                    JObject json = JObject.Parse(response.Content);
+                    if (json["code"]?.Value<int>() == 200)
+                    {
+                        MessageService.ShowToast("删除隧道", "隧道删除成功！", NotificationType.Success);
+                        await GetTunnels();
+                    }
+                    else
+                    {
+                        MessageService.ShowToast("删除隧道失败", json["msg"]?.Value<string>() ?? "未知错误", NotificationType.Error);
+                    }
+                }catch (Exception ex)
+                {
+                    MessageService.ShowToast("删除隧道失败", ex.Message, NotificationType.Error);
+                }
+            }
+        }
+
+        [RelayCommand]
+        private async Task CreateTunnel()
+        {
+            if (SelectedNode == null)
+            {
+                MessageService.ShowToast("错误", "请选择一个节点！", NotificationType.Error);
+            }
+            else
+            {
+                try
+                {
+                    string type = CreateType == 0 ? "tcp" : CreateType == 1 ? "udp" : CreateType == 2 ? "http" : "https";
+                    HttpService.HttpResponse response = await MSLUser.PostAsync("/frp/addTunnel",
+                        HttpService.PostContentType.Json, new Dictionary<string, string>()
+                        {
+                            ["name"] = CreateName,
+                            ["local_ip"] = CreateLocalIp,
+                            ["local_port"] = CreateLocalPort,
+                            ["remote_port"] = CreateRemotePort,
+                            ["id"] = SelectedNode.Id.ToString(),
+                            ["type"] = type,
+                            ["remarks"] = "Create By MSLX",
+                            ["use_kcp"] = "false"
+                        }, new Dictionary<string, string>()
+                        {
+                            ["Authorization"] = $"Bearer {token}"
+                        }
+                    );
+                    JObject json = JObject.Parse(response.Content);
+                    if (json["code"]?.Value<int>() == 200)
+                    {
+                        MessageService.ShowToast("创建隧道", "隧道创建成功！", NotificationType.Success);
+                        await GetTunnels();
+                        TabIndex = 0;
+                    }
+                    else
+                    {
+                        MessageService.ShowToast("创建隧道失败", json["msg"]?.Value<string>() ?? "未知错误", NotificationType.Error);
+                    }
+                }catch (Exception ex)
+                {
+                    MessageService.ShowToast("创建隧道失败", ex.Message, NotificationType.Error);
+                }
             }
         }
 
