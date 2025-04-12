@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +12,7 @@ namespace MSLX.Core.Utils
     {
         public static IConfigService Config { get; } = new IConfigService();
         public static ServerListConfig ServerList { get; } = new ServerListConfig();
+        public static FrpListConfig FrpList { get; } = new FrpListConfig();
 
         public class IConfigService : IDisposable
         {
@@ -295,6 +296,174 @@ namespace MSLX.Core.Utils
             {
                 _configLock?.Dispose();
                 _serverListLock?.Dispose();
+            }
+        }
+
+        public class FrpListConfig : IDisposable
+        {
+            private readonly string _frpListPath = Path.Combine(AppContext.BaseDirectory, "Configs", "FrpList.json");
+            private JArray _frpListCache;
+            private readonly ReaderWriterLockSlim _frpListLock = new ReaderWriterLockSlim();
+
+            public FrpListConfig()
+            {
+                InitializeFile(_frpListPath, "[]");
+                _frpListCache = LoadJson<JArray>(_frpListPath);
+            }
+
+            private void InitializeFile(string path, string defaultContent)
+            {
+                var dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir!);
+
+                if (!File.Exists(path))
+                {
+                    File.WriteAllText(path, defaultContent);
+                }
+            }
+
+            public JArray ReadFrpList()
+            {
+                _frpListLock.EnterReadLock();
+                try
+                {
+                    return (JArray)_frpListCache.DeepClone();
+                }
+                finally
+                {
+                    _frpListLock.ExitReadLock();
+                }
+            }
+
+            public List<JToken> GetFrpList()
+            {
+                _frpListLock.EnterReadLock();
+                try
+                {
+                    return _frpListCache.ToList();
+                }
+                finally
+                {
+                    _frpListLock.ExitReadLock();
+                }
+            }
+
+            public bool CreateFrpConfig(int id, string name, string server, string config)
+            {
+                _frpListLock.EnterWriteLock();
+                try
+                {
+                    if (_frpListCache.Any(s => s["ID"]?.Value<int>() == id))
+                        return false;
+
+                    // 写入frpc配置文件 （为数不多好懂的地方捏～）
+                    string folderPath = Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", id.ToString());
+                    string filePath = Path.Combine(folderPath, "frpc.toml");
+                    try
+                    {
+                        Directory.CreateDirectory(folderPath);
+                        File.WriteAllText(filePath, config);
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                    var newItem = new JObject
+                    {
+                        ["ID"] = id,
+                        ["Name"] = name,
+                        ["Service"] = server
+                    };
+                    _frpListCache.Add(newItem);
+                    SaveJson(_frpListPath, _frpListCache);
+                    return true;
+                }
+                finally
+                {
+                    _frpListLock.ExitWriteLock();
+                }
+            }
+
+            public bool DeleteFrpConfig(int id)
+            {
+                _frpListLock.EnterWriteLock();
+                try
+                {
+                    var target = _frpListCache.FirstOrDefault(s => s["ID"]?.Value<int>() == id);
+                    if (target == null) return false;
+
+                    _frpListCache.Remove(target);
+                    SaveJson(_frpListPath, _frpListCache);
+                    return true;
+                }
+                finally
+                {
+                    _frpListLock.ExitWriteLock();
+                }
+            }
+
+            public bool UpdateFrpConfig(int id, string name, string server)
+            {
+                _frpListLock.EnterWriteLock();
+                try
+                {
+                    var target = _frpListCache.FirstOrDefault(s => s["ID"]?.Value<int>() == id);
+                    if (target == null) return false;
+
+                    target["Name"] = name;
+                    target["Service"] = server;
+                    SaveJson(_frpListPath, _frpListCache);
+                    return true;
+                }
+                finally
+                {
+                    _frpListLock.ExitWriteLock();
+                }
+            }
+
+            public JObject? GetFrpConfig(int id)
+            {
+                _frpListLock.EnterReadLock();
+                try
+                {
+                    return _frpListCache.FirstOrDefault(s => s["ID"]?.Value<int>() == id) as JObject;
+                }
+                finally
+                {
+                    _frpListLock.ExitReadLock();
+                }
+            }
+
+            public int GenerateFrpId()
+            {
+                _frpListLock.EnterReadLock();
+                try
+                {
+                    return _frpListCache.Any()
+                        ? _frpListCache.Max(s => s["ID"]!.Value<int>()) + 1
+                        : 1;
+                }
+                finally
+                {
+                    _frpListLock.ExitReadLock();
+                }
+            }
+
+            private T LoadJson<T>(string path) where T : JToken
+            {
+                var content = File.ReadAllText(path);
+                return JToken.Parse(content) as T ?? throw new InvalidDataException("Invalid JSON format");
+            }
+
+            private void SaveJson<T>(string path, T data) where T : JToken
+            {
+                File.WriteAllText(path, data.ToString(Newtonsoft.Json.Formatting.Indented));
+            }
+
+            public void Dispose()
+            {
+                _frpListLock?.Dispose();
             }
         }
     }
