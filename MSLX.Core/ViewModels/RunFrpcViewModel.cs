@@ -157,6 +157,7 @@ namespace MSLX.Core.ViewModels
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data}"; };
             process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data}"; };
             process.Exited += (object? sender, EventArgs e) =>
