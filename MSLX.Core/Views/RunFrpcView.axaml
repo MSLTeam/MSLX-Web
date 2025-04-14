@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
+             x:DataType="vm:RunFrpcViewModel"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             x:Class="MSLX.Core.Views.RunFrpcView">
+    <Grid RowDefinitions="Auto *">
+        <Grid>
+            <suki:GlassCard Margin="6">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="启动内网映射" Classes="Flat" Margin="0,0,10,0"/>
+                        <TextBlock Text="隧道名字" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock VerticalAlignment="Center" Text="连接地址:" Margin="0,0,10,0"/>
+                        <Button Content="复制" Padding="8" Width="80"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="连接地址:" Margin="0,0,10,0"/>
+                        <Button Content="复制" Padding="8" Width="80"/>
+                    </StackPanel>
+                </StackPanel>
+            </suki:GlassCard>
+        </Grid>
+        <suki:GlassCard Grid.Row="1" Padding="8" Margin="6,0,6,6">
+                <TextBox Text="隧道日志···" TextWrapping="Wrap"  AcceptsReturn="True"/>
+        </suki:GlassCard>
+    </Grid>
+</UserControl>

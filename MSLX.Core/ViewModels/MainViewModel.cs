@@ -42,7 +42,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 Kind = MaterialIconKind.NavigationVariant,
             },
-            PageContent = new FrpTunnelViewModel(),
+            PageContent = new RunFrpcViewModel(),
         },
         new SukiSideMenuItem
         {
