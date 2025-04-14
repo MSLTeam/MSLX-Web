@@ -25,9 +25,11 @@
     <PackageReference Include="Avalonia.Xaml.Interactions" />
     <PackageReference Include="Avalonia.Xaml.Interactivity" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Downloader" />
     <PackageReference Include="Markdown.Avalonia" />
     <PackageReference Include="Material.Icons.Avalonia" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Tommy" />
   </ItemGroup>
 
   <ItemGroup>
