@@ -171,6 +171,10 @@ namespace MSLX.Core.ViewModels
             LaunchBtnText = "关闭内网映射";
             process.BeginErrorReadLine();
             process.BeginOutputReadLine();
+
+            await Task.Run(process.WaitForExit);
+            LaunchBtnText = "启动内网映射";
+            ConsoleLogs += "Frpc进程已退出！";
         }
 
         private async Task DownloadFile(string url, string filename)
