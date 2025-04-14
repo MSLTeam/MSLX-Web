@@ -1,4 +1,7 @@
 using System;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using MSLX.Core.Views;
 
 namespace MSLX.Core.Utils
 {
@@ -50,6 +53,21 @@ namespace MSLX.Core.Utils
             DateTime utcTime = origin.AddSeconds(seconds);
             TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time");
             return TimeZoneInfo.ConvertTimeFromUtc(utcTime, cstZone);
+        }
+        
+        
+        public static async void CopyToClipboard(string text)
+        {
+            var appLifetime = Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            if (appLifetime != null)
+            {
+                var mainWindow = appLifetime.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    var clipboard = mainWindow.Clipboard;
+                    await clipboard.SetTextAsync(text);
+                }
+            }
         }
     }
 }

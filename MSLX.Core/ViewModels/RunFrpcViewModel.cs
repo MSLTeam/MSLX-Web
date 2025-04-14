@@ -158,23 +158,34 @@ namespace MSLX.Core.ViewModels
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-            process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data.Replace("\u001b[1;34m","").Replace("\u001b[0m","")}"; };
-            process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data.Replace("\u001b[1;34m","").Replace("\u001b[0m","")}"; };
+            process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "")??""}";};
+            process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "")??""}"; };
             process.Exited += (object? sender, EventArgs e) =>
             {
                 LaunchBtnText = "启动内网映射";
+                ConsoleLogs += "Frpc进程已退出！";
             };
-
             // 启动进程
             process.EnableRaisingEvents = true;
             process.Start();
             LaunchBtnText = "关闭内网映射";
             process.BeginErrorReadLine();
             process.BeginOutputReadLine();
+            
+        }
 
-            await Task.Run(process.WaitForExit);
-            LaunchBtnText = "启动内网映射";
-            ConsoleLogs += "Frpc进程已退出！";
+        [RelayCommand]
+        private void CopyDomain()
+        {
+            StringHelper.CopyToClipboard(FrpcDomain);
+            MessageService.ShowToast("复制成功", "复制连接地址到剪切板成功！", NotificationType.Success);
+        }
+        
+        [RelayCommand]
+        private void CopyIp()
+        {
+            StringHelper.CopyToClipboard(FrpcIp);
+            MessageService.ShowToast("复制成功", "复制备用连接地址到剪切板成功！", NotificationType.Success);
         }
 
         private async Task DownloadFile(string url, string filename)
