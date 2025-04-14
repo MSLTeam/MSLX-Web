@@ -158,8 +158,8 @@ namespace MSLX.Core.ViewModels
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-            process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data}"; };
-            process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data}"; };
+            process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data.Replace("\u001b[1;34m","").Replace("\u001b[0m","")}"; };
+            process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data.Replace("\u001b[1;34m","").Replace("\u001b[0m","")}"; };
             process.Exited += (object? sender, EventArgs e) =>
             {
                 LaunchBtnText = "启动内网映射";
