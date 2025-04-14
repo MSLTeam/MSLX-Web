@@ -33,7 +33,7 @@
             </suki:GlassCard>
         </Grid>
         <suki:GlassCard Grid.Row="1" Padding="8" Margin="6,0,6,6">
-                <TextBox Text="{Binding ConsoleLogs}" TextWrapping="Wrap"  AcceptsReturn="True"/>
+                <TextBox Text="{Binding ConsoleLogs}" TextWrapping="Wrap" VerticalContentAlignment="Top" IsReadOnly="True" AcceptsReturn="True"/>
         </suki:GlassCard>
     </Grid>
 </UserControl>
