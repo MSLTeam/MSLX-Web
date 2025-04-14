@@ -348,7 +348,7 @@ namespace MSLX.Core.Utils
                 }
             }
 
-            public bool CreateFrpConfig(int id, string name, string server, string config)
+            public bool CreateFrpConfig(int id, string name, string server,string configType, string config)
             {
                 _frpListLock.EnterWriteLock();
                 try
@@ -373,6 +373,7 @@ namespace MSLX.Core.Utils
                     {
                         ["ID"] = id,
                         ["Name"] = name,
+                        ["ConfigType"] = configType,
                         ["Service"] = server
                     };
                     _frpListCache.Add(newItem);
@@ -403,7 +404,7 @@ namespace MSLX.Core.Utils
                 }
             }
 
-            public bool UpdateFrpConfig(int id, string name, string server)
+            public bool UpdateFrpConfig(int id, string name, string server,string configType)
             {
                 _frpListLock.EnterWriteLock();
                 try
@@ -413,6 +414,7 @@ namespace MSLX.Core.Utils
 
                     target["Name"] = name;
                     target["Service"] = server;
+                    target["ConfigType"] = configType;
                     SaveJson(_frpListPath, _frpListCache);
                     return true;
                 }
