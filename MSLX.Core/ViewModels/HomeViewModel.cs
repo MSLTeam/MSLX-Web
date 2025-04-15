@@ -68,6 +68,7 @@ namespace MSLX.Core.ViewModels
                 Title = "测试"
             });
             return;
+            /*
             if (_isFullScreen)
             {
                 WeakReferenceMessenger.Default.Send(new WindowStateMessage(WindowState.Normal));
@@ -78,8 +79,11 @@ namespace MSLX.Core.ViewModels
                 WeakReferenceMessenger.Default.Send(new WindowStateMessage(WindowState.FullScreen));
                 _isFullScreen = true;
             }
+            */
         }
     }
+
+    /*
     public class WindowStateMessage
     {
         public WindowState State { get; }
@@ -88,4 +92,5 @@ namespace MSLX.Core.ViewModels
             State = state;
         }
     }
+    */
 }

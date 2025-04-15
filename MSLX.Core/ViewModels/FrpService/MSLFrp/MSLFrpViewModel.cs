@@ -17,7 +17,7 @@ using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using static MSLX.Core.Models.FrpService.MSLFrpModel;
 
-namespace MSLX.Core.ViewModels.FrpService
+namespace MSLX.Core.ViewModels.FrpService.MSLFrp
 {
     public partial class MSLFrpViewModel : ViewModelBase
     {
