@@ -34,13 +34,14 @@ namespace MSLX.Core.ViewModels
         [ObservableProperty]
         private string _frpcDomain = "";
         
-        private int FrpcId = 807570;
+        private int FrpcId;
         private string FrpcService = "";
         
         private Process process;
         
-        public RunFrpcViewModel()
+        public RunFrpcViewModel(int id)
         {
+            FrpcId = id;
             FrpcService = (string)ConfigService.FrpList.GetFrpConfig(FrpcId)["Service"];
             FrpcName = (string)ConfigService.FrpList.GetFrpConfig(FrpcId)["Name"];
             string _frpcConfig = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", FrpcId.ToString(),"frpc.toml"));

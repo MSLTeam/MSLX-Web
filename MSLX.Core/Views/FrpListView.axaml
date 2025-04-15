@@ -4,7 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MSLX.Core.Views.FrpListView"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:DataType="vm:FrpListViewModel">
-    Welcome to Avalonia!
+    <Grid>
+        <suki:GlassCard Margin="10">
+            <Grid RowDefinitions="Auto *">
+                <Grid Margin="0,0,0,10">
+                    <TextBlock Text="隧道列表" FontSize="18" FontWeight="Bold"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <ListBox></ListBox>
+                </Grid>
+            </Grid>
+        </suki:GlassCard>
+    </Grid>
 </UserControl>
