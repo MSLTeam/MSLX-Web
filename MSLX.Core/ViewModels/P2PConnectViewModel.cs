@@ -44,33 +44,40 @@ public partial class P2PConnectViewModel : ViewModelBase
         HostPassword = StringHelper.GenerateRandomString(6, "MSLX");
         HostPort = "25565";
         VisitorPort = "25565";
-        if (File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml")))
+        try
         {
-            string configs = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"));
-            if (configs.Contains("xtcp"))
+            if (File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml")))
             {
-                var reader = new StringReader(configs);
-                TomlTable frpcToml = TOML.Parse(reader);
-                if (configs.Contains("visitors"))
+                string configs = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"));
+                if (configs.Contains("xtcp"))
                 {
-                    // 配置是成员
-                    VisitorPort = frpcToml["visitors"][0]["bindPort"].ToString();
-                    VisitorName = frpcToml["visitors"][0]["serverName"].ToString();
-                    VisitorPassword = frpcToml["visitors"][0]["secretKey"].ToString();
-                    IsHostExpand = false;
+                    var reader = new StringReader(configs);
+                    TomlTable frpcToml = TOML.Parse(reader);
+                    if (configs.Contains("visitors"))
+                    {
+                        // 配置是成员
+                        VisitorPort = frpcToml["visitors"][0]["bindPort"].ToString();
+                        VisitorName = frpcToml["visitors"][0]["serverName"].ToString();
+                        VisitorPassword = frpcToml["visitors"][0]["secretKey"].ToString();
+                        IsHostExpand = false;
+                    }
+                    else
+                    {
+                        // 配置是房主
+                        HostName = frpcToml["proxies"][0]["name"].ToString();
+                        HostPassword = frpcToml["proxies"][0]["secretKey"].ToString();
+                        HostPort = frpcToml["proxies"][0]["localPort"].ToString();
+                    }
                 }
                 else
                 {
-                    // 配置是房主
-                    HostName = frpcToml["proxies"][0]["name"].ToString();
-                    HostPassword = frpcToml["proxies"][0]["secretKey"].ToString();
-                    HostPort = frpcToml["proxies"][0]["localPort"].ToString();
+                    File.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"));
                 }
             }
-            else
-            {
-                File.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"));
-            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
     }
 
