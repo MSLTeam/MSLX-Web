@@ -104,6 +104,10 @@ public partial class P2PConnectViewModel : ViewModelBase
                 return;
             }
             string configs = $"serverAddr = \"{server.Split(":")[0]}\"\nserverPort = {server.Split(":")[1]}\n\n[[proxies]]\nname = \"{HostName}\"\ntype = \"xtcp\"\nlocalIP = \"127.0.0.1\"\nlocalPort = {HostPort}\nsecretKey = \"{HostPassword}\"";
+            if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc")))
+            {
+                Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc"));
+            }
             File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"), configs);
             RunFrpc();
         }catch (Exception e)
@@ -136,6 +140,10 @@ public partial class P2PConnectViewModel : ViewModelBase
                 return;
             }
             string configs = $"serverAddr = \"{server.Split(":")[0]}\"\nserverPort = {server.Split(":")[1]}\n\n[[visitors]]\nname = \"msl_p2p_visitor\"\ntype = \"xtcp\"\nserverName = \"{VisitorName}\"\nsecretKey = \"{VisitorPassword}\"\nbindAddr = \"127.0.0.1\"\nbindPort = {VisitorPort}\n";
+            if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc")))
+            {
+                Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc"));
+            }
             File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"), configs);
             RunFrpc();
         }catch (Exception e)
