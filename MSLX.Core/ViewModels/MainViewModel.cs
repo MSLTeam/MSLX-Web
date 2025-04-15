@@ -52,7 +52,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 Kind = MaterialIconKind.SwapHorizontalBold,
             },
-            PageContent = new AboutViewModel(),
+            PageContent = new P2PConnectViewModel(),
         },
         new SukiSideMenuItem
         {
