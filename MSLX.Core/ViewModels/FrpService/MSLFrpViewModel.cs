@@ -315,9 +315,9 @@ namespace MSLX.Core.ViewModels.FrpService
                     JObject json = JObject.Parse(response.Content);
                     if ((int)json["code"] == 200)
                     {
-                        ConfigService.FrpList.CreateFrpConfig(StringHelper.GetRandomNumber(100000, 999999),
+                        ConfigService.FrpList.CreateFrpConfig(
                             $"{SelectedTunnel.Name} | {SelectedTunnel.Node}", "MSLFrp","toml", json["data"].ToString());
-                        MessageService.ShowToast("隧道配置成功", "MSLFrp隧道配置文件输出成功！", NotificationType.Success);
+                        MessageService.ShowToast("隧道配置成功", "MSLFrp隧道配置成功！", NotificationType.Success);
                         MainViewModel.NavigateTo<FrpListViewModel>();
                         MainViewModel.NavigateRemove<FrpTunnelViewModel>();
                     }

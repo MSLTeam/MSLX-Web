@@ -36,6 +36,7 @@ namespace MSLX.Core.ViewModels
         
         public int FrpcId;
         private string FrpcService = "";
+        private string FrpcConfigType = "toml";
         
         private Process process;
         
@@ -44,11 +45,30 @@ namespace MSLX.Core.ViewModels
             FrpcId = id;
             FrpcService = (string)ConfigService.FrpList.GetFrpConfig(FrpcId)["Service"];
             FrpcName = (string)ConfigService.FrpList.GetFrpConfig(FrpcId)["Name"];
-            string _frpcConfig = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", FrpcId.ToString(),"frpc.toml"));
-            using var reader = new System.IO.StringReader(_frpcConfig);
-            TomlTable frpcToml = TOML.Parse(reader);
-            FrpcDomain = $"{(string)frpcToml["metadatas"]["mslFrpRemoteDomain"]}:{(string)frpcToml["proxies"][0]["remotePort"]}";
-            FrpcIp = $"{(string)frpcToml["serverAddr"]}:{(string)frpcToml["proxies"][0]["remotePort"]}";
+            FrpcConfigType = (string)ConfigService.FrpList.GetFrpConfig(FrpcId)["ConfigType"];
+            // 处理不同格式的配置文件
+            switch (FrpcConfigType)
+            {
+                case "toml":
+                    string _frpcConfig = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", FrpcId.ToString(),"frpc.toml"));
+                    var reader = new StringReader(_frpcConfig);
+                    TomlTable frpcToml = TOML.Parse(reader);
+                    if (FrpcService == "MSLFrp")
+                    {
+                        FrpcDomain = $"{(string)frpcToml["metadatas"]["mslFrpRemoteDomain"]}:{(string)frpcToml["proxies"][0]["remotePort"]}";
+                        FrpcIp = $"{(string)frpcToml["serverAddr"]}:{(string)frpcToml["proxies"][0]["remotePort"]}";
+                    }
+                    else
+                    {
+                        FrpcDomain = $"{(string)frpcToml["serverAddr"]}:{(string)frpcToml["proxies"][0]["remotePort"]}";
+                        FrpcIp = $"{(string)frpcToml["serverAddr"]}:{(string)frpcToml["proxies"][0]["remotePort"]}";
+                    }
+                    break;
+                case "cmd":
+                    FrpcDomain = FrpcIp = "请启动隧道以查看连接地址！";
+                    break;
+            }
+
         }
 
 
@@ -138,6 +158,17 @@ namespace MSLX.Core.ViewModels
                         break;
                 }
             }
+            // 处理启动参数
+            string args;
+            if (FrpcConfigType == "cmd")
+            {
+                args = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc",
+                    FrpcId.ToString(), "frpc.cmd"));
+            }
+            else
+            {
+                args = $"-c frpc.{FrpcConfigType}";
+            }
             
             // 进入启动流程
             if (PlatFormHelper.GetOs() != "Windows")
@@ -151,7 +182,7 @@ namespace MSLX.Core.ViewModels
             process = new Process();
             // 设置启动信息
             process.StartInfo.FileName = Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile", $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}");
-            process.StartInfo.Arguments = $"-c frpc.toml";
+            process.StartInfo.Arguments = args;
             process.StartInfo.WorkingDirectory = Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc",
                 FrpcId.ToString());
             process.StartInfo.UseShellExecute = false;

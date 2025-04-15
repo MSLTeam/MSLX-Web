@@ -348,8 +348,9 @@ namespace MSLX.Core.Utils
                 }
             }
 
-            public bool CreateFrpConfig(int id, string name, string server,string configType, string config)
+            public bool CreateFrpConfig( string name, string server,string configType, string config)
             {
+                int id = StringHelper.GetRandomNumber(10000000, 99999999);
                 _frpListLock.EnterWriteLock();
                 try
                 {
@@ -358,7 +359,7 @@ namespace MSLX.Core.Utils
 
                     // 写入frpc配置文件 （为数不多好懂的地方捏～）
                     string folderPath = Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", id.ToString());
-                    string filePath = Path.Combine(folderPath, "frpc.toml");
+                    string filePath = Path.Combine(folderPath, $"frpc.{configType}");
                     try
                     {
                         Directory.CreateDirectory(folderPath);
@@ -396,6 +397,8 @@ namespace MSLX.Core.Utils
 
                     _frpListCache.Remove(target);
                     SaveJson(_frpListPath, _frpListCache);
+                    // 删除配置文件文件夹
+                    Directory.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", id.ToString()),true);
                     return true;
                 }
                 finally
