@@ -33,8 +33,8 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                    <TextBlock Opacity="0.5">
+                                    <TextBlock Foreground="{DynamicResource SukiText}" Text="{Binding Name}" FontWeight="Bold"/>
+                                    <TextBlock Foreground="{DynamicResource SukiText}" Opacity="0.6">
                                         <Run Text="{Binding Service}"/>
                                         <Run Text=" | "></Run>
                                         <Run Text="{Binding Id}"/>
