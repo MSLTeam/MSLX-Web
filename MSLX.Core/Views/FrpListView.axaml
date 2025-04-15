@@ -18,7 +18,15 @@
         <suki:GlassCard Margin="10">
             <Grid RowDefinitions="Auto * Auto">
                 <Grid Margin="0,0,0,10">
-                    <TextBlock Text="隧道列表" FontSize="20" FontWeight="Bold"/>
+                    <Grid ColumnDefinitions="Auto *">
+                        <TextBlock VerticalAlignment="Center" Text="隧道列表" FontSize="20" FontWeight="Bold"/>
+                        <suki:InfoBar Grid.Column="1" Margin="20,0,0,0"
+                            Title="提示"
+                            IsClosable= "False"
+                            IsOpen="True"
+                            Severity="Information"
+                            Message="双击隧道以启动内网映射～" />
+                    </Grid>
                 </Grid>
                 <Grid Grid.Row="1">
                     <ListBox ItemsSource="{Binding FrpConfigs}" SelectedItem="{Binding SelectedFrpConfig}" DoubleTapped="ListBox_DoubleTapped">
