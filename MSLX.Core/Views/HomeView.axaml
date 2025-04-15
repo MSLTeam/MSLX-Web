@@ -32,6 +32,7 @@
         <md:MarkdownScrollViewer.Styles>
           <Style Selector="ctxt|CTextBlock.Heading1">
             <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
+            <Setter Property="FontSize" Value="30"></Setter>
           </Style>
           <Style Selector="ctxt|CTextBlock.Heading2">
             <Setter Property="Foreground" Value="{DynamicResource SukiText}"/>
