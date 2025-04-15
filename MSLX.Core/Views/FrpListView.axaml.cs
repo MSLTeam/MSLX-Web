@@ -10,11 +10,5 @@ namespace MSLX.Core.Views
         {
             InitializeComponent();
         }
-
-        private void ListBox_DoubleTapped(object sender, RoutedEventArgs e)
-        {
-            var viewModel = (FrpListViewModel)DataContext;
-            viewModel.OpenFrpConfig();
-        }
     }
 }

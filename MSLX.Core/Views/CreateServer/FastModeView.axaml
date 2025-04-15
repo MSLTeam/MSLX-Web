@@ -14,7 +14,7 @@
   <suki:GlassCard Margin="10">
     <Grid RowDefinitions="auto *">
       <Label Classes="Title" Content="{Binding Title}"/>
-      <UserControl Grid.Row="1" Content="{Binding MainContent}"/>
+      <ContentControl Grid.Row="1" Content="{Binding MainContent}"/>
     </Grid>
   </suki:GlassCard>
 </UserControl>

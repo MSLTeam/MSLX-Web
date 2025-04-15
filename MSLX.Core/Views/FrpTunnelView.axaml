@@ -6,7 +6,7 @@
              x:Class="MSLX.Core.Views.FrpTunnelView"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
-             xmlns:vmFrp="clr-namespace:MSLX.Core.ViewModels.FrpService"
+             xmlns:vmFrp="clr-namespace:MSLX.Core.ViewModels.FrpService.MSLFrp"
              x:DataType="vm:FrpTunnelViewModel">
     <Grid>
         <TabControl>

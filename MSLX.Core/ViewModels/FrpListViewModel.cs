@@ -7,6 +7,7 @@ using Material.Icons;
 using Material.Icons.Avalonia;
 using MSLX.Core.Models;
 using SukiUI.Controls;
+using System.Linq;
 
 namespace MSLX.Core.ViewModels
 {
@@ -15,7 +16,7 @@ namespace MSLX.Core.ViewModels
         private FrpcListModel.FrpConfig _selectedFrpConfig;
 
         [ObservableProperty]
-        public ObservableCollection<FrpcListModel.FrpConfig> _frpConfigs ;
+        private ObservableCollection<FrpcListModel.FrpConfig> _frpConfigs ;
 
         public FrpcListModel.FrpConfig SelectedFrpConfig
         {
@@ -50,16 +51,30 @@ namespace MSLX.Core.ViewModels
         }
 
         [RelayCommand]
-        public void OpenFrpConfig()
+        private void OpenFrpConfig()
         {
             if (SelectedFrpConfig != null)
             {
-                MainViewModel.NavigateToRunFrpc(SelectedFrpConfig.Id,SelectedFrpConfig.Name);
+                var existingPage = App.MainView.MainPages.FirstOrDefault(p => p.PageContent is FrpcRunViewModel runFrpcViewModel && runFrpcViewModel.FrpcId == SelectedFrpConfig.Id);
+                if (existingPage != null)
+                {
+                    App.MainView.ActivePage = existingPage;
+                    return;
+                }
+
+                var newPage = new SukiSideMenuItem
+                {
+                    PageContent = new FrpcRunViewModel(SelectedFrpConfig.Id),
+                    IsVisible = false, // 隐藏菜单项
+                };
+
+                App.MainView.MainPages.Add(newPage);
+                App.MainView.ActivePage = newPage;
             }
         }
 
         [RelayCommand]
-        public void AddFrpcConfig()
+        private void AddFrpcConfig()
         {
             MainViewModel.NavigateRemove<FrpTunnelViewModel>();
             MainViewModel.NavigateTo(new SukiSideMenuItem
@@ -71,11 +86,11 @@ namespace MSLX.Core.ViewModels
                 },
                 PageContent = new FrpTunnelViewModel(),
                 IsContentMovable = false
-            }, true, 2);
+            }, true, 3);
         }
 
         [RelayCommand]
-        public void DeleteFrpcConfig()
+        private void DeleteFrpcConfig()
         {
             if (SelectedFrpConfig != null)
             {
@@ -85,7 +100,7 @@ namespace MSLX.Core.ViewModels
         }
 
         [RelayCommand]
-        public void Loaded()
+        private void Loaded()
         {
             LoadFrpConfigs();
         }

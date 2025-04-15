@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace MSLX.Core.Views;
+namespace MSLX.Core.Views.FrpService.MSLFrp;
 
-public partial class RunFrpcView : UserControl
+public partial class FrpMainView : UserControl
 {
-    public RunFrpcView()
+    public FrpMainView()
     {
         InitializeComponent();
     }

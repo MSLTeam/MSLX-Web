@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Core.Views.FrpService.MSLFrp.LoginView"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels.FrpService.MSLFrp"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             x:DataType="vm:LoginViewModel">
+  <Design.DataContext>
+    <vm:LoginViewModel/>
+  </Design.DataContext>
+    <Grid>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <Image Source="../../../Assets/logo.ico" Width="64" Margin="0,0,0,10"></Image>
+                <TextBlock Text="在使用MSL Frp服务之前，请先登录您的MSL账户" FontSize="18" FontWeight="Bold" Margin="0,0,0,30"/>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="邮箱: " FontSize="15" Margin="0,0,3,0"/>
+                    <TextBox MinWidth="200" Text="{Binding Account}"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,6,0,0">
+                    <TextBlock VerticalAlignment="Center" Text="密码: " FontSize="15"  Margin="0,0,3,0"/>
+                    <TextBox MinWidth="200" PasswordChar="*" Text="{Binding Password}"/>
+                </StackPanel>
+                <StackPanel Margin="0,3,0,20" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <ToggleSwitch IsChecked="{Binding IsSaveLoginStatus}"/>
+                    <TextBlock Text="保存登录状态" VerticalAlignment="Center"></TextBlock>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button Width="100" Classes="Flat" Content="登录" Command="{Binding LoginByPasswordCommand}"/>
+                    <Button Width="100" Content="注册" Margin="10,0,0,0"/>
+                </StackPanel>
+               
+            </StackPanel>
+            
+        </Grid>
+    </Grid>
+</UserControl>

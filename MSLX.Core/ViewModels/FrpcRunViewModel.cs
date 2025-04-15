@@ -17,7 +17,7 @@ using Tommy;
 
 namespace MSLX.Core.ViewModels
 {
-    public partial class RunFrpcViewModel : ViewModelBase
+    public partial class FrpcRunViewModel : ViewModelBase
     {
         [ObservableProperty]
         private string _consoleLogs = "";
@@ -40,7 +40,7 @@ namespace MSLX.Core.ViewModels
         
         private Process process;
         
-        public RunFrpcViewModel(int id)
+        public FrpcRunViewModel(int id)
         {
             FrpcId = id;
             FrpcService = (string)ConfigService.FrpList.GetFrpConfig(FrpcId)["Service"];

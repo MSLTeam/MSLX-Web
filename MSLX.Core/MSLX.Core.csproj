@@ -41,5 +41,8 @@
     <Compile Update="Views\CreateServer\FastModeStep1View.axaml.cs">
       <DependentUpon>FastModeStep1View.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\FrpcRunView.axaml.cs">
+      <DependentUpon>FrpcRunView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
