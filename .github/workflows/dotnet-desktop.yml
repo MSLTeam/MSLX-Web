@@ -27,7 +27,7 @@ jobs:
       - name: Setup .NET 8.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 8.0.x
 
       - name: Build for Linux/Windows
         if: matrix.os != 'osx'
@@ -35,7 +35,7 @@ jobs:
           dotnet publish -c Release -r ${{ matrix.runtime }} \
             --self-contained true \
             -p:PublishSingleFile=true \
-            -p:PublishTrimmed=true \
+            -p:PublishTrimmed=false \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Build for macOS
