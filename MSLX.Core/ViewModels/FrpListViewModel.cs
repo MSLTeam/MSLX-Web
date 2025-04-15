@@ -1,8 +1,12 @@
 using System.Collections.ObjectModel;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MSLX.Core.Utils;
 using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
+using Material.Icons.Avalonia;
 using MSLX.Core.Models;
+using SukiUI.Controls;
 
 namespace MSLX.Core.ViewModels
 {
@@ -28,7 +32,7 @@ namespace MSLX.Core.ViewModels
             LoadFrpConfigs();
         }
 
-        private void LoadFrpConfigs()
+        public void LoadFrpConfigs()
         {
             var frpList = ConfigService.FrpList.GetFrpList();
             FrpConfigs = new ObservableCollection<FrpcListModel.FrpConfig>();
@@ -54,6 +58,36 @@ namespace MSLX.Core.ViewModels
             }
         }
 
+        [RelayCommand]
+        public void AddFrpcConfig()
+        {
+            MainViewModel.NavigateRemove<FrpTunnelViewModel>();
+            MainViewModel.NavigateTo(new SukiSideMenuItem
+            {
+                Header = "添加隧道",
+                Icon = new MaterialIcon()
+                {
+                    Kind = MaterialIconKind.Add,
+                },
+                PageContent = new FrpTunnelViewModel(),
+                IsContentMovable = false
+            }, true, 2);
+        }
 
+        [RelayCommand]
+        public void DeleteFrpcConfig()
+        {
+            if (SelectedFrpConfig != null)
+            {
+                ConfigService.FrpList.DeleteFrpConfig(SelectedFrpConfig.Id);
+                LoadFrpConfigs();
+            }
+        }
+
+        [RelayCommand]
+        public void Loaded()
+        {
+            LoadFrpConfigs();
+        }
     }
 }

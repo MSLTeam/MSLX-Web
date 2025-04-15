@@ -12,6 +12,7 @@
             <suki:GlassCard Margin="6">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="← 返回隧道列表"  Command="{Binding BackToListCommand}"  Margin="0,0,10,0"/>
                         <Button Content="{Binding LaunchBtnText}"  Command="{Binding LaunchFrpcCommand}" Classes="Flat" Margin="0,0,10,0"/>
                         <TextBlock Text="{Binding FrpcName}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource SukiPrimaryColor}" VerticalAlignment="Center"/>
                     </StackPanel>

@@ -221,7 +221,12 @@ namespace MSLX.Core.ViewModels
                                               " MB \n" +
                                               "速度: " + Math.Round(e.BytesPerSecondSpeed / 1024, 2) + " kb/s";
         }
-        
+
+        [RelayCommand]
+        public void BackToList()
+        {
+            MainViewModel.NavigateTo<FrpListViewModel>();
+        }
         
     }
     
