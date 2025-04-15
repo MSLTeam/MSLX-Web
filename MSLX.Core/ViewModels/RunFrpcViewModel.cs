@@ -190,9 +190,9 @@ namespace MSLX.Core.ViewModels
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-            process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "")??""}";};
-            process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "")??""}"; };
-            process.Exited += (object? sender, EventArgs e) =>
+            process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}";};
+            process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}"; };
+            process.Exited += (_,_) =>
             {
                 LaunchBtnText = "启动内网映射";
                 ConsoleLogs += "Frpc进程已退出！";
