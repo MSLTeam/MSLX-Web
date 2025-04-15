@@ -18,7 +18,7 @@
         <suki:GlassCard Margin="10">
             <Grid RowDefinitions="Auto * Auto">
                 <Grid Margin="0,0,0,10">
-                    <TextBlock Text="隧道列表" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="隧道列表" FontSize="20" FontWeight="Bold"/>
                 </Grid>
                 <Grid Grid.Row="1">
                     <ListBox ItemsSource="{Binding FrpConfigs}" SelectedItem="{Binding SelectedFrpConfig}" DoubleTapped="ListBox_DoubleTapped">
@@ -26,7 +26,11 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding Service}"/>
+                                    <TextBlock Opacity="0.5">
+                                        <Run Text="{Binding Service}"/>
+                                        <Run Text=" | "></Run>
+                                        <Run Text="{Binding Id}"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

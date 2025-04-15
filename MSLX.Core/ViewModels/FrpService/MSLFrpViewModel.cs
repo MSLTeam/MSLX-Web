@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MSLX.Core.Utils;
 using Newtonsoft.Json.Linq;
 using SukiUI.Controls;
+using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using static MSLX.Core.Models.FrpService.MSLFrpModel;
 
@@ -87,14 +90,14 @@ namespace MSLX.Core.ViewModels.FrpService
         
 
         [RelayCommand]
-        private async Task Loaded()
+        private async Task Inited()
         {
             CreateRemotePort = StringHelper.GetRandomNumber(10240, 60000).ToString();
             CreateName = StringHelper.GenerateRandomString(6, "MSLX_");
             if (ConfigService.Config.ReadConfigKey("MSLUserToken") != null)
             {
                 token = ConfigService.Config.ReadConfigKey("MSLUserToken")?.ToString();
-                await GetFrpInfo();
+                await GetFrpInfo(true);
             }
             
         }
@@ -106,6 +109,12 @@ namespace MSLX.Core.ViewModels.FrpService
             {
                 try
                 {
+                    // 添加登录中弹窗
+                    var dialog = MainViewModel.DialogManager.CreateDialog()
+                        .WithTitle("登录中")
+                        .WithContent(new TextBlock { Text = "正在登录，请稍候..." });
+                    dialog.TryShow();
+
                     HttpService.HttpResponse response = await MSLUser.PostAsync("/user/login", HttpService.PostContentType.Json, new
                     {
                         email = Account,
@@ -127,12 +136,16 @@ namespace MSLX.Core.ViewModels.FrpService
                     {
                         Console.WriteLine((string)json["msg"]);
                     }
+
+                    // 关闭登录中弹窗
+                    MainViewModel.DialogManager.DismissDialog();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    // 关闭登录中弹窗
+                    MainViewModel.DialogManager.DismissDialog();
                 }
-                
             }
             else
             {
@@ -140,10 +153,19 @@ namespace MSLX.Core.ViewModels.FrpService
             }
         }
         
-        private async Task GetFrpInfo()
+        private async Task GetFrpInfo(bool showDialog = false)
         {
             try
             {
+                if (showDialog)
+                {
+                    // 添加自动登录中弹窗
+                    var dialog = MainViewModel.DialogManager.CreateDialog()
+                        .WithTitle("登录中")
+                        .WithContent(new TextBlock { Text = "正在自动登录，请稍候..." });
+                    dialog.TryShow();
+                }
+                
                 // 获取MSL Frp用户信息
                 HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/userInfo",null, new Dictionary<string, string>()
                 {
@@ -164,16 +186,19 @@ namespace MSLX.Core.ViewModels.FrpService
                     // 获取隧道信息
                     await GetNodes(); 
                     await GetTunnels();
+                    MainViewModel.DialogManager.DismissDialog();
                 }
                 else
                 {
                     Console.WriteLine((string)json["msg"]);
+                    MainViewModel.DialogManager.DismissDialog();
                     return;
                 }
 
             }catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                MainViewModel.DialogManager.DismissDialog();
                 //ShowMainPage = false;
             }
         }
@@ -363,7 +388,7 @@ namespace MSLX.Core.ViewModels.FrpService
                             ["remote_port"] = CreateRemotePort,
                             ["id"] = SelectedNode.Id.ToString(),
                             ["type"] = type,
-                            ["remarks"] = "Create By MSLX",
+                            ["remarks"] = $"Create By MSLX {Assembly.GetExecutingAssembly().GetName().Version.ToString()}",
                             ["use_kcp"] = "false"
                         }, new Dictionary<string, string>()
                         {

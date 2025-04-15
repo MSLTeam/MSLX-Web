@@ -10,8 +10,8 @@
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              x:DataType="vm:MSLFrpViewModel">
     <i:Interaction.Behaviors>
-        <ia:EventTriggerBehavior EventName="Loaded">
-            <ia:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        <ia:EventTriggerBehavior EventName="Initialized">
+            <ia:InvokeCommandAction Command="{Binding InitedCommand}"/>
         </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
     <Grid>
