@@ -1,0 +1,55 @@
+name: Build and Publish
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - { os: linux, arch: x64, runtime: linux-x64 }
+          - { os: linux, arch: arm64, runtime: linux-arm64 }
+          - { os: windows, arch: x64, runtime: win-x64 }
+          - { os: windows, arch: arm64, runtime: win-arm64 }
+          - { os: osx, arch: x64, runtime: osx-x64 }
+          - { os: osx, arch: arm64, runtime: osx-arm64 }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8.x
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build for Linux/Windows
+        if: matrix.os != 'osx'
+        run: |
+          dotnet publish -c Release -r ${{ matrix.runtime }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:PublishTrimmed=true \
+            -o ./publish/${{ matrix.os }}-${{ matrix.arch }}
+
+      - name: Build for macOS
+        if: matrix.os == 'osx'
+        run: |
+          dotnet restore -r ${{ matrix.runtime }}
+          dotnet msbuild -t:BundleApp \
+            -p:RuntimeIdentifier=${{ matrix.runtime }} \
+            -property:Configuration=Release \
+            -p:UseAppHost=true \
+            -p:OutputPath=./publish/macos-${{ matrix.arch }}/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MSLX.Desktop-${{ matrix.os }}-${{ matrix.arch }}
+          path: |
+            ./publish/${{ matrix.os }}-${{ matrix.arch }}/**
+            !**/*.pdb
+          if-no-files-found: error
