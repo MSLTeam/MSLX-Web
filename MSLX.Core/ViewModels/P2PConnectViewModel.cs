@@ -135,7 +135,7 @@ public partial class P2PConnectViewModel : ViewModelBase
             {
                 return;
             }
-            string configs = $"serverAddr = \"{server.Split(":")[0]}\"\nserverPort = {server.Split(":")[1]}\n\n[[visitors]]\nname = \"msl_p2p_visitor\"\ntype = \"xtcp\"\nserverName = \"p{VisitorName}\"\nsecretKey = \"{VisitorPassword}\"\nbindAddr = \"127.0.0.1\"\nbindPort = {VisitorPort}\n";
+            string configs = $"serverAddr = \"{server.Split(":")[0]}\"\nserverPort = {server.Split(":")[1]}\n\n[[visitors]]\nname = \"msl_p2p_visitor\"\ntype = \"xtcp\"\nserverName = \"{VisitorName}\"\nsecretKey = \"{VisitorPassword}\"\nbindAddr = \"127.0.0.1\"\nbindPort = {VisitorPort}\n";
             File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"), configs);
             RunFrpc();
         }catch (Exception e)

@@ -15,15 +15,15 @@
                         <TextBlock Text="点对点联机" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
                         <Expander ExpandDirection="Down" IsExpanded="{Binding IsHostExpand}" Header="创建房间--房主"  Margin="0,0,0,10">
                             <WrapPanel Margin="20">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="房间号: " Margin="0,0,3,0"/>
                                     <TextBox MinWidth="200" Text="{Binding HostName}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="房间密钥: " Margin="0,0,3,0"/>
                                     <TextBox MinWidth="200" Text="{Binding HostPassword}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="游戏端口: " Margin="0,0,3,0"/>
                                     <TextBox MinWidth="200" Text="{Binding HostPort}"/>
                                 </StackPanel>
@@ -34,15 +34,15 @@
                         </Expander>
                         <Expander ExpandDirection="Down" IsExpanded="{Binding !IsHostExpand}" Header="加入房间--成员">
                             <WrapPanel Margin="20">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="房间号: " Margin="0,0,3,0"/>
                                     <TextBox MinWidth="200" Text="{Binding VisitorName}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="房间密钥: " Margin="0,0,3,0"/>
                                     <TextBox  MinWidth="200" Text="{Binding VisitorPassword}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="绑定本地端口(默认25565): " Margin="0,0,3,0"/>
                                     <TextBox MinWidth="200" Text="{Binding VisitorPort}"/>
                                 </StackPanel>
