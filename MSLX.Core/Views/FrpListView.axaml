@@ -14,7 +14,16 @@
                     <TextBlock Text="隧道列表" FontSize="18" FontWeight="Bold"/>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <ListBox></ListBox>
+                    <ListBox ItemsSource="{Binding FrpConfigs}" SelectedItem="{Binding SelectedFrpConfig}" DoubleTapped="ListBox_DoubleTapped">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Service}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </Grid>
         </suki:GlassCard>

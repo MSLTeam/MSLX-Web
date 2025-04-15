@@ -1,13 +1,20 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
+using MSLX.Core.ViewModels;
 
-namespace MSLX.Core.Views;
-
-public partial class FrpListView : UserControl
+namespace MSLX.Core.Views
 {
-    public FrpListView()
+    public partial class FrpListView : UserControl
     {
-        InitializeComponent();
+        public FrpListView()
+        {
+            InitializeComponent();
+        }
+
+        private void ListBox_DoubleTapped(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (FrpListViewModel)DataContext;
+            viewModel.OpenFrpConfig();
+        }
     }
 }

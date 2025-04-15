@@ -34,7 +34,7 @@ namespace MSLX.Core.ViewModels
         [ObservableProperty]
         private string _frpcDomain = "";
         
-        private int FrpcId;
+        public int FrpcId;
         private string FrpcService = "";
         
         private Process process;

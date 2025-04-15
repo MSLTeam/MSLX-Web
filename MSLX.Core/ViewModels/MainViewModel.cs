@@ -1,4 +1,4 @@
-﻿using Material.Icons.Avalonia;
+using Material.Icons.Avalonia;
 using Material.Icons;
 using SukiUI.Controls;
 using System.Collections.ObjectModel;
@@ -146,6 +146,30 @@ public partial class MainViewModel : ViewModelBase
                 App.MainView.ActivePage = App.MainView.MainPages.FirstOrDefault();
             App.MainView.MainPages.Remove(page);
         }
+    }
+
+    public static void NavigateToRunFrpc(int frpcId,string frpcName)
+    {
+        var existingPage = App.MainView.MainPages.FirstOrDefault(p => p.PageContent is RunFrpcViewModel runFrpcViewModel && runFrpcViewModel.FrpcId == frpcId);
+        if (existingPage != null)
+        {
+            App.MainView.ActivePage = existingPage;
+            return;
+        }
+
+        var newPage = new SukiSideMenuItem
+        {
+            Header = frpcName,
+            Icon = new MaterialIcon()
+            {
+                Kind = MaterialIconKind.Navigation,
+            },
+            PageContent = new RunFrpcViewModel(frpcId),
+            IsVisible = false, // 隐藏菜单项
+        };
+
+        App.MainView.MainPages.Add(newPage);
+        App.MainView.ActivePage = newPage;
     }
 
     public MainViewModel()
