@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -247,6 +248,11 @@ namespace MSLX.Core.ViewModels.FrpService
                                 Remarks = (string)nodeItem["remarks"]
                             });
                         }
+
+                        if (Nodes.Count > 0)
+                        {
+                            SelectedNode = Nodes[0];
+                        }
                     }
                 }
             }
@@ -285,6 +291,11 @@ namespace MSLX.Core.ViewModels.FrpService
                                 Node = nodeName
                             });
                             Console.WriteLine($"隧道名称：{tunnel["name"]}，隧道状态：{tunnel["status"]}，本地端口：{tunnel["local_port"]}，远程端口：{tunnel["remote_port"]}，节点：{tunnel["node_id"]}");
+                        }
+
+                        if (Tunnels.Count > 0)
+                        {
+                            SelectedTunnel = Tunnels[0];
                         }
                 }
             }
