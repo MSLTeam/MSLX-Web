@@ -121,6 +121,7 @@ namespace MSLX.Core.ViewModels.FrpService
                             ConfigService.Config.WriteConfigKey("MSLUserToken", token);
                         }
                         ShowMainPage = true;
+                        await GetFrpInfo();
                     }
                     else
                     {
