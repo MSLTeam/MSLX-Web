@@ -32,7 +32,7 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      - name: 构建普通版本呢
+      - name: 构建普通版本
         continue-on-error: true
         if: matrix.buildapp == 'false'
         run: |
@@ -68,7 +68,7 @@ jobs:
         if: matrix.buildapp == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
+          name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
           path: |
             ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app
             !**/*.pdb
