@@ -52,13 +52,13 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
         {
             try
             {
-                // Ìí¼Ó×Ô¶¯µÇÂ¼ÖĞµ¯´°
+                // æ·»åŠ è‡ªåŠ¨ç™»å½•ä¸­å¼¹çª—
                 var dialog = MainViewModel.DialogManager.CreateDialog()
-                    .WithTitle("µÇÂ¼ÖĞ")
-                    .WithContent(new TextBlock { Text = "»ñÈ¡ÓÃ»§ĞÅÏ¢¡­¡­" });
+                    .WithTitle("ç™»å½•ä¸­")
+                    .WithContent(new TextBlock { Text = "è·å–ç”¨æˆ·ä¿¡æ¯â€¦â€¦" });
                 dialog.TryShow();
 
-                // »ñÈ¡MSL FrpÓÃ»§ĞÅÏ¢
+                // è·å–MSL Frpç”¨æˆ·ä¿¡æ¯
                 HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/userInfo", null, new Dictionary<string, string>()
                 {
                     ["Authorization"] = $"Bearer {UserToken}"
@@ -67,7 +67,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 JObject json = JObject.Parse(response.Content);
                 if ((int)json["code"] == 200)
                 {
-                    MessageService.ShowToast("µÇÂ¼³É¹¦£¡", "³É¹¦µÇÂ¼µ½MSL Frp·şÎñ", NotificationType.Success);
+                    MessageService.ShowToast("ç™»å½•æˆåŠŸï¼", "æˆåŠŸç™»å½•åˆ°MSL FrpæœåŠ¡", NotificationType.Success);
 
                     MainContent = new FrpMainViewModel(json)
                     {
@@ -76,7 +76,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 }
                 else
                 {
-                    MessageService.ShowToast("»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü", (string)json["msg"], NotificationType.Error);
+                    MessageService.ShowToast("è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥", (string)json["msg"], NotificationType.Error);
                     Debug.WriteLine((string)json["msg"]);
                     return;
                 }
