@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     name: 构建
     strategy:
       matrix:
@@ -51,7 +51,7 @@ jobs:
             -p:RuntimeIdentifier=${{ matrix.runtime }} \
             -property:Configuration=Release \
             -p:UseAppHost=true \
-            -p:TargetFramework=net8.0 --self-contained \
+            -p:TargetFramework=net8.0 -p:SelfContained=true \
             -p:OutputPath=./publish/osx-${{ matrix.arch }}/
 
       - name: 上传普通构建结果
