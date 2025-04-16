@@ -38,8 +38,8 @@ jobs:
         if: matrix.buildapp == false
         run: |
           dotnet publish -c Release -r ${{ matrix.runtime }} \
-            --self-contained true \
-            -p:PublishSingleFile=true \
+            --self-contained \
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none \
             -p:PublishTrimmed=true \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
         
