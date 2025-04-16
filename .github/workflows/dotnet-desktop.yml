@@ -60,7 +60,7 @@ jobs:
         with:
           name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
           path: |
-            ./publish/${{ matrix.os }}-${{ matrix.arch }}/publish/**
+            ./publish/${{ matrix.os }}-${{ matrix.arch }}/
             !**/*.pdb
 
       - name: 上传Mac App包构建结果
@@ -69,6 +69,6 @@ jobs:
         with:
           name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
           path: |
-            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app
+            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app/*
             !**/*.pdb
           
