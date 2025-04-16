@@ -22,7 +22,7 @@ jobs:
           - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: true }
     steps:
       - name: 签出分支
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: 拉取子模块
         run: git submodule update --init --recursive
