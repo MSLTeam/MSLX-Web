@@ -50,7 +50,7 @@ namespace MSLX.Core.ViewModels
             switch (FrpcConfigType)
             {
                 case "toml":
-                    string _frpcConfig = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", FrpcId.ToString(),"frpc.toml"));
+                    string _frpcConfig = File.ReadAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", FrpcId.ToString(),"frpc.toml"));
                     var reader = new StringReader(_frpcConfig);
                     TomlTable frpcToml = TOML.Parse(reader);
                     if (FrpcService == "MSLFrp")
@@ -92,7 +92,7 @@ namespace MSLX.Core.ViewModels
             }
             
             // 检查Frpc程序是否存在
-            if (!File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile", $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}")))
+            if (!File.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile", $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}")))
             {
                 // 开始下载Frpc
                 switch (FrpcService)
@@ -114,11 +114,11 @@ namespace MSLX.Core.ViewModels
                                     MessageService.ShowToast("正在下载Frpc", "正在下载MSL Frpc客户端···", NotificationType.Information);
                                     // 下载文件
                                     await DownloadFile(downloadUrl,
-                                        Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+                                        Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                                             $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"));
                                     
                                     // 校验sha256
-                                    if (!FileHelper.CheckFileSha256(Path.Combine(AppContext.BaseDirectory, "Configs",
+                                    if (!FileHelper.CheckFileSha256(Path.Combine(ConfigService.GetAppDataPath(), "Configs",
                                                 "FrpcExecutableFile",
                                                 $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"),
                                             downloadInfo["data"]["cli"][0]["download"][PlatFormHelper.GetOs()]?[
@@ -130,19 +130,19 @@ namespace MSLX.Core.ViewModels
                                     // 解压
                                     if (PlatFormHelper.GetOs() == "Windows")
                                     {
-                                        FileHelper.ExtractZip(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+                                        FileHelper.ExtractZip(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                                             $"{_frpcFileName}.zip"),
-                                            Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile"));
+                                            Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile"));
                                     }
                                     else
                                     {
-                                        FileHelper.ExtractTarGz(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+                                        FileHelper.ExtractTarGz(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                                             $"{_frpcFileName}.tar.gz"),
-                                            Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile"));
+                                            Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile"));
                                     }
 
                                     ConsoleLogs = "解压成功！";
-                                    File.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+                                    File.Delete(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                                         $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"));
                                     
                                 }
@@ -162,7 +162,7 @@ namespace MSLX.Core.ViewModels
             string args;
             if (FrpcConfigType == "cmd")
             {
-                args = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc",
+                args = File.ReadAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc",
                     FrpcId.ToString(), "frpc.cmd"));
             }
             else
@@ -174,16 +174,16 @@ namespace MSLX.Core.ViewModels
             if (PlatFormHelper.GetOs() != "Windows")
             {
                 // 设置可执行权限
-                FileHelper.SetFileExecutable(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",_frpcFileName));
+                FileHelper.SetFileExecutable(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",_frpcFileName));
             }
 
             ConsoleLogs = "开始启动Frpc进程···";
             // 创建一个新的 Process 对象
             process = new Process();
             // 设置启动信息
-            process.StartInfo.FileName = Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile", $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}");
+            process.StartInfo.FileName = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile", $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}");
             process.StartInfo.Arguments = args;
-            process.StartInfo.WorkingDirectory = Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc",
+            process.StartInfo.WorkingDirectory = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc",
                 FrpcId.ToString());
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;

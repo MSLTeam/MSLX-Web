@@ -13,10 +13,22 @@ namespace MSLX.Core.Utils
         public static IConfigService Config { get; } = new IConfigService();
         public static ServerListConfig ServerList { get; } = new ServerListConfig();
         public static FrpListConfig FrpList { get; } = new FrpListConfig();
+        
+        public static string GetAppDataPath()
+        {
+            if (PlatFormHelper.GetOs() == "MacOS")
+            {
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MSLX");
+            }
+            else
+            {
+                return AppContext.BaseDirectory;
+            }
+        }
 
         public class IConfigService : IDisposable
         {
-            private readonly string _configPath = Path.Combine(AppContext.BaseDirectory, "Configs", "config.json");
+            private readonly string _configPath = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "config.json");
 
             // 缓存对象
             private JObject _configCache;
@@ -116,7 +128,7 @@ namespace MSLX.Core.Utils
 
         public class ServerListConfig : IDisposable
         {
-            private readonly string _serverListPath = Path.Combine(AppContext.BaseDirectory, "Configs", "ServerList.json");
+            private readonly string _serverListPath = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "ServerList.json");
 
             // 缓存对象
             private JArray _serverListCache;
@@ -301,7 +313,7 @@ namespace MSLX.Core.Utils
 
         public class FrpListConfig : IDisposable
         {
-            private readonly string _frpListPath = Path.Combine(AppContext.BaseDirectory, "Configs", "FrpList.json");
+            private readonly string _frpListPath = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpList.json");
             private JArray _frpListCache;
             private readonly ReaderWriterLockSlim _frpListLock = new ReaderWriterLockSlim();
 
@@ -358,7 +370,7 @@ namespace MSLX.Core.Utils
                         return false;
 
                     // 写入frpc配置文件 （为数不多好懂的地方捏～）
-                    string folderPath = Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", id.ToString());
+                    string folderPath = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", id.ToString());
                     string filePath = Path.Combine(folderPath, $"frpc.{configType}");
                     try
                     {
@@ -398,7 +410,7 @@ namespace MSLX.Core.Utils
                     _frpListCache.Remove(target);
                     SaveJson(_frpListPath, _frpListCache);
                     // 删除配置文件文件夹
-                    Directory.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", id.ToString()),true);
+                    Directory.Delete(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", id.ToString()),true);
                     return true;
                 }
                 finally

@@ -46,9 +46,9 @@ public partial class P2PConnectViewModel : ViewModelBase
         VisitorPort = "25565";
         try
         {
-            if (File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml")))
+            if (File.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml")))
             {
-                string configs = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"));
+                string configs = File.ReadAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml"));
                 if (configs.Contains("xtcp"))
                 {
                     var reader = new StringReader(configs);
@@ -71,7 +71,7 @@ public partial class P2PConnectViewModel : ViewModelBase
                 }
                 else
                 {
-                    File.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"));
+                    File.Delete(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml"));
                 }
             }
         }
@@ -104,11 +104,11 @@ public partial class P2PConnectViewModel : ViewModelBase
                 return;
             }
             string configs = $"serverAddr = \"{server.Split(":")[0]}\"\nserverPort = {server.Split(":")[1]}\n\n[[proxies]]\nname = \"{HostName}\"\ntype = \"xtcp\"\nlocalIP = \"127.0.0.1\"\nlocalPort = {HostPort}\nsecretKey = \"{HostPassword}\"";
-            if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc")))
+            if (!Directory.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc")))
             {
-                Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc"));
+                Directory.CreateDirectory(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc"));
             }
-            File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"), configs);
+            File.WriteAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml"), configs);
             RunFrpc();
         }catch (Exception e)
         {
@@ -140,11 +140,11 @@ public partial class P2PConnectViewModel : ViewModelBase
                 return;
             }
             string configs = $"serverAddr = \"{server.Split(":")[0]}\"\nserverPort = {server.Split(":")[1]}\n\n[[visitors]]\nname = \"msl_p2p_visitor\"\ntype = \"xtcp\"\nserverName = \"{VisitorName}\"\nsecretKey = \"{VisitorPassword}\"\nbindAddr = \"127.0.0.1\"\nbindPort = {VisitorPort}\n";
-            if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc")))
+            if (!Directory.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc")))
             {
-                Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc"));
+                Directory.CreateDirectory(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc"));
             }
-            File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml"), configs);
+            File.WriteAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml"), configs);
             RunFrpc();
         }catch (Exception e)
         {
@@ -179,13 +179,13 @@ public partial class P2PConnectViewModel : ViewModelBase
 
     private async Task RunFrpc()
     {
-        if (!File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc", "p2p.toml")))
+        if (!File.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml")))
         {
             ConsoleLogs = "配置文件不存在 联机服务启动失败！";
             return;
         }
         await CheckAndDownloadFrpc();
-        if (!File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+        if (!File.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                 $"frpc{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}")))
         {
             ConsoleLogs = "Frpc不存在 联机服务启动失败！";
@@ -196,9 +196,9 @@ public partial class P2PConnectViewModel : ViewModelBase
         // 创建一个新的 Process 对象
         process = new Process();
         // 设置启动信息
-        process.StartInfo.FileName = Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile", $"frpc{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}");
+        process.StartInfo.FileName = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile", $"frpc{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}");
         process.StartInfo.Arguments = "-c p2p.toml";
-        process.StartInfo.WorkingDirectory = Path.Combine(AppContext.BaseDirectory, "Configs", "Frpc");
+        process.StartInfo.WorkingDirectory = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc");
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
@@ -226,7 +226,7 @@ public partial class P2PConnectViewModel : ViewModelBase
     {
         string _frpcFileName = "frpc";
         // 检查Frpc程序是否存在
-        if (!File.Exists(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+        if (!File.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                 $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}")))
         {
             // 开始下载Frpc
@@ -250,11 +250,11 @@ public partial class P2PConnectViewModel : ViewModelBase
                         MessageService.ShowToast("正在下载Frpc", "正在下载Frpc客户端···", NotificationType.Information);
                         // 下载文件
                         await DownloadFile(downloadUrl,
-                            Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+                            Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                                 $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"));
 
                         // 校验sha256
-                        if (!FileHelper.CheckFileSha256(Path.Combine(AppContext.BaseDirectory, "Configs",
+                        if (!FileHelper.CheckFileSha256(Path.Combine(ConfigService.GetAppDataPath(), "Configs",
                                     "FrpcExecutableFile",
                                     $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"),
                                 downloadInfo["data"]["cli"][0]["download"][PlatFormHelper.GetOs()]?[
@@ -266,21 +266,21 @@ public partial class P2PConnectViewModel : ViewModelBase
                         // 解压
                         if (PlatFormHelper.GetOs() == "Windows")
                         {
-                            FileHelper.ExtractZip(Path.Combine(AppContext.BaseDirectory, "Configs",
+                            FileHelper.ExtractZip(Path.Combine(ConfigService.GetAppDataPath(), "Configs",
                                     "FrpcExecutableFile",
                                     $"{_frpcFileName}.zip"),
-                                Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile"));
+                                Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile"));
                         }
                         else
                         {
-                            FileHelper.ExtractTarGz(Path.Combine(AppContext.BaseDirectory, "Configs",
+                            FileHelper.ExtractTarGz(Path.Combine(ConfigService.GetAppDataPath(), "Configs",
                                     "FrpcExecutableFile",
                                     $"{_frpcFileName}.tar.gz"),
-                                Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile"));
+                                Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile"));
                         }
 
                         ConsoleLogs = "解压成功！";
-                        File.Delete(Path.Combine(AppContext.BaseDirectory, "Configs", "FrpcExecutableFile",
+                        File.Delete(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
                             $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"));
                     }
                 }

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -47,6 +48,7 @@ namespace MSLX.Core.ViewModels
             {
                 Announcement = Message;
             }
+            Console.WriteLine("数据目录：" + ConfigService.GetAppDataPath());
         }
         /*
         public RelayCommand LoadedCommand { get; }
