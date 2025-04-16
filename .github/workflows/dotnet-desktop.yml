@@ -109,7 +109,7 @@ jobs:
         run: |
           cd temp
           for dir in */; do
-            zip -r "${dir%/}-$(date +'%Y%m%d').zip" "$dir"  # 按文件夹名+日期命名
+          ditto -c -k --keepParent "$dir" "${dir%/}-$(date +'%Y%m%d').zip"
           done
           cd ..
 
