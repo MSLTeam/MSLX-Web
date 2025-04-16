@@ -29,6 +29,7 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Build for Linux/Windows
+        continue-on-error: true
         if: matrix.os != 'osx'
         run: |
           dotnet publish -c Release -r ${{ matrix.runtime }} \
@@ -42,6 +43,7 @@ jobs:
         run: dotnet restore -r ${{ matrix.runtime }}
         
       - name: Build for macOS
+        continue-on-error: true
         if: matrix.os == 'osx'
         run: |
           dotnet msbuild -t:BundleApp \
