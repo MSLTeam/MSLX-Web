@@ -14,8 +14,8 @@ namespace MSLX.Core.Models.FrpService
             public required string Name { get; set; }
             public required string Remarks { get; set; }
             public required string Status { get; set; }
-            public required string LocalPort { get; set; }
-            public required string RemotePort { get; set; }
+            public required int LocalPort { get; set; }
+            public required int RemotePort { get; set; }
             public required string Node { get; set; }
         }
 

@@ -22,69 +22,72 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
 {
     public partial class FrpMainViewModel : ViewModelBase
     {
+        public string UserToken { get; set; } = string.Empty;
         // tabcontrol
         [ObservableProperty]
         private int _tabIndex;
-        
+
         // 存储的隧道
         [ObservableProperty]
-        private ObservableCollection<Tunnel> _tunnels;
-        
+        private ObservableCollection<Tunnel> _tunnels = new ObservableCollection<Tunnel>();
+
         // 存储的节点
         [ObservableProperty]
-        private ObservableCollection<Node> _nodes;
-        
+        private ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
+
+        // 节点ID到名称映射字典
+        private Dictionary<int, string> _nodeMap = new Dictionary<int, string>();
+
         // 用户信息字段
         [ObservableProperty]
         private string _username = "loading";
-        
+
         [ObservableProperty]
         private string _userGroup = "普通用户";
-        
+
         [ObservableProperty]
         private string _userMaxTunnels = "3";
-        
+
         [ObservableProperty]
         private string _userOutdated = "loading";
 
         // 选中的隧道
         [ObservableProperty]
-        private Tunnel _selectedTunnel;
-        
+        private Tunnel? _selectedTunnel;
+
         // 选中的隧道
         [ObservableProperty]
-        private Node _selectedNode;
-        
-        public string UserToken { get; set; }
-        
-        // 节点ID到名称映射字典
-        private Dictionary<int, string> _nodeMap = new Dictionary<int, string>();
-        
+        private Node? _selectedNode;
+
         // 创建节点相关字段
         [ObservableProperty]
         private string _createName;
-        
+
         [ObservableProperty]
         private int _createType = 0;
-        
+
         [ObservableProperty]
         private string _createLocalIp = "127.0.0.1";
-        
+
         [ObservableProperty]
         private string _createLocalPort = "25565";
-        
+
         [ObservableProperty]
         private string _createRemotePort;
-        
+
         [ObservableProperty]
-        private string _createBindDomain;
+        private string? _createBindDomain;
 
         public FrpMainViewModel(JObject json)
         {
-            Username = (string)json["data"]["name"];
-            UserGroup = (int)json["data"]["user_group"] == 6 ? "超级管理员" : (int)json["data"]["user_group"] == 1 ? "高级会员" : (int)json["data"]["user_group"] == 2 ? "超级会员" : "普通用户";
-            UserMaxTunnels = (string)json["data"]["maxTunnelCount"];
-            UserOutdated = (long)json["data"]["outdated"] == 3749682420 ? "长期有效" : StringHelper.SecondsToDateTime((long)json["data"]["outdated"]).ToString();
+            Username = json["data"]?["name"]?.Value<string>() ?? string.Empty;
+            int userGroup = json["data"]?["user_group"]?.Value<int>() ?? 0;
+            UserGroup = userGroup == 6 ? "超级管理员"
+                : userGroup == 1 ? "高级会员"
+                : userGroup == 2 ? "超级会员" : "普通用户";
+            UserMaxTunnels = json["data"]?["maxTunnelCount"]?.Value<string>() ?? string.Empty;
+            UserOutdated = json["data"]?["outdated"]?.Value<long>() == 3749682420 ? "长期有效"
+                : StringHelper.SecondsToDateTime(json["data"]?["outdated"]?.Value<long>() ?? 0).ToString();
 
             CreateRemotePort = StringHelper.GetRandomNumber(10240, 60000).ToString();
             CreateName = StringHelper.GenerateRandomString(6, "MSLX_");
@@ -109,8 +112,8 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
             await GetNodes();
             await GetTunnels();
         }
-        
-        // 新增获取节点列表的方法
+
+        [RelayCommand]
         private async Task GetNodes()
         {
             try
@@ -119,47 +122,67 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 {
                     ["Authorization"] = $"Bearer {UserToken}"
                 });
-                JObject json = JObject.Parse(response.Content);
-                if ((int)json["code"] == 200)
+                if (response.StatusCode != 200 || response.Content == null)
                 {
-                    _nodeMap.Clear();
-                    foreach (var node in json["data"])
-                    {
-                        int id = (int)node["id"];
-                        string name = (string)node["node"];
-                        _nodeMap[id] = name;
-                        
-                        Nodes = new ObservableCollection<Node>();
-                        foreach (var nodeItem in json["data"])
-                        {
-                            int nodeId = (int)nodeItem["id"];
-                            string nodeName = (string)nodeItem["node"];
-                            _nodeMap[nodeId] = nodeName; // id和name的字典映射
-                        
-                            // 填充到节点列表数据
-                            Nodes.Add(new Node()
-                            {
-                                Id = (int)nodeItem["id"],
-                                AllowUserGroup = (int)nodeItem["allow_user_group"],
-                                Type = (int)nodeItem["allow_user_group"]==0?"免费":(int)nodeItem["allow_user_group"]==1?"高级":"超级",
-                                Bandwidth = (int)nodeItem["bandwidth"],
-                                HttpSupport = (int)nodeItem["http_support"] == 1,
-                                UdpSupport = (int)nodeItem["udp_support"] == 1,
-                                KcpSupport = (int)nodeItem["kcp_support"] == 1,
-                                MaxOpenPort = (int)nodeItem["max_open_port"],
-                                MinOpenPort = (int)nodeItem["min_open_port"],
-                                NeedRealName = (int)nodeItem["need_real_name"] == 1,
-                                Name = nodeName,
-                                Status = (int)nodeItem["status"] == 1 ? "在线" : "离线",
-                                Remarks = (string)nodeItem["remarks"]
-                            });
-                        }
+                    MessageService.ShowToast("错误", "获取节点列表失败", NotificationType.Error);
+                    return;
+                }
+                JObject json = JObject.Parse(response.Content);
+                if (json["code"]?.Value<int>() != 200)
+                {
+                    MessageService.ShowToast("获取隧道列表失败", json["msg"]?.Value<string>() ?? "Err", NotificationType.Error);
+                    return;
+                }
+                _nodeMap.Clear();
+                JToken? data = json["data"];
+                if (data == null || !data.HasValues)
+                {
+                    MessageService.ShowToast("获取节点列表失败", "没有节点数据", NotificationType.Error);
+                    return;
+                }
 
-                        if (Nodes.Count > 0)
-                        {
-                            SelectedNode = Nodes[0];
-                        }
+                foreach (var node in data)
+                {
+                    int id = node["id"]?.Value<int>() ?? 0;
+                    string name = node["node"]?.Value<string>() ?? string.Empty;
+                    _nodeMap[id] = name;
+
+                    JToken? nodeData = json["data"];
+                    if (nodeData == null || !nodeData.HasValues)
+                    {
+                        MessageService.ShowToast("获取节点列表失败", "没有节点数据", NotificationType.Error);
+                        return;
                     }
+                    Nodes.Clear();
+                    foreach (var nodeItem in nodeData)
+                    {
+                        int nodeId = nodeItem["id"]?.Value<int>() ?? 0;
+                        string nodeName = nodeItem["node"]?.Value<string>() ?? string.Empty;
+                        _nodeMap[nodeId] = nodeName; // id和name的字典映射
+
+                        // 填充到节点列表数据
+                        Nodes.Add(new Node()
+                        {
+                            Id = nodeItem["id"]?.Value<int>() ?? 0,
+                            AllowUserGroup = nodeItem["allow_user_group"]?.Value<int>() ?? 0,
+                            Type = (nodeItem["allow_user_group"]?.Value<int>() ?? 0) == 0 ? "免费" : (nodeItem["allow_user_group"]?.Value<int>() ?? 1) == 1 ? "高级" : "超级",
+                            Bandwidth = nodeItem["bandwidth"]?.Value<int>() ?? 0,
+                            HttpSupport = (nodeItem["http_support"]?.Value<int>() ?? 0) == 1,
+                            UdpSupport = (nodeItem["udp_support"]?.Value<int>() ?? 0) == 1,
+                            KcpSupport = (nodeItem["kcp_support"]?.Value<int>() ?? 0) == 1,
+                            MaxOpenPort = nodeItem["max_open_port"]?.Value<int>() ?? 0,
+                            MinOpenPort = nodeItem["min_open_port"]?.Value<int>() ?? 0,
+                            NeedRealName = (nodeItem["need_real_name"]?.Value<int>() ?? 0) == 1,
+                            Name = nodeName,
+                            Status = (nodeItem["status"]?.Value<int>() ?? 0) == 1 ? "在线" : "离线",
+                            Remarks = nodeItem["remarks"]?.Value<string>() ?? string.Empty
+                        });
+                    }
+                }
+
+                if (Nodes.Count > 0)
+                {
+                    SelectedNode = Nodes[0];
                 }
             }
             catch (Exception ex)
@@ -167,7 +190,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 Console.WriteLine(ex.Message);
             }
         }
-        
+
         [RelayCommand]
         private async Task GetTunnels()
         {
@@ -177,32 +200,46 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 {
                     ["Authorization"] = $"Bearer {UserToken}"
                 });
-                JObject json = JObject.Parse(response.Content);
-                if ((int)json["code"] == 200)
+                if (response.StatusCode != 200 || response.Content == null)
                 {
-                    Console.WriteLine("获取隧道列表成功！");
-                        Tunnels = new ObservableCollection<Tunnel>();
-                        foreach (var tunnel in json["data"])
-                        {
-                            int nodeId = (int)tunnel["node_id"];
-                            string nodeName = _nodeMap.ContainsKey(nodeId) ? _nodeMap[nodeId] : "未知节点";
-                            Tunnels.Add(new Tunnel()
-                            {
-                                Id = (int)tunnel["id"],
-                                Name = (string)tunnel["name"],
-                                Remarks = (string)tunnel["remarks"],
-                                Status = (int)tunnel["status"] == 0 ? "隧道未启动" : "隧道已在线",
-                                LocalPort = (string)tunnel["local_port"],
-                                RemotePort = (string)tunnel["remote_port"],
-                                Node = nodeName
-                            });
-                            Console.WriteLine($"隧道名称：{tunnel["name"]}，隧道状态：{tunnel["status"]}，本地端口：{tunnel["local_port"]}，远程端口：{tunnel["remote_port"]}，节点：{tunnel["node_id"]}");
-                        }
+                    MessageService.ShowToast("错误", "获取隧道列表失败", NotificationType.Error);
+                    return;
+                }
+                JObject json = JObject.Parse(response.Content);
+                if (json["code"]?.Value<int>() != 200)
+                {
+                    MessageService.ShowToast("获取隧道列表失败", json["msg"]?.Value<string>() ?? "Err", NotificationType.Error);
+                    return;
+                }
 
-                        if (Tunnels.Count > 0)
-                        {
-                            SelectedTunnel = Tunnels[0];
-                        }
+                JToken? data = json["data"];
+                if (data == null || !data.HasValues)
+                {
+                    MessageService.ShowToast("获取隧道列表失败", "没有隧道数据", NotificationType.Error);
+                    return;
+                }
+
+                Tunnels.Clear();
+                foreach (var tunnel in data)
+                {
+                    int nodeId = tunnel["node_id"]?.Value<int>() ?? 0;
+                    string nodeName = _nodeMap.ContainsKey(nodeId) ? _nodeMap[nodeId] : "未知节点";
+                    Tunnels.Add(new Tunnel()
+                    {
+                        Id = tunnel["id"]?.Value<int>() ?? 0,
+                        Name = tunnel["name"]?.Value<string>() ?? string.Empty,
+                        Remarks = tunnel["remarks"]?.Value<string>() ?? string.Empty,
+                        Status = (tunnel["status"]?.Value<int>() ?? 0) == 0 ? "隧道未启动" : "隧道已在线",
+                        LocalPort = tunnel["local_port"]?.Value<int>() ?? 0,
+                        RemotePort = tunnel["remote_port"]?.Value<int>() ?? 0,
+                        Node = nodeName
+                    });
+                    Console.WriteLine($"隧道名称：{tunnel["name"]}，隧道状态：{tunnel["status"]}，本地端口：{tunnel["local_port"]}，远程端口：{tunnel["remote_port"]}，节点：{tunnel["node_id"]}");
+                }
+
+                if (Tunnels.Count > 0)
+                {
+                    SelectedTunnel = Tunnels[0];
                 }
             }
             catch (Exception ex)
@@ -210,7 +247,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 Console.WriteLine(ex.Message);
             }
         }
-        
+
         [RelayCommand]
         private async Task SetTunnelConfig()
         {
@@ -222,33 +259,45 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
             {
                 try
                 {
-                    HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/getTunnelConfig",  new Dictionary<string, string>()
+                    HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/getTunnelConfig", new Dictionary<string, string>()
                     {
                         ["id"] = SelectedTunnel.Id.ToString()
                     }, new Dictionary<string, string>()
                     {
                         ["Authorization"] = $"Bearer {UserToken}"
                     });
+                    if (response.IsSuccessStatusCode == false || response.Content == null)
+                    {
+                        MessageService.ShowToast("隧道配置失败", "获取隧道配置失败", NotificationType.Error);
+                        return;
+                    }
                     JObject json = JObject.Parse(response.Content);
-                    if ((int)json["code"] == 200)
+                    if (json["code"]?.Value<int>() != 200)
                     {
-                        ConfigService.FrpList.CreateFrpConfig(
-                            $"{SelectedTunnel.Name} | {SelectedTunnel.Node}", "MSLFrp","toml", json["data"].ToString());
-                        MessageService.ShowToast("隧道配置成功", "MSLFrp隧道配置成功！", NotificationType.Success);
-                        MainViewSideMenu.NavigateTo<FrpListViewModel>();
-                        MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
+                        MessageService.ShowToast("隧道配置失败", json["msg"]?.Value<string>() ?? "Err", NotificationType.Error);
+                        return;
                     }
-                    else
+                    JToken? data = json["data"];
+                    if (data == null || !data.HasValues)
                     {
-                        MessageService.ShowToast("隧道配置失败", json["msg"].ToString(), NotificationType.Error);
+                        MessageService.ShowToast("隧道配置失败", "没有隧道配置数据", NotificationType.Error);
+                        return;
                     }
-                }catch (Exception ex)
+                    ConfigService.FrpList.CreateFrpConfig(
+                        $"{SelectedTunnel.Name} | {SelectedTunnel.Node}",
+                        "MSLFrp", "toml",
+                        data.Value<string>() ?? string.Empty);
+                    MessageService.ShowToast("隧道配置成功", "MSLFrp隧道配置成功！", NotificationType.Success);
+                    MainViewSideMenu.NavigateTo<FrpListViewModel>();
+                    MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
+                }
+                catch (Exception ex)
                 {
                     MessageService.ShowToast("隧道配置失败", ex.Message, NotificationType.Error);
                 }
             }
         }
-        
+
         [RelayCommand]
         private async Task DeleteTunnel()
         {
@@ -267,7 +316,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     {
                         ["Authorization"] = $"Bearer {UserToken}"
                     });
-                    JObject json = JObject.Parse(response.Content);
+                    JObject json = JObject.Parse(response.Content ?? string.Empty);
                     if (json["code"]?.Value<int>() == 200)
                     {
                         MessageService.ShowToast("删除隧道", "隧道删除成功！", NotificationType.Success);
@@ -277,7 +326,8 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     {
                         MessageService.ShowToast("删除隧道失败", json["msg"]?.Value<string>() ?? "未知错误", NotificationType.Error);
                     }
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageService.ShowToast("删除隧道失败", ex.Message, NotificationType.Error);
                 }
@@ -305,14 +355,14 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                             ["remote_port"] = CreateRemotePort,
                             ["id"] = SelectedNode.Id.ToString(),
                             ["type"] = type,
-                            ["remarks"] = $"Create By MSLX {Assembly.GetExecutingAssembly().GetName().Version.ToString()}",
+                            ["remarks"] = $"Create By MSLX {Assembly.GetExecutingAssembly().GetName().Version}",
                             ["use_kcp"] = "false"
                         }, new Dictionary<string, string>()
                         {
                             ["Authorization"] = $"Bearer {UserToken}"
                         }
                     );
-                    JObject json = JObject.Parse(response.Content);
+                    JObject json = JObject.Parse(response?.Content ?? string.Empty);
                     if (json["code"]?.Value<int>() == 200)
                     {
                         MessageService.ShowToast("创建隧道", "隧道创建成功！", NotificationType.Success);
@@ -323,7 +373,8 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     {
                         MessageService.ShowToast("创建隧道失败", json["msg"]?.Value<string>() ?? "未知错误", NotificationType.Error);
                     }
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageService.ShowToast("创建隧道失败", ex.Message, NotificationType.Error);
                 }

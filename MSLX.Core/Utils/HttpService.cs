@@ -281,6 +281,7 @@ namespace MSLX.Core.Utils
             public Dictionary<string, string> Headers { get; set; } = new();
             public Dictionary<string, string> Cookies { get; set; } = new();
             public bool IsSuccessStatusCode { get; set; }
+            public object? ResponseException { get; set; }
         }
 
         public async Task<HttpResponse> SendAsync(HttpRequest request)
@@ -307,7 +308,21 @@ namespace MSLX.Core.Utils
             }
             catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
             {
-                throw new TimeoutException("Request timed out", ex);
+                return new HttpResponse
+                {
+                    StatusCode = 0,
+                    IsSuccessStatusCode = false,
+                    ResponseException = new TimeoutException("Request timed out", ex)
+                };
+            }
+            catch(Exception ex)
+            {
+                return new HttpResponse
+                {
+                    StatusCode = 0,
+                    IsSuccessStatusCode = false,
+                    ResponseException = ex
+                };
             }
         }
 
