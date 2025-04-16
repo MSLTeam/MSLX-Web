@@ -102,13 +102,10 @@ jobs:
         run: |
           cd temp
           for dir in */; do
-            zip -r --symlinks "${dir%/}-$(date +'%Y%m%d').zip" "$dir"
+            ditto -c -k --keepParent "$dir" "${dir%/}-$(date +'%Y%m%d').zip"
           done
           cd ..
 
-      # 验证压缩结果
-      - name: 列出文件树
-        run: tree temp
 
       # 发布ZIP文件
       - name: 发布构建结果
