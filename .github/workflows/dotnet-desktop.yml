@@ -17,6 +17,7 @@ jobs:
           - { os: windows, arch: x64, runtime: win-x64 }
           - { os: windows, arch: arm64, runtime: win-arm64 }
           - { os: osx, arch: arm64, runtime: osx-arm64 }
+          - { os: osx, arch: x64, runtime: osx-x64 }
     steps:
       - uses: actions/checkout@v4
 
