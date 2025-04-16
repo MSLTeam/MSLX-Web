@@ -39,6 +39,7 @@ jobs:
           dotnet publish -c Release -r ${{ matrix.runtime }} \
             --self-contained true \
             -p:PublishSingleFile=true \
+            -p:PublishTrimmed=true \
             -p:PublishTrimmed=false \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
         
