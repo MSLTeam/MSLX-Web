@@ -1,0 +1,120 @@
+name: 构建MSLX Dev
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    name: 构建
+    strategy:
+      matrix:
+        include:
+          - { os: linux, arch: x64, runtime: linux-x64 ,buildapp: false  }
+          - { os: linux, arch: arm64, runtime: linux-arm64 ,buildapp: false  }
+          - { os: windows, arch: x64, runtime: win-x64 ,buildapp: false  }
+          - { os: windows, arch: arm64, runtime: win-arm64 ,buildapp: false  }
+          - { os: osx, arch: arm64, runtime: osx-arm64 ,buildapp: false  }
+          - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: false }
+          - { os: osx, arch: arm64, runtime: osx-arm64 ,buildapp: true  }
+          - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: true }
+    steps:
+      - name: 签出分支
+        uses: actions/checkout@v4
+
+      - name: 拉取子模块
+        run: git submodule update --init --recursive
+        
+      - name: 设置.NET 9.X环境
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: 构建普通版本
+        continue-on-error: true
+        if: matrix.buildapp == false
+        run: |
+          dotnet publish -c Release -r ${{ matrix.runtime }} \
+            --self-contained \
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
+        
+      - name: 构建Mac App打包版本
+        continue-on-error: true
+        if: matrix.buildapp == true
+        run: |
+          dotnet restore -r ${{ matrix.runtime }}
+          dotnet msbuild -t:BundleApp \
+            -p:RuntimeIdentifier=${{ matrix.runtime }} \
+            -property:Configuration=Release \
+            -p:UseAppHost=true \
+            -p:TargetFramework=net8.0 -p:SelfContained=true -p:PublishSingleFile=true \
+            -p:OutputPath=./publish/osx-${{ matrix.arch }}/
+
+      - name: 上传普通构建结果
+        if: matrix.buildapp == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
+          path: |
+            ./publish/${{ matrix.os }}-${{ matrix.arch }}/
+            !**/*.pdb
+            !**/*.xml
+            !**/*.icns
+            
+      - name: 清理 publish 目录（仅保留 MSLX.app）
+        if: matrix.buildapp == true
+        run: |
+          cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/
+          # 删除所有非 MSLX.app 的文件和子目录
+          shopt -s extglob  # 启用扩展通配符（仅限 Bash）
+          rm -rf !("MSLX.app")
+          
+      - name: 上传Mac App包构建结果
+        if: matrix.buildapp == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
+          path: |
+            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/
+            !**/*.pdb
+            !**/*.xml
+
+  upload_and_dist:
+    needs:
+      - build
+
+    runs-on: ubuntu-latest
+    name: 上传所有构建结果
+    steps:
+      # 下载构建文件（保留原始目录结构）
+      - name: 下载构建文件
+        uses: actions/download-artifact@v4
+        with:
+          path: temp
+          pattern: MSLX-*
+          merge-multiple: false  # 不合并多构件[1,3](@ref)
+
+      - name: 压缩构建文件夹
+        run: |
+          cd temp
+          for dir in */; do
+            ditto -c -k --keepParent "$dir" "${dir%/}-$(date +'%Y%m%d').zip"
+          done
+          cd ..
+
+
+      # 发布ZIP文件
+      - name: 发布构建结果
+        uses: softprops/action-gh-release@v2  
+        with:
+          files: temp/*.zip  # 仅匹配生成的ZIP文件[2,5](@ref)
+          draft: false 
+          prerelease: true
+          update: true 
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: MSLX开发版本自动构建  
+          tag_name: Dev
