@@ -37,10 +37,13 @@ jobs:
             -p:PublishTrimmed=false \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}
 
+      - name: test
+        if: matrix.os == 'osx'
+        run: dotnet restore -r ${{ matrix.runtime }}
+        
       - name: Build for macOS
         if: matrix.os == 'osx'
         run: |
-          dotnet restore -r ${{ matrix.runtime }}
           dotnet msbuild -t:BundleApp \
             -p:RuntimeIdentifier=${{ matrix.runtime }} \
             -property:Configuration=Release \
