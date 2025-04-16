@@ -51,7 +51,7 @@ jobs:
             -p:RuntimeIdentifier=${{ matrix.runtime }} \
             -property:Configuration=Release \
             -p:UseAppHost=true \
-            -p:TargetFramework=net8.0 -p:SelfContained=true \
+            -p:TargetFramework=net8.0 -p:SelfContained=true -p:PublishSingleFile=true \
             -p:OutputPath=./publish/osx-${{ matrix.arch }}/
 
       - name: 上传普通构建结果
