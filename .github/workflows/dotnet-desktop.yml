@@ -12,42 +12,41 @@ jobs:
     strategy:
       matrix:
         include:
-          - { os: linux, arch: x64, runtime: linux-x64 }
-          - { os: linux, arch: arm64, runtime: linux-arm64 }
-          - { os: windows, arch: x64, runtime: win-x64 }
-          - { os: windows, arch: arm64, runtime: win-arm64 }
-          - { os: osx, arch: arm64, runtime: osx-arm64 }
-          - { os: osx, arch: x64, runtime: osx-x64 }
+          - { os: linux, arch: x64, runtime: linux-x64 ,buildapp: false  }
+          - { os: linux, arch: arm64, runtime: linux-arm64 ,buildapp: false  }
+          - { os: windows, arch: x64, runtime: win-x64 ,buildapp: false  }
+          - { os: windows, arch: arm64, runtime: win-arm64 ,buildapp: false  }
+          - { os: osx, arch: arm64, runtime: osx-arm64 ,buildapp: false  }
+          - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: false }
+          - { os: osx, arch: arm64, runtime: osx-arm64 ,buildapp: true  }
+          - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: true }
     steps:
+      - name: 签出分支
       - uses: actions/checkout@v4
 
-      - name: Update Submodule
+      - name: 拉取子模块
         run: git submodule update --init --recursive
         
-      - name: Setup .NET 9.x
+      - name: 设置.NET 9.X环境
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
-      - name: Build for Linux/Windows
+      - name: 构建普通版本呢
         continue-on-error: true
-        if: matrix.os != 'osx'
+        if: matrix.buildapp == 'false'
         run: |
           dotnet publish -c Release -r ${{ matrix.runtime }} \
             --self-contained true \
             -p:PublishSingleFile=false \
             -p:PublishTrimmed=false \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
-
-      - name: test
-        if: matrix.os == 'osx'
-        run: dotnet restore -r ${{ matrix.runtime }}
         
-      - name: Build for macOS
+      - name: 构建Mac App打包版本
         continue-on-error: true
-        if: matrix.os == 'osx'
+        if: matrix.buildapp == 'true'
         run: |
-          cd MSLX.Desktop
+          dotnet restore -r ${{ matrix.runtime }}
           dotnet msbuild -t:BundleApp \
             -p:RuntimeIdentifier=${{ matrix.runtime }} \
             -property:Configuration=Release \
@@ -55,12 +54,22 @@ jobs:
             -p:TargetFramework=net8.0 \
             -p:OutputPath=./publish/osx-${{ matrix.arch }}/
 
-      - name: Upload artifact
+      - name: 上传普通构建结果
+        if: matrix.buildapp == 'false'
         uses: actions/upload-artifact@v4
         with:
-          name: MSLX.Desktop-${{ matrix.os }}-${{ matrix.arch }}
+          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
           path: |
             ./publish/${{ matrix.os }}-${{ matrix.arch }}/**
             ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/**
+            !**/*.pdb
+
+      - name: 上传Mac App包构建结果
+        if: matrix.buildapp == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
+          path: |
+            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app
             !**/*.pdb
           
