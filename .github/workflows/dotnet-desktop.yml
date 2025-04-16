@@ -46,6 +46,7 @@ jobs:
         continue-on-error: true
         if: matrix.os == 'osx'
         run: |
+          cd MSL.Desktop
           dotnet msbuild -t:BundleApp \
             -p:RuntimeIdentifier=${{ matrix.runtime }} \
             -property:Configuration=Release \
