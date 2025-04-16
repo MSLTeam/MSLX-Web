@@ -59,4 +59,4 @@ jobs:
           path: |
             ./publish/${{ matrix.os }}-${{ matrix.arch }}/**
             !**/*.pdb
-          if-no-files-found: error
+          
