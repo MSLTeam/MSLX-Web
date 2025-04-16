@@ -87,7 +87,7 @@ jobs:
     needs:
       - build
 
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     name: 上传所有构建结果
     steps:
       # 下载构建文件（保留原始目录结构）
