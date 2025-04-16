@@ -62,6 +62,8 @@ jobs:
           path: |
             ./publish/${{ matrix.os }}-${{ matrix.arch }}/
             !**/*.pdb
+            !**/*.xml
+            !**/*.icns
             
       - name: 清理 publish 目录（仅保留 MSLX.app）
         if: matrix.buildapp == true
