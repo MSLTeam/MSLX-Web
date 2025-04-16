@@ -40,7 +40,6 @@ jobs:
           dotnet publish -c Release -r ${{ matrix.runtime }} \
             --self-contained \
             -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none \
-            -p:PublishTrimmed=true \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
         
       - name: 构建Mac App打包版本
