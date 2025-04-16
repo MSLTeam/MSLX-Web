@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using Material.Icons.Avalonia;
 using MSLX.Core.Models;
+using MSLX.Core.Utils;
 using SukiUI.Controls;
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,8 @@ namespace MSLX.Core.ViewModels.CreateServer
         [RelayCommand]
         private void Cancel()
         {
-            MainViewModel.NavigateTo<ServerListViewModel>();
-            MainViewModel.NavigateRemove(this);
+            MainViewSideMenu.NavigateTo<ServerListViewModel>();
+            MainViewSideMenu.NavigateRemove(this);
         }
 
         [RelayCommand]
@@ -48,7 +49,7 @@ namespace MSLX.Core.ViewModels.CreateServer
             if (IsFastMode)
             {
                 // Navigate to FastModeViewModel
-                MainViewModel.NavigateTo(new SukiSideMenuItem
+                MainViewSideMenu.NavigateTo(new SukiSideMenuItem
                 {
                     Header = "快速模式",
                     Icon = new MaterialIcon()
@@ -58,12 +59,12 @@ namespace MSLX.Core.ViewModels.CreateServer
                     PageContent = new FastModeViewModel(createServerModel),
                     IsContentMovable = false
                 }, true, 2);
-                MainViewModel.NavigateRemove(this);
+                MainViewSideMenu.NavigateRemove(this);
             }
             else if (IsCustomMode)
             {
                 // Navigate to CustomModeViewModel
-                MainViewModel.NavigateTo(new SukiSideMenuItem
+                MainViewSideMenu.NavigateTo(new SukiSideMenuItem
                 {
                     Header = "经典模式",
                     Icon = new MaterialIcon()
@@ -73,12 +74,12 @@ namespace MSLX.Core.ViewModels.CreateServer
                     PageContent = new CustomModeViewModel(createServerModel),
                     IsContentMovable = false
                 }, true, 2);
-                MainViewModel.NavigateRemove(this);
+                MainViewSideMenu.NavigateRemove(this);
             }
             else if (IsImportMode)
             {
                 // Navigate to ImportModeViewModel
-                MainViewModel.NavigateTo<HomeViewModel>();
+                MainViewSideMenu.NavigateTo<HomeViewModel>();
             }
         }
     }

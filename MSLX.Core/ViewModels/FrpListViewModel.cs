@@ -76,17 +76,18 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void AddFrpcConfig()
         {
-            MainViewModel.NavigateRemove<FrpTunnelViewModel>();
-            MainViewModel.NavigateTo(new SukiSideMenuItem
+            MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
+
+            MainViewSideMenu.NavigateTo(new SukiSideMenuItem
             {
                 Header = "添加隧道",
                 Icon = new MaterialIcon()
                 {
                     Kind = MaterialIconKind.Add,
                 },
-                PageContent = new FrpTunnelViewModel(),
+                PageContent = new FrpProviderViewModel(),
                 IsContentMovable = false
-            }, true, 3);
+            }, true, MainViewSideMenu.GetActivePageIndex() + 1);
         }
 
         [RelayCommand]

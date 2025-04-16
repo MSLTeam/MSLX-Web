@@ -78,59 +78,36 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
         
         [ObservableProperty]
         private string _createBindDomain;
-        
 
-        [RelayCommand]
-        private async Task Inited()
+        public FrpMainViewModel(JObject json)
         {
+            Username = (string)json["data"]["name"];
+            UserGroup = (int)json["data"]["user_group"] == 6 ? "超级管理员" : (int)json["data"]["user_group"] == 1 ? "高级会员" : (int)json["data"]["user_group"] == 2 ? "超级会员" : "普通用户";
+            UserMaxTunnels = (string)json["data"]["maxTunnelCount"];
+            UserOutdated = (long)json["data"]["outdated"] == 3749682420 ? "长期有效" : StringHelper.SecondsToDateTime((long)json["data"]["outdated"]).ToString();
+
             CreateRemotePort = StringHelper.GetRandomNumber(10240, 60000).ToString();
             CreateName = StringHelper.GenerateRandomString(6, "MSLX_");
-            await GetFrpInfo();
         }
 
+        // Design Time
+        public FrpMainViewModel()
+        {
+            // 设计时数据
+            Username = "MSLX";
+            UserGroup = "普通用户";
+            UserMaxTunnels = "3";
+            UserOutdated = "长期有效";
+
+            CreateRemotePort = StringHelper.GetRandomNumber(10240, 60000).ToString();
+            CreateName = StringHelper.GenerateRandomString(6, "MSLX_");
+        }
+
+        [RelayCommand]
         private async Task GetFrpInfo()
         {
-            try
-            {
-                // 添加自动登录中弹窗
-                var dialog = MainViewModel.DialogManager.CreateDialog()
-                    .WithTitle("登录中")
-                    .WithContent(new TextBlock { Text = "获取用户信息……" });
-                dialog.TryShow();
-
-                // 获取MSL Frp用户信息
-                HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/userInfo",null, new Dictionary<string, string>()
-                {
-                    ["Authorization"] = $"Bearer {UserToken}"
-                });
-                MainViewModel.DialogManager.DismissDialog();
-                JObject json = JObject.Parse(response.Content);
-                if ((int)json["code"] == 200)
-                {
-                    MessageService.ShowToast("登录成功！","成功登录到MSL Frp服务", NotificationType.Success);
-                    Username = (string)json["data"]["name"];
-                    UserGroup = (int)json["data"]["user_group"]==6?"超级管理员":(int)json["data"]["user_group"]==1?"高级会员":(int)json["data"]["user_group"]==2?"超级会员":"普通用户";
-                    UserMaxTunnels = (string)json["data"]["maxTunnelCount"];
-                    UserOutdated = (long)json["data"]["outdated"] == 3749682420?"长期有效":StringHelper.SecondsToDateTime((long)json["data"]["outdated"]).ToString();
-                    
-                    // 获取隧道信息
-                    await GetNodes(); 
-                    await GetTunnels();
-                    
-                }
-                else
-                {
-                    MessageService.ShowToast("获取用户信息失败", (string)json["msg"], NotificationType.Error);
-                    Debug.WriteLine((string)json["msg"]);
-                    return;
-                }
-
-            }catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                MainViewModel.DialogManager.DismissDialog();
-                //ShowMainPage = false;
-            }
+            await GetNodes();
+            await GetTunnels();
         }
         
         // 新增获取节点列表的方法
@@ -258,8 +235,8 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                         ConfigService.FrpList.CreateFrpConfig(
                             $"{SelectedTunnel.Name} | {SelectedTunnel.Node}", "MSLFrp","toml", json["data"].ToString());
                         MessageService.ShowToast("隧道配置成功", "MSLFrp隧道配置成功！", NotificationType.Success);
-                        MainViewModel.NavigateTo<FrpListViewModel>();
-                        MainViewModel.NavigateRemove<FrpTunnelViewModel>();
+                        MainViewSideMenu.NavigateTo<FrpListViewModel>();
+                        MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
                     }
                     else
                     {
@@ -351,11 +328,6 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     MessageService.ShowToast("创建隧道失败", ex.Message, NotificationType.Error);
                 }
             }
-        }
-
-        public FrpMainViewModel()
-        {
-            
         }
     }
 }

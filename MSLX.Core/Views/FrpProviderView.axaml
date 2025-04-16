@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MSLX.Core.Views.FrpProviderView"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
+             xmlns:vmFrp="clr-namespace:MSLX.Core.ViewModels.FrpService.MSLFrp"
+             x:DataType="vm:FrpProviderViewModel">
+  <Design.DataContext>
+    <vm:FrpProviderViewModel/>
+  </Design.DataContext>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <TabControl SelectedIndex="{Binding SelectedTab}">
+        <i:Interaction.Behaviors>
+          <ia:EventTriggerBehavior EventName="SelectionChanged">
+            <ia:InvokeCommandAction Command="{Binding TabChangedCommand}"/>
+          </ia:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
+        <TabItem Header="MSLFrp" >
+        </TabItem>
+        <TabItem Header="其它Frp" >
+        </TabItem>
+      </TabControl>
+      <suki:GlassCard Grid.Row="1" Margin="5" Padding="6">
+        <ContentControl Content="{Binding MainContent}"/>
+      </suki:GlassCard>
+    </Grid>
+</UserControl>

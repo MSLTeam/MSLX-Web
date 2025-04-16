@@ -48,8 +48,8 @@ namespace MSLX.Core.ViewModels.CreateServer
         [RelayCommand]
         private void Cancel()
         {
-            MainViewModel.NavigateTo<ServerListViewModel>();
-            MainViewModel.NavigateRemove<CustomModeViewModel>();
+            MainViewSideMenu.NavigateTo<ServerListViewModel>();
+            MainViewSideMenu.NavigateRemove<CustomModeViewModel>();
         }
 
         [RelayCommand]

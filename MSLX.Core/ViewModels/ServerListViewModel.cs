@@ -123,10 +123,10 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void AddServer()
         {
-            MainViewModel.NavigateRemove<GuideViewModel>();
-            MainViewModel.NavigateRemove<FastModeViewModel>();
-            MainViewModel.NavigateRemove<CustomModeViewModel>();
-            MainViewModel.NavigateTo(new SukiSideMenuItem
+            MainViewSideMenu.NavigateRemove<GuideViewModel>();
+            MainViewSideMenu.NavigateRemove<FastModeViewModel>();
+            MainViewSideMenu.NavigateRemove<CustomModeViewModel>();
+            MainViewSideMenu.NavigateTo(new SukiSideMenuItem
             {
                 Header = "创建服务器",
                 Icon = new MaterialIcon()

@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace MSLX.Core.Views;
 
-public partial class FrpTunnelView : UserControl
+public partial class FrpProviderView : UserControl
 {
-    public FrpTunnelView()
+    public FrpProviderView()
     {
         InitializeComponent();
     }

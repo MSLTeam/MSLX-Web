@@ -44,5 +44,8 @@
     <Compile Update="Views\FrpcRunView.axaml.cs">
       <DependentUpon>FrpcRunView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\FrpProviderView.axaml.cs">
+      <DependentUpon>FrpProviderView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using MSLX.Core.Models;
+using MSLX.Core.Utils;
 using MSLX.Core.Views.CreateServer;
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,8 @@ namespace MSLX.Core.ViewModels.CreateServer
         [RelayCommand]
         private void Cancel()
         {
-            MainViewModel.NavigateTo<ServerListViewModel>();
-            MainViewModel.NavigateRemove<FastModeViewModel>();
+            MainViewSideMenu.NavigateTo<ServerListViewModel>();
+            MainViewSideMenu.NavigateRemove<FastModeViewModel>();
         }
 
         [RelayCommand]

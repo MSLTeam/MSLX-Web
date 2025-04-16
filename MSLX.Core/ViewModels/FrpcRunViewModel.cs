@@ -256,7 +256,7 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         public void BackToList()
         {
-            MainViewModel.NavigateTo<FrpListViewModel>();
+            MainViewSideMenu.NavigateTo<FrpListViewModel>();
         }
         
     }

@@ -11,7 +11,7 @@
              x:DataType="vm:FrpMainViewModel">
     <i:Interaction.Behaviors>
         <ia:EventTriggerBehavior EventName="Initialized">
-            <ia:InvokeCommandAction Command="{Binding InitedCommand}"/>
+            <ia:InvokeCommandAction Command="{Binding GetFrpInfoCommand}"/>
         </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
     <Design.DataContext>

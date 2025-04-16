@@ -16,7 +16,6 @@ using Newtonsoft.Json.Linq;
 using SukiUI.Controls;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
-using static MSLX.Core.Models.FrpService.MSLFrpModel;
 
 namespace MSLX.Core.ViewModels.FrpService.MSLFrp
 {
@@ -73,9 +72,8 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                         {
                             ConfigService.Config.WriteConfigKey("MSLUserToken", token);
                         }
-                        FatherViewModel.UserToken = token;
-                        FatherViewModel.GetFrpInfo();
-                        //await GetFrpInfo();
+                        FatherViewModel.UserToken = token ?? string.Empty;
+                        await FatherViewModel.GetFrpInfoAsync();
                     }
                     else
                     {

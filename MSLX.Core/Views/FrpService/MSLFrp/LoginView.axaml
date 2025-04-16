@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MSLX.Core.Views.FrpService.MSLFrp.LoginView"
-             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels.FrpService.MSLFrp"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              x:DataType="vm:LoginViewModel">

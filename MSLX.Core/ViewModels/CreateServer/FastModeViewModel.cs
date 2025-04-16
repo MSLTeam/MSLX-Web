@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MSLX.Core.Models;
+using MSLX.Core.Views.CreateServer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,12 +28,12 @@ namespace MSLX.Core.ViewModels.CreateServer
         {
             ServerModel = createServerModel;
             Title += $" - {ServerModel.Name}";
-            MainContentList.Add(new FastModeStep1ViewModel(ServerModel, this));
-            MainContentList.Add(new FastModeStep2ViewModel(ServerModel, this));
+            MainContentList.Add(new FastModeStep1View { DataContext = new FastModeStep1ViewModel(ServerModel, this) });
+            MainContentList.Add(new FastModeStep2View { DataContext = new FastModeStep2ViewModel(ServerModel, this) });
             MainContent = MainContentList[0];
         }
 
-        public ObservableCollection<object> MainContentList { get; set; } = new ObservableCollection<object>();
+        public ObservableCollection<Control> MainContentList { get; set; } = new ObservableCollection<Control>();
 
         [ObservableProperty]
         private object? _mainContent;

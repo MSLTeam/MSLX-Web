@@ -24,19 +24,23 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
     {
         public string UserToken { get; set; }
         
-
         [ObservableProperty]
         private object? _mainContent;
-        
+
+        public MSLFrpViewModel()
+        {
+            UserToken = string.Empty;
+        }
 
         [RelayCommand]
-        private void Inited()
+        private async Task Inited()
         {
+
             var _token = ConfigService.Config.ReadConfigKey("MSLUserToken")?.ToString();
             if (!string.IsNullOrEmpty(_token))
             {
                 UserToken = _token;
-                GetFrpInfo();
+                await GetFrpInfoAsync();
             }
             else
             {
@@ -44,18 +48,48 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
             }
         }
 
-        public void GetFrpInfo()
+        public async Task GetFrpInfoAsync()
         {
-            MainContent = new FrpMainViewModel()
+            try
             {
-                UserToken = UserToken,
-            };
-            return;
-        }
+                // 添加自动登录中弹窗
+                var dialog = MainViewModel.DialogManager.CreateDialog()
+                    .WithTitle("登录中")
+                    .WithContent(new TextBlock { Text = "获取用户信息……" });
+                dialog.TryShow();
 
-        public MSLFrpViewModel()
-        {
-            UserToken = string.Empty;
+                // 获取MSL Frp用户信息
+                HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/userInfo", null, new Dictionary<string, string>()
+                {
+                    ["Authorization"] = $"Bearer {UserToken}"
+                });
+                MainViewModel.DialogManager.DismissDialog();
+                JObject json = JObject.Parse(response.Content);
+                if ((int)json["code"] == 200)
+                {
+                    MessageService.ShowToast("登录成功！", "成功登录到MSL Frp服务", NotificationType.Success);
+
+                    MainContent = new FrpMainViewModel(json)
+                    {
+                        UserToken = UserToken,
+                    };
+                }
+                else
+                {
+                    MessageService.ShowToast("获取用户信息失败", (string)json["msg"], NotificationType.Error);
+                    Debug.WriteLine((string)json["msg"]);
+                    return;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                MainViewModel.DialogManager.DismissDialog();
+                //ShowMainPage = false;
+            }
+            
+            return;
         }
     }
 }
