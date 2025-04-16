@@ -50,7 +50,7 @@ jobs:
             -p:RuntimeIdentifier=${{ matrix.runtime }} \
             -property:Configuration=Release \
             -p:UseAppHost=true \
-            -p:OutputPath=./publish/macos-${{ matrix.arch }}/
+            -p:OutputPath=./publish/osx-${{ matrix.arch }}/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
