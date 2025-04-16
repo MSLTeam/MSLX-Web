@@ -63,11 +63,16 @@ jobs:
             ./publish/${{ matrix.os }}-${{ matrix.arch }}/
             !**/*.pdb
 
+      - name: 打包 .app 为 ZIP
+        if: matrix.buildapp == true
+        run: |
+          cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/
+          zip -r MSLX.app.zip MSLX.app
+
       - name: 上传Mac App包构建结果
         if: matrix.buildapp == true
         uses: actions/upload-artifact@v4
         with:
           name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
-          path: |
-            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app
+          path: ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app.zip
           
