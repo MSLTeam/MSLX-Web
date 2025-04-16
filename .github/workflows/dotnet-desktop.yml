@@ -77,4 +77,32 @@ jobs:
         with:
           name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
           path: ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/
-          
+
+  upload_and_dist:
+    needs:
+      - build
+
+    runs-on: ubuntu-latest
+    name: 上传所有构建结果
+    steps:
+
+      - name: 下载构建文件
+        uses: actions/download-artifact@v4
+        with:
+          path: temp  # 临时下载目录
+          pattern: MSLX-*
+          merge-multiple: false
+
+      - name: 列出文件树
+        run: "tree"
+
+      - name: 发布构建结果
+        uses: softprops/action-gh-release@v2  
+        with:
+          files: temp/*
+          draft: false 
+          prerelease: true
+          update: true 
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: MSLX开发版本自动构建  
+          tag_name: Dev
