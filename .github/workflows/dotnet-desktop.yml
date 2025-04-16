@@ -34,7 +34,7 @@ jobs:
 
       - name: 构建普通版本
         continue-on-error: true
-        if: matrix.buildapp == 'false'
+        if: matrix.buildapp == false
         run: |
           dotnet publish -c Release -r ${{ matrix.runtime }} \
             --self-contained true \
@@ -44,7 +44,7 @@ jobs:
         
       - name: 构建Mac App打包版本
         continue-on-error: true
-        if: matrix.buildapp == 'true'
+        if: matrix.buildapp == true
         run: |
           dotnet restore -r ${{ matrix.runtime }}
           dotnet msbuild -t:BundleApp \
@@ -55,7 +55,7 @@ jobs:
             -p:OutputPath=./publish/osx-${{ matrix.arch }}/
 
       - name: 上传普通构建结果
-        if: matrix.buildapp == 'false'
+        if: matrix.buildapp == false
         uses: actions/upload-artifact@v4
         with:
           name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
@@ -65,7 +65,7 @@ jobs:
             !**/*.pdb
 
       - name: 上传Mac App包构建结果
-        if: matrix.buildapp == 'true'
+        if: matrix.buildapp == true
         uses: actions/upload-artifact@v4
         with:
           name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
