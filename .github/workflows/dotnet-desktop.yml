@@ -38,7 +38,7 @@ jobs:
         run: |
           dotnet publish -c Release -r ${{ matrix.runtime }} \
             --self-contained true \
-            -p:PublishSingleFile=false \
+            -p:PublishSingleFile=true \
             -p:PublishTrimmed=false \
             -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
         
@@ -70,11 +70,6 @@ jobs:
           # 删除所有非 MSLX.app 的文件和子目录
           shopt -s extglob  # 启用扩展通配符（仅限 Bash）
           rm -rf !("MSLX.app")
-          
-      - name: 移除隔离标记
-        if: matrix.buildapp == true
-        run: |
-          xattr -r -d com.apple.quarantine ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/MSLX.app
           
       - name: 上传Mac App包构建结果
         if: matrix.buildapp == true
