@@ -182,11 +182,11 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="5">
                       <TextBlock VerticalAlignment="Center" Text="本地端口："/>
-                      <TextBox MinWidth="150" Text="{Binding CreateLocalPort}"/>
+                      <NumericUpDown MinWidth="150" Value="{Binding CreateLocalPort}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="5">
                       <TextBlock VerticalAlignment="Center" Text="远程端口："/>
-                      <TextBox MinWidth="150" Text="{Binding CreateRemotePort}"/>
+                      <NumericUpDown MinWidth="150" Value="{Binding CreateRemotePort}" />
                     </StackPanel>
                     <Button Content="创建隧道" Command="{Binding CreateTunnelCommand}" Height="50" Classes="Flat" FontSize="18"/>
                   </StackPanel>

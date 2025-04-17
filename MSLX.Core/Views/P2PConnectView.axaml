@@ -25,7 +25,7 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="游戏端口: " Margin="0,0,3,0"/>
-                                    <TextBox MinWidth="200" Text="{Binding HostPort}"/>
+                                    <NumericUpDown MinWidth="150" Value="{Binding HostPort}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="{Binding BtnCreate}" Classes="Flat" Command="{Binding LaunchHostCommand}" Padding="0" MinWidth="80" VerticalAlignment="Center" Height="35"/>
@@ -44,7 +44,7 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
                                     <TextBlock VerticalAlignment="Center" Text="绑定本地端口(默认25565): " Margin="0,0,3,0"/>
-                                    <TextBox MinWidth="200" Text="{Binding VisitorPort}"/>
+                                    <NumericUpDown MinWidth="150" Value="{Binding VisitorPort}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="{Binding BtnCreateVisitor}" Command="{Binding LaunchVisitorCommand}" Classes="Flat" Padding="0" MinWidth="80" VerticalAlignment="Center" Height="35"/>
