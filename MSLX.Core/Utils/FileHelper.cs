@@ -95,7 +95,7 @@ public class FileHelper
     {
         Process process = new Process();
         process.StartInfo.FileName = "/bin/bash";
-        process.StartInfo.Arguments = $"-c \"chmod +x {filePath}\"";
+        process.StartInfo.Arguments = $"-c \"chmod +x '{filePath}'\"";
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;

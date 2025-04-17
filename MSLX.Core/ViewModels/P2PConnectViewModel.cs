@@ -192,6 +192,12 @@ public partial class P2PConnectViewModel : ViewModelBase
             return;
         }
 
+        if (PlatFormHelper.GetOs() != "Windows")
+        {
+            FileHelper.SetFileExecutable(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile",
+                $"frpc"));
+        }
+
         ConsoleLogs = "联机服务启动中...";
         // 创建一个新的 Process 对象
         process = new Process();
@@ -204,7 +210,14 @@ public partial class P2PConnectViewModel : ViewModelBase
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.CreateNoWindow = true;
         process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-        process.OutputDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}";};
+        process.OutputDataReceived += (_, e) =>
+        {
+            ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}";
+            if (e.Data?.Contains("start proxy success") ?? false)
+            {
+                ConsoleLogs += "\n联机服务启动成功！";
+            }
+        };
         process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}"; };
         process.Exited += (_,_) =>
         {
