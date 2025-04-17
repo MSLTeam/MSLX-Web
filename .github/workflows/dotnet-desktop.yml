@@ -110,11 +110,23 @@ jobs:
           find . -type d -empty -delete
 
       - name: 上传构建结果
+        if: matrix.build_type != app
         uses: actions/upload-artifact@v4
         with:
           name: MSLX-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
           path: |
             ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
+            !**/*.pdb
+            !**/*.xml
+            !**/*.icns
+
+      - name: 上传构建结果(OSX App)
+        if: matrix.build_type == app
+        uses: actions/upload-artifact@v4
+        with:
+          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
+          path: |
+            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}/publish
             !**/*.pdb
             !**/*.xml
             !**/*.icns
