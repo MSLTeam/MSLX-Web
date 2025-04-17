@@ -27,8 +27,10 @@ jobs:
           
           # macOS
           - { os: osx, arch: arm64, runtime: osx-arm64, build_type: normal }
+          - { os: osx, arch: arm64, runtime: osx-x64, build_type: single }
           - { os: osx, arch: arm64, runtime: osx-arm64, build_type: app }
           - { os: osx, arch: x64, runtime: osx-x64, build_type: normal }
+          - { os: osx, arch: x64, runtime: osx-x64, build_type: single }
           - { os: osx, arch: x64, runtime: osx-x64, build_type: app }
 
     steps:
