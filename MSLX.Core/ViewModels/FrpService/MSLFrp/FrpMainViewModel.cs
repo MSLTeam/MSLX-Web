@@ -122,6 +122,9 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
 
         [ObservableProperty]
         private string _createRemotePort;
+        
+        [ObservableProperty]
+        private bool _createUseKcp = false;
 
         [ObservableProperty]
         private string? _createBindDomain;
@@ -404,7 +407,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                             ["id"] = SelectedNode.Id.ToString(),
                             ["type"] = type,
                             ["remarks"] = $"Create By MSLX {Assembly.GetExecutingAssembly().GetName().Version}",
-                            ["use_kcp"] = "false"
+                            ["use_kcp"] = CreateUseKcp ? "true" : "false"
                         }, new Dictionary<string, string>()
                         {
                             ["Authorization"] = $"Bearer {UserToken}"

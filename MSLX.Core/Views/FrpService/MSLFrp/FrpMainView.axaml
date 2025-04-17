@@ -188,6 +188,10 @@
                       <TextBlock VerticalAlignment="Center" Text="远程端口："/>
                       <NumericUpDown MinWidth="150" Value="{Binding CreateRemotePort}" />
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                      <TextBlock VerticalAlignment="Center" Text="使用KCP协议传输："/>
+                      <ToggleSwitch IsChecked="{Binding CreateUseKcp}"/>
+                    </StackPanel>
                     <Button Content="创建隧道" Command="{Binding CreateTunnelCommand}" Height="50" Classes="Flat" FontSize="18"/>
                   </StackPanel>
                 </suki:GlassCard>
