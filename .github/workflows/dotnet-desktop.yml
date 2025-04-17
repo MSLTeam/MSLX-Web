@@ -1,4 +1,4 @@
-name: 构建MSLX Dev
+name: Build MSLX Dev
 
 on:
   push:
@@ -77,14 +77,11 @@ jobs:
           fi
 
       - name: 清理(OSX APP)publish目录
+        if: matrix.build_type == 'app'
         run: |
-          case "${{ matrix.build_type }}" in
-            app)
-              # 仅保留.app包
-              cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}/publish
-              find . -mindepth 1 -maxdepth 1 ! -name "MSLX.app" -exec rm -rf {} \;
-              ;;
-          esac
+          # 仅保留.app包
+          cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}/publish
+          find . -mindepth 1 -maxdepth 1 ! -name "MSLX.app" -exec rm -rf {} \
           find . -type d -empty -delete
 
       - name: 上传构建结果
@@ -96,6 +93,7 @@ jobs:
             ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
             !**/*.pdb
             !**/*.xml
+            !**/*.json
             !**/*.icns
 
       - name: 上传构建结果(OSX App)
@@ -107,7 +105,7 @@ jobs:
             ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}/publish
             !**/*.pdb
             !**/*.xml
-            !**/*.icns
+            !**/*.json
 
   upload_and_dist:
     needs: build
