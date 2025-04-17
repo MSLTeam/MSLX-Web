@@ -54,7 +54,7 @@ jobs:
             dotnet restore -r ${{ matrix.runtime }}
             dotnet msbuild -t:BundleApp \
               -p:RuntimeIdentifier=${{ matrix.runtime }} \
-              -p:Configuration=Release \
+              -property:Configuration=Release \
               -p:UseAppHost=true \
               -p:TargetFramework=net8.0 \
               -p:SelfContained=true \
