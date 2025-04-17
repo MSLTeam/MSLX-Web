@@ -9,120 +9,139 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    name: 构建
+    name: 多平台构建
     strategy:
       matrix:
         include:
-          - { os: linux, arch: x64, runtime: linux-x64 ,buildapp: false  }
-          - { os: linux, arch: arm64, runtime: linux-arm64 ,buildapp: false  }
-          - { os: windows, arch: x64, runtime: win-x64 ,buildapp: false  }
-          - { os: windows, arch: arm64, runtime: win-arm64 ,buildapp: false  }
-          - { os: osx, arch: arm64, runtime: osx-arm64 ,buildapp: false  }
-          - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: false }
-          - { os: osx, arch: arm64, runtime: osx-arm64 ,buildapp: true  }
-          - { os: osx, arch: x64, runtime: osx-x64 ,buildapp: true }
-    steps:
-      - name: 签出分支
-        uses: actions/checkout@v4
+          # Linux
+          - { os: linux, arch: x64, runtime: linux-x64, build_type: normal }
+          - { os: linux, arch: x64, runtime: linux-x64, build_type: single }
+          - { os: linux, arch: arm64, runtime: linux-arm64, build_type: normal }
+          - { os: linux, arch: arm64, runtime: linux-arm64, build_type: single }
+          
+          # Windows
+          - { os: windows, arch: x64, runtime: win-x64, build_type: normal }
+          - { os: windows, arch: x64, runtime: win-x64, build_type: single }
+          - { os: windows, arch: arm64, runtime: win-arm64, build_type: normal }
+          - { os: windows, arch: arm64, runtime: win-arm64, build_type: single }
+          
+          # macOS
+          - { os: osx, arch: arm64, runtime: osx-arm64, build_type: normal }
+          - { os: osx, arch: arm64, runtime: osx-arm64, build_type: app }
+          - { os: osx, arch: x64, runtime: osx-x64, build_type: normal }
+          - { os: osx, arch: x64, runtime: osx-x64, build_type: app }
 
-      - name: 拉取子模块
-        run: git submodule update --init --recursive
-        
-      - name: 设置.NET 9.X环境
+    steps:
+      - name: 签出代码
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: 设置.NET环境
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
-      - name: 构建普通版本
-        continue-on-error: true
-        if: matrix.buildapp == false
-        run: |
-          dotnet publish -c Release -r ${{ matrix.runtime }} \
-            --self-contained \
-            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true \
-            -o ./publish/${{ matrix.os }}-${{ matrix.arch }}  --framework net8.0
-        
-      - name: 构建Mac App打包版本
-        continue-on-error: true
-        if: matrix.buildapp == true
-        run: |
-          dotnet restore -r ${{ matrix.runtime }}
-          dotnet msbuild -t:BundleApp \
-            -p:RuntimeIdentifier=${{ matrix.runtime }} \
-            -property:Configuration=Release \
-            -p:UseAppHost=true \
-            -p:TargetFramework=net8.0 -p:SelfContained=true -p:PublishSingleFile=true \
-            -p:OutputPath=./publish/osx-${{ matrix.arch }}/
+      - name: 构建核心类库
+        run: dotnet build -c Release -p:TargetFramework=net8.0 ./MSLX.Core/MSLX.Core.csproj
 
-      - name: 上传普通构建结果
-        if: matrix.buildapp == false
+      - name: 执行发布流程
+        run: |
+          output_dir="./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}"
+          
+          # macOS应用特殊处理
+          if [[ "${{ matrix.os }}" == "osx" && "${{ matrix.build_type }}" == "app" ]]; then
+            dotnet msbuild -t:BundleApp \
+              -p:RuntimeIdentifier=${{ matrix.runtime }} \
+              -p:Configuration=Release \
+              -p:UseAppHost=true \
+              -p:TargetFramework=net8.0 \
+              -p:SelfContained=true \
+              -p:PublishSingleFile=true \
+              -p:OutputPath="$output_dir" \
+              ./MSLX.Desktop/MSLX.Desktop.csproj
+          else
+            # 通用发布参数
+            single_file_flag=""
+            [[ "${{ matrix.build_type }}" == "single" ]] && single_file_flag="-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true"
+            
+            dotnet publish -c Release \
+              -r ${{ matrix.runtime }} \
+              --self-contained \
+              $single_file_flag \
+              -o "$output_dir" \
+              ./MSLX.Desktop/MSLX.Desktop.csproj
+          fi
+
+      - name: 清理输出目录
+        run: |
+          cd ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
+          case "${{ matrix.build_type }}" in
+            normal)
+              # 保留所有文件
+              ;;
+            single)
+              # 保留可执行文件
+              case "${{ matrix.os }}" in
+                windows) find . -type f ! -name '*.exe' -delete ;;
+                linux) find . -type f ! -executable -delete ;;
+                osx) find . -type f ! -name 'MSLX' -delete ;;
+              esac
+              ;;
+            app)
+              # 仅保留.app包
+              find . -type f ! -name 'MSLX.app' -delete
+              find . -type d ! -name 'MSLX.app' -delete
+              ;;
+          esac
+          find . -type d -empty -delete
+
+      - name: 上传构建结果
         uses: actions/upload-artifact@v4
         with:
-          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}
+          name: MSLX-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
           path: |
-            ./publish/${{ matrix.os }}-${{ matrix.arch }}/
+            ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
             !**/*.pdb
             !**/*.xml
             !**/*.icns
-            
-      - name: 清理 publish 目录（仅保留 MSLX.app）
-        if: matrix.buildapp == true
-        run: |
-          cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/
-          # 删除所有非 MSLX.app 的文件和子目录
-          shopt -s extglob  # 启用扩展通配符（仅限 Bash）
-          rm -rf !("MSLX.app")
-          
-      - name: 上传Mac App包构建结果
-        if: matrix.buildapp == true
-        uses: actions/upload-artifact@v4
-        with:
-          name: MSLX-${{ matrix.os }}-app-${{ matrix.arch }}
-          path: |
-            ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}/publish/
-            !**/*.pdb
-            !**/*.xml
 
   upload_and_dist:
-    needs:
-      - build
-
+    needs: build
     runs-on: ubuntu-latest
-    name: 上传所有构建结果
+    name: 发布版本
     steps:
-      # 下载构建文件（保留原始目录结构）
-      - name: 下载构建文件
+      - name: 下载所有构件
         uses: actions/download-artifact@v4
         with:
-          path: temp
+          path: artifacts
           pattern: MSLX-*
-          merge-multiple: false  # 不合并多构件[1,3](@ref)
+          merge-multiple: false
 
-      - name: 压缩构建文件夹
+      - name: 处理压缩文件
         run: |
-          cd temp
-          chmod -R +x .
-          for dir in */; do
-            platform=$(echo $dir | cut -d'-' -f2)  # 提取平台标识
-            if [[ $platform == "linux" || $platform == "osx" ]]; then
-              # 使用tar保留权限(添加--mode标志)
-              tar --owner=0 --group=0  --mode='a+rwX' -czvf "${dir%/}.tar.gz" "$dir"
-            else
-              zip -r "${dir%/}.zip" "$dir"
-            fi
+          mkdir -p dist
+          for dir in artifacts/*/; do
+            platform=$(basename $dir | cut -d'-' -f2)
+            build_type=$(basename $dir | cut -d'-' -f4)
+            
+            case "$platform" in
+              linux|osx)
+                tar --owner=0 --group=0 --mode='a+rwX' -czvf "dist/$(basename $dir).tar.gz" -C "$dir" .
+                ;;
+              windows)
+                zip -r "dist/$(basename $dir).zip" "$dir"
+                ;;
+            esac
           done
 
-
-      # 发布ZIP文件
-      - name: 发布构建结果
-        uses: softprops/action-gh-release@v2  
+      - name: 创建GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          files: |
-            temp/*.tar.gz
-            temp/*.zip
-          draft: false 
+          files: dist/*
+          draft: false
           prerelease: true
-          update: true 
+          update: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: MSLX开发版本自动构建  
-          tag_name: Dev
+          name: MSLX ${{ github.run_number }} 构建版
+          tag_name: v${{ github.run_number }}-preview
