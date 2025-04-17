@@ -76,7 +76,16 @@ jobs:
 
       - name: 清理输出目录
         run: |
-          cd ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
+          output_dir="./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}"
+    
+          # 首先检查目录是否存在
+          if [ ! -d "$output_dir" ]; then
+            echo "警告: 目录 $output_dir 不存在，跳过清理步骤"
+            mkdir -p "$output_dir"  # 创建目录避免后续步骤失败
+            exit 0
+          fi
+    
+          cd "$output_dir"
           case "${{ matrix.build_type }}" in
             normal)
               # 保留所有文件，但可以删除一些不必要的调试和临时文件
