@@ -81,7 +81,7 @@ jobs:
         run: |
           # 仅保留.app包
           cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}/publish
-          find . -mindepth 1 -maxdepth 1 ! -name "MSLX.app" -exec rm -rf {} \
+          find . -mindepth 1 -maxdepth 1 ! -name "MSLX.app" -exec rm -rf {} \;
           find . -type d -empty -delete
 
       - name: 上传构建结果
