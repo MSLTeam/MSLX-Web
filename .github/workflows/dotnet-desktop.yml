@@ -48,9 +48,14 @@ jobs:
       - name: 执行发布流程
         run: |
           output_dir="./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}"
-          
+          mkdir -p "$output_dir"
+    
           # macOS应用特殊处理
           if [[ "${{ matrix.os }}" == "osx" && "${{ matrix.build_type }}" == "app" ]]; then
+            # 使用绝对路径
+            abs_output_dir="$(pwd)/$output_dir"
+            echo "构建 macOS App 到: $abs_output_dir"
+      
             dotnet restore -r ${{ matrix.runtime }}
             dotnet msbuild -t:BundleApp \
               -p:RuntimeIdentifier=${{ matrix.runtime }} \
@@ -59,13 +64,18 @@ jobs:
               -p:TargetFramework=net8.0 \
               -p:SelfContained=true \
               -p:PublishSingleFile=true \
-              -p:OutputPath="$output_dir" \
+              -p:OutputPath="$abs_output_dir" \
+              -p:AppBundleDir="$abs_output_dir" \
               ./MSLX.Desktop/MSLX.Desktop.csproj
+        
+            # 检查构建结果
+            echo "构建完成，检查输出目录内容:"
+            ls -la "$output_dir"
           else
             # 通用发布参数
             single_file_flag=""
             [[ "${{ matrix.build_type }}" == "single" ]] && single_file_flag="-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true"
-            
+      
             dotnet publish -c Release \
               -r ${{ matrix.runtime }} \
               --self-contained \
