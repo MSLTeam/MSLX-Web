@@ -106,9 +106,9 @@ jobs:
             platform=$(echo $dir | cut -d'-' -f2)  # 提取平台标识
             if [[ $platform == "linux" || $platform == "osx" ]]; then
               # 使用tar保留权限(添加--mode标志)
-              tar --owner=0 --group=0  --mode='a+rwX' -czvf "${dir%/}-$(date +'%Y%m%d').tar.gz" "$dir"
+              tar --owner=0 --group=0  --mode='a+rwX' -czvf "${dir%/}.tar.gz" "$dir"
             else
-              zip -r "${dir%/}-$(date +'%Y%m%d').zip" "$dir"
+              zip -r "${dir%/}.zip" "$dir"
             fi
           done
 
