@@ -79,20 +79,30 @@ jobs:
           cd ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
           case "${{ matrix.build_type }}" in
             normal)
-              # 保留所有文件
+              # 保留所有文件，但可以删除一些不必要的调试和临时文件
+              find . -type f -name "*.pdb" -delete
+              find . -type f -name "*.vshost.*" -delete
               ;;
             single)
               # 保留可执行文件
               case "${{ matrix.os }}" in
-                windows) find . -type f ! -name '*.exe' -delete ;;
-                linux) find . -type f ! -executable -delete ;;
-                osx) find . -type f ! -name 'MSLX' -delete ;;
+                windows) 
+                  find . -type f ! -name "*.exe" -delete
+                  ;;
+                linux) 
+                  # 使用更兼容的方式检查可执行文件
+                  find . -type f -exec sh -c 'test -x "$1" || rm "$1"' _ {} \;
+                  # 或者，直接保留主程序文件
+                  # find . -type f ! -name "MSLX" -delete
+                  ;;
+                osx) 
+                  find . -type f ! -name "MSLX" -delete
+                  ;;
               esac
               ;;
             app)
               # 仅保留.app包
-              find . -type f ! -name 'MSLX.app' -delete
-              find . -type d ! -name 'MSLX.app' -delete
+              find . -mindepth 1 -maxdepth 1 ! -name "MSLX.app" -exec rm -rf {} \;
               ;;
           esac
           find . -type d -empty -delete
