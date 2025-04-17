@@ -443,12 +443,5 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 MessageService.ShowToast("退出登录失败", ex.Message, NotificationType.Error);
             }
         }
-
-        [RelayCommand]
-        private void OpenOfficialWeb()
-        {
-            var url = "https://user.mslmc.net";
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-        }
     }
 }
