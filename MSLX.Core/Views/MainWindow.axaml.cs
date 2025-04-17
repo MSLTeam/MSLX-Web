@@ -31,7 +31,7 @@ public partial class MainWindow : SukiWindow
         if (MainViewModel.ServerListView.ServerList.Any(x => x.Status == true))
         {
             e.Cancel = true;
-            MainViewModel.DialogManager.CreateDialog().WithTitle("¾¯¸æ").WithContent("ÓÐ·þÎñÆ÷ÕýÔÚÔËÐÐÖÐ£¬ÇëÏÈ¹Ø±ÕËùÓÐ·þÎñÆ÷£¡").WithActionButton("È·¶¨", _ => { }, true).TryShow();
+            MainViewModel.DialogManager.CreateDialog().WithTitle("è­¦å‘Š").WithContent("æœ‰æœåŠ¡å™¨æ­£åœ¨è¿è¡Œä¸­ï¼Œè¯·å…ˆå…³é—­æ‰€æœ‰æœåŠ¡å™¨ï¼").WithActionButton("ç¡®å®š", _ => { }, true).TryShow();
         }
     }
 }
