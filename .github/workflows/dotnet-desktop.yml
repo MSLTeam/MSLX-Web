@@ -76,14 +76,15 @@ jobs:
 
       - name: 清理输出目录
         run: |
-          cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
           case "${{ matrix.build_type }}" in
             normal)
+            cd ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
               # 删除一些不必要的调试和临时文件
               find . -type f -name "*.pdb" -delete
               find . -type f -name "*.vshost.*" -delete
               ;;
             single)
+            cd ./publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}
               # 保留可执行文件
               case "${{ matrix.os }}" in
                 windows) 
@@ -102,7 +103,7 @@ jobs:
               ;;
             app)
               # 仅保留.app包
-              cd ./publish
+              cd ./MSLX.Desktop/publish/${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.build_type }}/publish
               find . -mindepth 1 -maxdepth 1 ! -name "MSLX.app" -exec rm -rf {} \;
               ;;
           esac
