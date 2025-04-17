@@ -24,6 +24,8 @@
             <ia:InvokeCommandAction Command="{Binding TabChangedCommand}"/>
           </ia:EventTriggerBehavior>
         </i:Interaction.Behaviors>
+        <TabItem Header="取消" >
+        </TabItem>
         <TabItem Header="MSLFrp" >
         </TabItem>
         <TabItem Header="其它Frp" >

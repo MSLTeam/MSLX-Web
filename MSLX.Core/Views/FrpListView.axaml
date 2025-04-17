@@ -9,52 +9,52 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              x:DataType="vm:FrpListViewModel">
-    <i:Interaction.Behaviors>
-        <ia:EventTriggerBehavior EventName="Loaded">
-            <ia:InvokeCommandAction Command="{Binding LoadedCommand}"/>
-        </ia:EventTriggerBehavior>
-    </i:Interaction.Behaviors>
-    <Grid>
-        <suki:GlassCard Margin="10">
-            <Grid RowDefinitions="Auto * Auto">
-                <Grid Margin="0,0,0,10">
-                    <Grid ColumnDefinitions="Auto *">
-                        <TextBlock VerticalAlignment="Center" Text="隧道列表" FontSize="20" FontWeight="Bold"/>
-                        <suki:InfoBar Grid.Column="1" Margin="20,0,0,0"
+  <i:Interaction.Behaviors>
+    <ia:EventTriggerBehavior EventName="Loaded">
+      <ia:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+    </ia:EventTriggerBehavior>
+  </i:Interaction.Behaviors>
+  <Grid>
+    <suki:GlassCard Margin="10">
+      <Grid RowDefinitions="Auto * Auto">
+        <Grid Margin="0,0,0,10">
+          <Label Content="隧道列表（双击查看详情）" Classes="Title"/>
+          <!--
+                      <suki:InfoBar Grid.Column="1" Margin="20,0,0,0"
                             VerticalContentAlignment="Center"
                             Title="提示"
                             IsClosable= "False"
                             IsOpen="True"
                             Severity="Information"
                             Message="双击隧道以启动内网映射～" />
-                    </Grid>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <ListBox ItemsSource="{Binding FrpConfigs}" SelectedItem="{Binding SelectedFrpConfig}">
-                      <i:Interaction.Behaviors>
-                        <ia:EventTriggerBehavior EventName="DoubleTapped">
-                          <ia:InvokeCommandAction Command="{Binding OpenFrpConfigCommand}"/>
-                        </ia:EventTriggerBehavior>
-                      </i:Interaction.Behaviors>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Vertical">
-                                    <TextBlock Foreground="{DynamicResource SukiText}" Text="{Binding Name}" FontWeight="Bold"/>
-                                    <TextBlock Foreground="{DynamicResource SukiText}" Opacity="0.6">
-                                        <Run Text="{Binding Service}"/>
-                                        <Run Text=" | "></Run>
-                                        <Run Text="{Binding Id}"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                    <Button Content="添加隧道" Classes="Flat" Command="{Binding AddFrpcConfigCommand}" Margin="0,0,10,0"/>
-                    <Button Content="删除隧道" Background="Red" Classes="Flat Accent" Command="{Binding DeleteFrpcConfigCommand}"/>
+                      -->
+        </Grid>
+        <Grid Grid.Row="1">
+          <ListBox ItemsSource="{Binding FrpConfigs}" SelectedItem="{Binding SelectedFrpConfig}">
+            <i:Interaction.Behaviors>
+              <ia:EventTriggerBehavior EventName="DoubleTapped">
+                <ia:InvokeCommandAction Command="{Binding OpenFrpConfigCommand}"/>
+              </ia:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Vertical">
+                  <TextBlock Foreground="{DynamicResource SukiText}" Text="{Binding Name}" FontWeight="Bold"/>
+                  <TextBlock Foreground="{DynamicResource SukiText}" Opacity="0.6">
+                    <Run Text="{Binding Service}"/>
+                    <Run Text=" | "></Run>
+                    <Run Text="{Binding Id}"/>
+                  </TextBlock>
                 </StackPanel>
-            </Grid>
-        </suki:GlassCard>
-    </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+          <Button Content="添加隧道" Classes="Flat" Command="{Binding AddFrpcConfigCommand}" Margin="0,0,10,0"/>
+          <Button Content="删除隧道" Background="Red" Classes="Flat Accent" Command="{Binding DeleteFrpcConfigCommand}"/>
+        </StackPanel>
+      </Grid>
+    </suki:GlassCard>
+  </Grid>
 </UserControl>

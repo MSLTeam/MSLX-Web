@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MSLX.Core.Utils;
 using MSLX.Core.ViewModels.FrpService.MSLFrp;
 using MSLX.Core.Views.FrpService.MSLFrp;
 using System;
@@ -14,7 +15,7 @@ namespace MSLX.Core.ViewModels
 {
     public partial class FrpProviderViewModel : ViewModelBase
     {
-        [ObservableProperty] private int _selectedTab;
+        [ObservableProperty] private int _selectedTab = 1;
         [ObservableProperty] private object _mainContent;
 
         private readonly List<Control> _cachedViews = [];
@@ -30,8 +31,16 @@ namespace MSLX.Core.ViewModels
         [RelayCommand]
         private void TabChanged()
         {
-            if (SelectedTab >= _cachedViews.Count) return;
-            MainContent = _cachedViews[SelectedTab];
+            switch (SelectedTab)
+            {
+                case 0:
+                    MainViewSideMenu.NavigateTo<FrpListViewModel>();
+                    MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
+                    return;
+                case 2:
+                    return;
+            }
+            MainContent = _cachedViews[SelectedTab - 1];
         }
     }
 }

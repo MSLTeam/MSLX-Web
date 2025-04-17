@@ -55,13 +55,14 @@ namespace MSLX.Core.ViewModels
         public HomeViewModel() { LoadedCommand = new RelayCommand(Loaded); }
         */
 
-        private bool _isFullScreen = false;
+        
         [RelayCommand]
         private void StartServer()
         {
             
         }
 
+        //private bool _isFullScreen = false;
         [RelayCommand]
         private void Test()
         {

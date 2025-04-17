@@ -64,8 +64,15 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     ["Authorization"] = $"Bearer {UserToken}"
                 });
                 MainViewModel.DialogManager.DismissDialog();
+                if (response.IsSuccessStatusCode == false || response.Content == null)
+                {
+                    MessageService.ShowToast("获取用户信息失败，请重新登录", (response.ResponseException as Exception)?.Message ?? string.Empty, NotificationType.Error);
+                    //ConfigService.Config.WriteConfigKey("MSLUserToken", string.Empty);
+                    MainContent = new LoginViewModel(this);
+                    return;
+                }
                 JObject json = JObject.Parse(response.Content);
-                if ((int)json["code"] == 200)
+                if (json["code"]?.Value<int>() == 200)
                 {
                     MessageService.ShowToast("登录成功！", "成功登录到MSL Frp服务", NotificationType.Success);
 
@@ -76,8 +83,8 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 }
                 else
                 {
-                    MessageService.ShowToast("获取用户信息失败", (string)json["msg"], NotificationType.Error);
-                    Debug.WriteLine((string)json["msg"]);
+                    MessageService.ShowToast("获取用户信息失败", json["msg"]?.ToString() ?? string.Empty, NotificationType.Error);
+                    Debug.WriteLine(json["msg"]?.ToString() ?? string.Empty);
                     return;
                 }
 
@@ -86,6 +93,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
             {
                 Debug.WriteLine(ex.Message);
                 MainViewModel.DialogManager.DismissDialog();
+                MessageService.ShowToast("获取用户信息失败", ex.Message, NotificationType.Error);
                 //ShowMainPage = false;
             }
             

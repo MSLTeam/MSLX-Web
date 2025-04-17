@@ -52,6 +52,7 @@
     
     <!-- 底部按钮 -->
     <StackPanel Grid.Row="1" 
+                Spacing="10"
                 Height="64" 
                 Orientation="Horizontal" 
                 HorizontalAlignment="Right"

@@ -6,17 +6,23 @@
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:DataType="vm:FrpcRunViewModel"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:mi="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="MSLX.Core.Views.FrpcRunView">
     <Grid RowDefinitions="Auto *">
         <Grid>
             <suki:GlassCard Margin="6">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <Button Content="← 返回隧道列表" Command="{Binding BackToListCommand}"  Margin="0,0,10,0"/>
-                        <Button Content="{Binding LaunchBtnText}" Command="{Binding LaunchFrpcCommand}" Classes="Flat" Margin="0,0,10,0"/>
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Command="{Binding BackToListCommand}">
+                          <StackPanel Orientation="Horizontal">
+                            <mi:MaterialIcon Foreground="{DynamicResource SukiPrimaryColor}" Kind="ArrowBack"/>
+                            <TextBlock Margin="3,0,0,0" Text="返回隧道列表"/>
+                          </StackPanel>
+                        </Button>
+                        <Button Content="{Binding LaunchBtnText}" Command="{Binding LaunchFrpcCommand}" Classes="Flat"/>
                         <TextBlock Text="{Binding FrpcName}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource SukiPrimaryColor}" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Classes="h6" VerticalAlignment="Center" Margin="0,0,10,0">
                             <Run Text="连接地址: "/>
                             <Run Text="{Binding FrpcDomain}"/>

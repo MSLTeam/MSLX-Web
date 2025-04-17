@@ -51,13 +51,69 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
         [ObservableProperty]
         private string _userOutdated = "loading";
 
-        // 选中的隧道
-        [ObservableProperty]
-        private Tunnel? _selectedTunnel;
+        public int SelectedTunnelIndex
+        {
+            get => _selectedTunnelIndex;
+            set
+            {
+                if (SetProperty(ref _selectedTunnelIndex, value))
+                {
+                    OnPropertyChanged(nameof(SelectedTunnelIndex));
+                }
+                if (value != -1)
+                {
+                    SelectedTunnel = Tunnels[value];
+                }
+            }
+        }
+        private int _selectedTunnelIndex = -1;
 
-        // 选中的隧道
+        public int SelectedNodeIndex
+        {
+            get => _selectedNodeIndex;
+            set
+            {
+                if (SetProperty(ref _selectedNodeIndex, value))
+                {
+                    OnPropertyChanged(nameof(SelectedNodeIndex));
+                }
+                if (value != -1)
+                {
+                    SelectedNode = Nodes[value];
+                }
+            }
+        }
+        private int _selectedNodeIndex = -1;
+
         [ObservableProperty]
-        private Node? _selectedNode;
+        private Tunnel _selectedTunnel = new Tunnel
+        {
+            Id = 0,
+            LocalPort = 0,
+            RemotePort = 0,
+            Name = string.Empty,
+            Node = string.Empty,
+            Remarks = string.Empty,
+            Status = string.Empty
+        };
+
+        [ObservableProperty]
+        private Node _selectedNode = new Node
+        {
+            Id = 0,
+            AllowUserGroup = 0,
+            Bandwidth = 0,
+            HttpSupport = false,
+            KcpSupport = false,
+            UdpSupport = false,
+            MaxOpenPort = 0,
+            MinOpenPort = 0,
+            Name = string.Empty,
+            NeedRealName = false,
+            Remarks = string.Empty,
+            Status = string.Empty,
+            Type = string.Empty
+        };
 
         // 创建节点相关字段
         [ObservableProperty]
@@ -182,7 +238,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
 
                 if (Nodes.Count > 0)
                 {
-                    SelectedNode = Nodes[0];
+                    SelectedNodeIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -239,7 +295,7 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
 
                 if (Tunnels.Count > 0)
                 {
-                    SelectedTunnel = Tunnels[0];
+                    SelectedTunnelIndex = 0;
                 }
             }
             catch (Exception ex)
