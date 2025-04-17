@@ -328,16 +328,10 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                         MessageService.ShowToast("隧道配置失败", json["msg"]?.Value<string>() ?? "Err", NotificationType.Error);
                         return;
                     }
-                    JToken? data = json["data"];
-                    if (data == null || !data.HasValues)
-                    {
-                        MessageService.ShowToast("隧道配置失败", "没有隧道配置数据", NotificationType.Error);
-                        return;
-                    }
                     ConfigService.FrpList.CreateFrpConfig(
                         $"{SelectedTunnel.Name} | {SelectedTunnel.Node}",
                         "MSLFrp", "toml",
-                        data.Value<string>() ?? string.Empty);
+                        json["data"]?.Value<string>() ?? string.Empty);
                     MessageService.ShowToast("隧道配置成功", "MSLFrp隧道配置成功！", NotificationType.Success);
                     MainViewSideMenu.NavigateTo<FrpListViewModel>();
                     MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
