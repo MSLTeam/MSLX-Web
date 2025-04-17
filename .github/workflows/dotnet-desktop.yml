@@ -51,6 +51,7 @@ jobs:
           
           # macOS应用特殊处理
           if [[ "${{ matrix.os }}" == "osx" && "${{ matrix.build_type }}" == "app" ]]; then
+            dotnet restore -r ${{ matrix.runtime }}
             dotnet msbuild -t:BundleApp \
               -p:RuntimeIdentifier=${{ matrix.runtime }} \
               -p:Configuration=Release \
