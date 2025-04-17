@@ -185,51 +185,42 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     MessageService.ShowToast("获取隧道列表失败", json["msg"]?.Value<string>() ?? "Err", NotificationType.Error);
                     return;
                 }
-                _nodeMap.Clear();
+                
                 JToken? data = json["data"];
                 if (data == null || !data.HasValues)
                 {
                     MessageService.ShowToast("获取节点列表失败", "没有节点数据", NotificationType.Error);
                     return;
                 }
-
-                foreach (var node in data)
+                _nodeMap.Clear();
+                Nodes.Clear();
+                foreach (var nodeItem in data)
                 {
-                    int id = node["id"]?.Value<int>() ?? 0;
-                    string name = node["node"]?.Value<string>() ?? string.Empty;
+                    int id = nodeItem["id"]?.Value<int>() ?? 0;
+                    string name = nodeItem["node"]?.Value<string>() ?? string.Empty;
                     _nodeMap[id] = name;
 
-                    JToken? nodeData = json["data"];
-                    if (nodeData == null || !nodeData.HasValues)
-                    {
-                        MessageService.ShowToast("获取节点列表失败", "没有节点数据", NotificationType.Error);
-                        return;
-                    }
-                    Nodes.Clear();
-                    foreach (var nodeItem in nodeData)
-                    {
-                        int nodeId = nodeItem["id"]?.Value<int>() ?? 0;
-                        string nodeName = nodeItem["node"]?.Value<string>() ?? string.Empty;
-                        _nodeMap[nodeId] = nodeName; // id和name的字典映射
+                    int nodeId = nodeItem["id"]?.Value<int>() ?? 0;
+                    string nodeName = nodeItem["node"]?.Value<string>() ?? string.Empty;
+                    _nodeMap[nodeId] = nodeName; // id和name的字典映射
 
-                        // 填充到节点列表数据
-                        Nodes.Add(new Node()
-                        {
-                            Id = nodeItem["id"]?.Value<int>() ?? 0,
-                            AllowUserGroup = nodeItem["allow_user_group"]?.Value<int>() ?? 0,
-                            Type = (nodeItem["allow_user_group"]?.Value<int>() ?? 0) == 0 ? "免费" : (nodeItem["allow_user_group"]?.Value<int>() ?? 1) == 1 ? "高级" : "超级",
-                            Bandwidth = nodeItem["bandwidth"]?.Value<int>() ?? 0,
-                            HttpSupport = (nodeItem["http_support"]?.Value<int>() ?? 0) == 1,
-                            UdpSupport = (nodeItem["udp_support"]?.Value<int>() ?? 0) == 1,
-                            KcpSupport = (nodeItem["kcp_support"]?.Value<int>() ?? 0) == 1,
-                            MaxOpenPort = nodeItem["max_open_port"]?.Value<int>() ?? 0,
-                            MinOpenPort = nodeItem["min_open_port"]?.Value<int>() ?? 0,
-                            NeedRealName = (nodeItem["need_real_name"]?.Value<int>() ?? 0) == 1,
-                            Name = nodeName,
-                            Status = (nodeItem["status"]?.Value<int>() ?? 0) == 1 ? "在线" : "离线",
-                            Remarks = nodeItem["remarks"]?.Value<string>() ?? string.Empty
-                        });
-                    }
+                    // 填充到节点列表数据
+                    Nodes.Add(new Node()
+                    {
+                        Id = nodeItem["id"]?.Value<int>() ?? 0,
+                        AllowUserGroup = nodeItem["allow_user_group"]?.Value<int>() ?? 0,
+                        Type = (nodeItem["allow_user_group"]?.Value<int>() ?? 0) == 0 ? "免费" : (nodeItem["allow_user_group"]?.Value<int>() ?? 1) == 1 ? "高级" : "超级",
+                        Bandwidth = nodeItem["bandwidth"]?.Value<int>() ?? 0,
+                        HttpSupport = (nodeItem["http_support"]?.Value<int>() ?? 0) == 1,
+                        UdpSupport = (nodeItem["udp_support"]?.Value<int>() ?? 0) == 1,
+                        KcpSupport = (nodeItem["kcp_support"]?.Value<int>() ?? 0) == 1,
+                        MaxOpenPort = nodeItem["max_open_port"]?.Value<int>() ?? 0,
+                        MinOpenPort = nodeItem["min_open_port"]?.Value<int>() ?? 0,
+                        NeedRealName = (nodeItem["need_real_name"]?.Value<int>() ?? 0) == 1,
+                        Name = nodeName,
+                        Status = (nodeItem["status"]?.Value<int>() ?? 0) == 1 ? "在线" : "离线",
+                        Remarks = nodeItem["remarks"]?.Value<string>() ?? string.Empty
+                    });
                 }
 
                 if (Nodes.Count > 0)
