@@ -28,8 +28,8 @@
                     <TextBlock Text="保存登录状态" VerticalAlignment="Center"></TextBlock>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Button Width="100" Classes="Flat" Content="登录" Command="{Binding LoginByPasswordCommand}"/>
-                    <Button Width="100" Content="注册" Margin="10,0,0,0"/>
+                    <Button Width="100" Classes="Flat" IsDefault="True" Content="登录" Command="{Binding LoginByPasswordCommand}"/>
+                    <Button Width="100" Content="注册" Command="{Binding OpenRegisterWebCommand}" Margin="10,0,0,0"/>
                 </StackPanel>
                
             </StackPanel>

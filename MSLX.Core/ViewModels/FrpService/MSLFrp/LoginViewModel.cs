@@ -92,5 +92,12 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                 MessageService.ShowToast("错误", "请填写账户密码。", NotificationType.Error);
             }
         }
+        
+        [RelayCommand]
+        private void OpenRegisterWeb()
+        {
+            var url = "https://user.mslmc.net/register";
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
     }
 }

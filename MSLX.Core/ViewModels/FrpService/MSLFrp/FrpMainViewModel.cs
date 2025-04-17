@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
@@ -424,6 +425,39 @@ namespace MSLX.Core.ViewModels.FrpService.MSLFrp
                     MessageService.ShowToast("创建隧道失败", ex.Message, NotificationType.Error);
                 }
             }
+        }
+
+        [RelayCommand]
+        private async Task ExitLogin()
+        {
+            try
+            {
+                HttpService.HttpResponse response = await MSLUser.GetAsync("/user/logout",
+                     null, new Dictionary<string, string>()
+                    {
+                        ["Authorization"] = $"Bearer {UserToken}"
+                    }
+                );
+                JObject json = JObject.Parse(response?.Content ?? string.Empty);
+                if (json["code"]?.Value<int>() == 200)
+                {
+                    ConfigService.Config.WriteConfigKey("MSLUserToken", "");
+                    MessageService.ShowToast("退出登录", "退出登录成功！", NotificationType.Success);
+                    UserToken = string.Empty;
+                    MainViewSideMenu.NavigateTo<FrpListViewModel>();
+                    MainViewSideMenu.NavigateRemove<FrpProviderViewModel>();
+                }
+            }catch (Exception ex)
+            {
+                MessageService.ShowToast("退出登录失败", ex.Message, NotificationType.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void OpenOfficialWeb()
+        {
+            var url = "https://user.mslmc.net";
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
     }
 }
