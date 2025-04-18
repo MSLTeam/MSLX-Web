@@ -4,9 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:Class="MSLX.Core.Views.P2PConnectView"
              x:DataType="vm:P2PConnectViewModel">
+  <i:Interaction.Behaviors>
+    <ia:EventTriggerBehavior EventName="Loaded">
+      <ia:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+    </ia:EventTriggerBehavior>
+  </i:Interaction.Behaviors>
   <Design.DataContext>
     <vm:P2PConnectViewModel/>
   </Design.DataContext>
@@ -16,7 +23,7 @@
         <Grid>
           <StackPanel>
             <Label Content="点对点联机" Classes="Title"/>
-            <Expander ExpandDirection="Down" IsExpanded="{Binding IsHostExpand}" Header="创建房间--房主"  Margin="0,0,0,10">
+            <Expander ExpandDirection="Down" IsExpanded="{Binding IsHostExpand}" Header="创建房间--房主" IsEnabled="{Binding IsHostEnabled}" Margin="0,0,0,10">
               <WrapPanel Margin="20">
                 <StackPanel Orientation="Horizontal" Margin="0,0,10,10" Spacing="5">
                   <TextBlock VerticalAlignment="Center" Text="房间号: "/>
@@ -33,7 +40,7 @@
                 <Button Content="{Binding BtnCreate}" Classes="Flat" Command="{Binding LaunchHostCommand}" MinWidth="80"/>
               </WrapPanel>
             </Expander>
-            <Expander ExpandDirection="Down" IsExpanded="{Binding !IsHostExpand}" Header="加入房间--成员">
+            <Expander ExpandDirection="Down" IsExpanded="{Binding !IsHostExpand}" IsEnabled="{Binding IsVisitorEnabled}" Header="加入房间--成员">
               <WrapPanel Margin="20">
                 <StackPanel Orientation="Horizontal" Margin="0,0,10,10" Spacing="5">
                   <TextBlock VerticalAlignment="Center" Text="房间号: "/>
@@ -45,7 +52,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,10,0" Spacing="5">
                   <TextBlock VerticalAlignment="Center" Text="绑定本地端口(默认25565): " Margin="0,0,3,0"/>
-                  <NumericUpDown MinWidth="150" Value="{Binding VisitorPort}" />
+                  <NumericUpDown MinWidth="150" Increment="1" HorizontalContentAlignment="Stretch" Value="{Binding VisitorPort}" />
                 </StackPanel>
                 <Button Content="{Binding BtnCreateVisitor}" Command="{Binding LaunchVisitorCommand}" Classes="Flat" MinWidth="80"/>
               </WrapPanel>

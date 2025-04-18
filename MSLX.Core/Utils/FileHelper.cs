@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
@@ -50,7 +49,7 @@ public class FileHelper
     {
         using (var fs = File.OpenRead(archivePath))
         using (var gzipStream = new GZipInputStream(fs))
-        using (var tarStream = new TarInputStream(gzipStream))
+        using (var tarStream = new TarInputStream(gzipStream, System.Text.Encoding.UTF8))
         {
             TarEntry entry;
             while ((entry = tarStream.GetNextEntry()) != null)
@@ -80,7 +79,7 @@ public class FileHelper
             {
                 var relativePath = file.Substring(singleFolder.Length + 1);
                 var destinationPath = Path.Combine(extractPath, relativePath);
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? string.Empty);
                 File.Move(file, destinationPath);
             }
 
