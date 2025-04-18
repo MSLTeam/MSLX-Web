@@ -49,6 +49,7 @@ namespace MSLX.Core.ViewModels
                 Announcement = Message;
             }
             Console.WriteLine("数据目录：" + ConfigService.GetAppDataPath());
+            Console.WriteLine("设备ID: " +PlatFormHelper.GetDeviceId());
         }
         /*
         public RelayCommand LoadedCommand { get; }

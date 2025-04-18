@@ -61,13 +61,12 @@ namespace MSLX.Core.Utils
             var getRequest = new HttpRequest
             {
                 Url = url,
-                Method = HttpMethod.Get
-                /*
+                Method = HttpMethod.Get,
                 Headers = new Dictionary<string, string>
                 {
-                    ["User-Agent"] = UAManager.GetUA(UAManager.UAType.MSLX)
+                    ["deviceID"] = PlatFormHelper.GetDeviceId()
                 }
-                */
+                
             };
             var getResponse = await service.SendAsync(getRequest);
             service.Dispose();
@@ -88,7 +87,11 @@ namespace MSLX.Core.Utils
             var postRequest = new HttpRequest
             {
                 Url = ApiUrl + path,
-                Method = HttpMethod.Post
+                Method = HttpMethod.Post,
+                Headers = new Dictionary<string, string>
+                {
+                    ["deviceID"] = PlatFormHelper.GetDeviceId()
+                }
             };
             /*
             // POST JSON示例
