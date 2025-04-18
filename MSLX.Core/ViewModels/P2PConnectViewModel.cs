@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
@@ -17,33 +18,40 @@ namespace MSLX.Core.ViewModels;
 public partial class P2PConnectViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _isHostExpand = true;
+    [ObservableProperty] private bool _isHostEnabled = true;
+    [ObservableProperty] private bool _isVisitorEnabled = true;
 
-    [ObservableProperty] private string _consoleLogs = "";
+    [ObservableProperty] private string _consoleLogs = string.Empty;
 
     [ObservableProperty] private string _btnCreate = "创建房间";
-    
+
     [ObservableProperty] private string _btnCreateVisitor = "加入房间";
 
     [ObservableProperty] private string _hostName;
-    
-    [ObservableProperty] private string _hostPassword;
-    
-    [ObservableProperty] private int _hostPort;
-    
-    [ObservableProperty] private string _visitorName;
-    
-    [ObservableProperty] private string _visitorPassword;
-    
-    [ObservableProperty] private string _visitorPort;
 
-    private Process process;
-    
+    [ObservableProperty] private string _hostPassword;
+
+    [ObservableProperty] private int _hostPort = 25565;
+
+    [ObservableProperty] private string _visitorName = string.Empty;
+
+    [ObservableProperty] private string _visitorPassword = string.Empty;
+
+    [ObservableProperty] private int _visitorPort = 25565;
+
+    private Process? FrpcProcess { get; set; }
+
     public P2PConnectViewModel()
     {
         HostName = StringHelper.GetRandomNumber(10000, 999999).ToString();
         HostPassword = StringHelper.GenerateRandomString(6, "MSLX");
         HostPort = 25565;
-        VisitorPort = "25565";
+        VisitorPort = 25565;
+    }
+
+    [RelayCommand]
+    private void Loaded()
+    {
         try
         {
             if (File.Exists(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml")))
@@ -56,16 +64,16 @@ public partial class P2PConnectViewModel : ViewModelBase
                     if (configs.Contains("visitors"))
                     {
                         // 配置是成员
-                        VisitorPort = frpcToml["visitors"][0]["bindPort"].ToString();
-                        VisitorName = frpcToml["visitors"][0]["serverName"].ToString();
-                        VisitorPassword = frpcToml["visitors"][0]["secretKey"].ToString();
+                        VisitorName = frpcToml["visitors"]?[0]?["serverName"]?.ToString() ?? string.Empty; ;
+                        VisitorPassword = frpcToml["visitors"]?[0]?["secretKey"]?.ToString() ?? string.Empty;
+                        VisitorPort = frpcToml["visitors"][0]["bindPort"];
                         IsHostExpand = false;
                     }
                     else
                     {
                         // 配置是房主
-                        HostName = frpcToml["proxies"][0]["name"].ToString();
-                        HostPassword = frpcToml["proxies"][0]["secretKey"].ToString();
+                        HostName = frpcToml["proxies"]?[0]?["name"]?.ToString() ?? string.Empty;
+                        HostPassword = frpcToml["proxies"]?[0]?["secretKey"]?.ToString() ?? string.Empty;
                         HostPort = frpcToml["proxies"][0]["localPort"];
                     }
                 }
@@ -82,17 +90,14 @@ public partial class P2PConnectViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async void LaunchHost()
+    private async Task LaunchHost()
     {
         if (BtnCreate == "关闭房间")
         {
-            if (process != null && !process.HasExited)
+            if (FrpcProcess != null && !FrpcProcess.HasExited)
             {
-                process.Kill();
-                process.Dispose();
-                ConsoleLogs = "已关闭房间！";
-                BtnCreate = "创建房间";
-                BtnCreateVisitor = "加入房间";
+                FrpcProcess.Kill();
+                //FrpcProcess.Dispose();
             }
             return;
         }
@@ -109,26 +114,24 @@ public partial class P2PConnectViewModel : ViewModelBase
                 Directory.CreateDirectory(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc"));
             }
             File.WriteAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml"), configs);
-            RunFrpc();
-        }catch (Exception e)
+            await RunFrpc();
+        }
+        catch (Exception e)
         {
             ConsoleLogs = $"写入配置文件失败！{e.Message}";
             return;
         }
     }
-    
+
     [RelayCommand]
-    private async void LaunchVisitor()
+    private async Task LaunchVisitor()
     {
         if (BtnCreateVisitor == "退出房间")
         {
-            if (process != null && !process.HasExited)
+            if (FrpcProcess != null && !FrpcProcess.HasExited)
             {
-                process.Kill();
-                process.Dispose();
-                ConsoleLogs = "已退出房间！";
-                BtnCreate = "创建房间";
-                BtnCreateVisitor = "加入房间";
+                FrpcProcess.Kill();
+                //FrpcProcess.Dispose();
             }
             return;
         }
@@ -145,8 +148,9 @@ public partial class P2PConnectViewModel : ViewModelBase
                 Directory.CreateDirectory(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc"));
             }
             File.WriteAllText(Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc", "p2p.toml"), configs);
-            RunFrpc();
-        }catch (Exception e)
+            await RunFrpc();
+        }
+        catch (Exception e)
         {
             ConsoleLogs = $"写入配置文件失败！{e.Message}";
             return;
@@ -158,21 +162,45 @@ public partial class P2PConnectViewModel : ViewModelBase
         try
         {
             HttpService.HttpResponse response = await MSLApi.GetAsync("/query/frp/MSLFrps", null);
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && response.Content != null)
             {
                 JObject json = JObject.Parse(response.Content);
-                if ((int)json["code"] == 200)
+                if (json["code"]?.Value<int>() == 200)
                 {
-                    return $"{(string)json["data"]["免费"]["免费节点请前往MSL-Frp(NEW)"]["server_addr"]}:{(string)json["data"]["免费"]["免费节点请前往MSL-Frp(NEW)"]["server_port"]}";
+                    JToken? data = json["data"];
+                    if (data == null)
+                    {
+                        ConsoleLogs = "获取桥接服务器失败！";
+                        return "";
+                    }
+                    // 第一个属性
+                    var firstCategory = ((JObject)data).Properties().First().Name;
+                    JToken? firstItem = data[firstCategory];
+                    if (firstItem == null)
+                    {
+                        ConsoleLogs = "获取桥接服务器失败！";
+                        return "";
+                    }
+                    // 第一个节点
+                    var firstNode = ((JObject)firstItem).Properties().First().Name;
+                    JToken? serverAddr = data[firstCategory]?[firstNode]?["server_addr"];
+                    JToken? serverPort = data[firstCategory]?[firstNode]?["server_port"];
+                    if (serverAddr == null || serverPort == null)
+                    {
+                        ConsoleLogs = "获取桥接服务器失败！";
+                        return "";
+                    }
+                    return $"{serverAddr.ToString()}:{serverPort.ToString()}";
                 }
-                ConsoleLogs = $"获取搭桥服务器失败！{json["msg"]}";
+                ConsoleLogs = $"获取桥接服务器失败！{json["msg"]}";
                 return "";
             }
-            ConsoleLogs = $"获取搭桥服务器失败！{response.StatusCode}";
+            ConsoleLogs = $"获取桥接服务器失败！{response.StatusCode}";
             return "";
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
-            ConsoleLogs = $"获取搭桥服务器失败！{e.Message}";
+            ConsoleLogs = $"获取桥接服务器失败！{e.Message}";
             return "";
         }
     }
@@ -199,42 +227,80 @@ public partial class P2PConnectViewModel : ViewModelBase
         }
 
         ConsoleLogs = "联机服务启动中...";
-        // 创建一个新的 Process 对象
-        process = new Process();
-        // 设置启动信息
-        process.StartInfo.FileName = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile", $"frpc{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}");
-        process.StartInfo.Arguments = "-c p2p.toml";
-        process.StartInfo.WorkingDirectory = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc");
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.CreateNoWindow = true;
-        process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-        process.OutputDataReceived += (_, e) =>
+        try
         {
-            ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}";
-            if (e.Data?.Contains("start proxy success") ?? false)
+            // 创建一个新的 Process 对象
+            FrpcProcess = new Process();
+            // 设置启动信息
+            FrpcProcess.StartInfo = new ProcessStartInfo
             {
-                ConsoleLogs += "\n联机服务启动成功！";
+                FileName = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "FrpcExecutableFile", $"frpc{(PlatFormHelper.GetOs() == "Windows" ? ".exe" : "")}"),
+                Arguments = "-c p2p.toml",
+                WorkingDirectory = Path.Combine(ConfigService.GetAppDataPath(), "Configs", "Frpc"),
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8
+            };
+            FrpcProcess.OutputDataReceived += FrpcProcessLogRecieved;
+            FrpcProcess.ErrorDataReceived += FrpcProcessLogRecieved;
+            FrpcProcess.Exited += (_, _) =>
+            {
+                if (IsHostExpand)
+                {
+                    IsVisitorEnabled = true;
+                    BtnCreate = "创建房间";
+                    ConsoleLogs += "房间已关闭！";
+                }
+                else
+                {
+                    IsHostEnabled = true;
+                    BtnCreateVisitor = "加入房间";
+                    ConsoleLogs += "已退出房间！";
+                }
+                FrpcProcess.OutputDataReceived -= FrpcProcessLogRecieved;
+                FrpcProcess.ErrorDataReceived -= FrpcProcessLogRecieved;
+                FrpcProcess.Dispose();
+            };
+            // 启动进程
+            FrpcProcess.EnableRaisingEvents = true;
+            FrpcProcess.Start();
+            FrpcProcess.BeginErrorReadLine();
+            FrpcProcess.BeginOutputReadLine();
+            
+            if (IsHostExpand)
+            {
+                BtnCreate = "关闭房间";
+                IsVisitorEnabled = false;
             }
-        };
-        process.ErrorDataReceived += (_, e) => { ConsoleLogs += $"\n{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m","")??""}"; };
-        process.Exited += (_,_) =>
+            else
+            {
+                BtnCreateVisitor = "退出房间";
+                IsHostEnabled = false;
+            }
+                
+            //await Task.Run(FrpcProcess.WaitForExit);
+            //FrpcProcess.Dispose();
+        }
+        catch
         {
-            BtnCreate = "创建房间";
-            BtnCreateVisitor = "加入房间";
-            ConsoleLogs += "Frpc进程已退出！";
-        };
-        // 启动进程
-        process.EnableRaisingEvents = true;
-        process.Start();
-        BtnCreate = "关闭房间";
-        BtnCreateVisitor = "退出房间";
-        process.BeginErrorReadLine();
-        process.BeginOutputReadLine();
+            ConsoleLogs = "联机服务启动失败！";
+            return;
+        }
 
     }
-    
+
+    private void FrpcProcessLogRecieved(object sender, DataReceivedEventArgs e)
+    {
+        if (e.Data == null) return;
+        ConsoleLogs += $"{e.Data?.Replace("\u001b[1;34m", "").Replace("\u001b[0m", "").Replace("\u001b[1;33m", "") ?? ""}\n";
+        if (e.Data?.Contains("start proxy success") ?? false)
+        {
+            ConsoleLogs += "联机服务启动成功！\n";
+        }
+    }
+
     private async Task CheckAndDownloadFrpc()
     {
         string _frpcFileName = "frpc";
@@ -247,14 +313,14 @@ public partial class P2PConnectViewModel : ViewModelBase
             try
             {
                 HttpService.HttpResponse response = await MSLUser.GetAsync("/frp/download", null);
-                if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode && response.Content != null)
                 {
                     JObject downloadInfo = JObject.Parse(response.Content);
                     if (downloadInfo["code"]?.Value<int>() == 200)
                     {
                         string downloadUrl =
-                            downloadInfo["data"]["cli"][0]["download"][PlatFormHelper.GetOs()]?[
-                                PlatFormHelper.GetOsArch()]?["url"].Value<string>() ?? "";
+                            downloadInfo["data"]?["cli"]?[0]?["download"]?[PlatFormHelper.GetOs()]?[
+                                PlatFormHelper.GetOsArch()]?["url"]?.Value<string>() ?? "";
                         if (downloadUrl == "")
                         {
                             throw new Exception("不存在支持此架构系统的Frpc客户端！");
@@ -270,8 +336,8 @@ public partial class P2PConnectViewModel : ViewModelBase
                         if (!FileHelper.CheckFileSha256(Path.Combine(ConfigService.GetAppDataPath(), "Configs",
                                     "FrpcExecutableFile",
                                     $"{_frpcFileName}{(PlatFormHelper.GetOs() == "Windows" ? ".zip" : ".tar.gz")}"),
-                                downloadInfo["data"]["cli"][0]["download"][PlatFormHelper.GetOs()]?[
-                                    PlatFormHelper.GetOsArch()]?["sha256"].Value<string>()))
+                                downloadInfo["data"]?["cli"]?[0]?["download"]?[PlatFormHelper.GetOs()]?[
+                                    PlatFormHelper.GetOsArch()]?["sha256"]?.Value<string>() ?? string.Empty))
                         {
                             throw new Exception("Frpc客户端下载失败，请重试！");
                         }
@@ -299,7 +365,8 @@ public partial class P2PConnectViewModel : ViewModelBase
                 }
                 else
                 {
-                    throw new Exception("下载Frpc客户端失败");
+                    MessageService.ShowToast("下载Frpc客户端失败", (response?.ResponseException as Exception)?.Message ?? string.Empty, NotificationType.Error);
+                    //throw new Exception("下载Frpc客户端失败");
                 }
             }
             catch (Exception ex)
