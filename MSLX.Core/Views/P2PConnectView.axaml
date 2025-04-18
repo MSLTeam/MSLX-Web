@@ -7,56 +7,55 @@
              xmlns:vm="clr-namespace:MSLX.Core.ViewModels"
              x:Class="MSLX.Core.Views.P2PConnectView"
              x:DataType="vm:P2PConnectViewModel">
-    <Grid>
-        <suki:GlassCard Margin="10">
-            <Grid RowDefinitions="Auto *">
-                <Grid>
-                    <StackPanel>
-                        <Label Content="点对点联机" Classes="Title"/>
-                        <Expander ExpandDirection="Down" IsExpanded="{Binding IsHostExpand}" Header="创建房间--房主"  Margin="0,0,0,10">
-                            <WrapPanel Margin="20">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
-                                    <TextBlock VerticalAlignment="Center" Text="房间号: " Margin="0,0,3,0"/>
-                                    <TextBox MinWidth="200" Text="{Binding HostName}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
-                                    <TextBlock VerticalAlignment="Center" Text="房间密钥: " Margin="0,0,3,0"/>
-                                    <TextBox MinWidth="200" Text="{Binding HostPassword}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
-                                    <TextBlock VerticalAlignment="Center" Text="游戏端口: " Margin="0,0,3,0"/>
-                                    <NumericUpDown MinWidth="150" Value="{Binding HostPort}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="{Binding BtnCreate}" Classes="Flat" Command="{Binding LaunchHostCommand}" Padding="0" MinWidth="80" VerticalAlignment="Center" Height="35"/>
-                                </StackPanel>
-                            </WrapPanel>
-                        </Expander>
-                        <Expander ExpandDirection="Down" IsExpanded="{Binding !IsHostExpand}" Header="加入房间--成员">
-                            <WrapPanel Margin="20">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
-                                    <TextBlock VerticalAlignment="Center" Text="房间号: " Margin="0,0,3,0"/>
-                                    <TextBox MinWidth="200" Text="{Binding VisitorName}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
-                                    <TextBlock VerticalAlignment="Center" Text="房间密钥: " Margin="0,0,3,0"/>
-                                    <TextBox  MinWidth="200" Text="{Binding VisitorPassword}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,5,8">
-                                    <TextBlock VerticalAlignment="Center" Text="绑定本地端口(默认25565): " Margin="0,0,3,0"/>
-                                    <NumericUpDown MinWidth="150" Value="{Binding VisitorPort}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="{Binding BtnCreateVisitor}" Command="{Binding LaunchVisitorCommand}" Classes="Flat" Padding="0" MinWidth="80" VerticalAlignment="Center" Height="35"/>
-                                </StackPanel>
-                            </WrapPanel>
-                        </Expander>
-                    </StackPanel>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <TextBox Text="{Binding ConsoleLogs}" IsReadOnly="True" VerticalContentAlignment="Top" TextWrapping="Wrap"/>
-                </Grid>
-            </Grid>
-        </suki:GlassCard>
-    </Grid>
+  <Design.DataContext>
+    <vm:P2PConnectViewModel/>
+  </Design.DataContext>
+  <Grid>
+    <suki:GlassCard Margin="10">
+      <Grid RowDefinitions="Auto *">
+        <Grid>
+          <StackPanel>
+            <Label Content="点对点联机" Classes="Title"/>
+            <Expander ExpandDirection="Down" IsExpanded="{Binding IsHostExpand}" Header="创建房间--房主"  Margin="0,0,0,10">
+              <WrapPanel Margin="20">
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,10" Spacing="5">
+                  <TextBlock VerticalAlignment="Center" Text="房间号: "/>
+                  <TextBox MinWidth="200" Text="{Binding HostName}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,10" Spacing="5">
+                  <TextBlock VerticalAlignment="Center" Text="房间密钥: "/>
+                  <TextBox MinWidth="200" Text="{Binding HostPassword}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,0" Spacing="5">
+                  <TextBlock VerticalAlignment="Center" Text="游戏端口: "/>
+                  <NumericUpDown MinWidth="150" Increment="1" HorizontalContentAlignment="Stretch" Value="{Binding HostPort}" />
+                </StackPanel>
+                <Button Content="{Binding BtnCreate}" Classes="Flat" Command="{Binding LaunchHostCommand}" MinWidth="80"/>
+              </WrapPanel>
+            </Expander>
+            <Expander ExpandDirection="Down" IsExpanded="{Binding !IsHostExpand}" Header="加入房间--成员">
+              <WrapPanel Margin="20">
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,10" Spacing="5">
+                  <TextBlock VerticalAlignment="Center" Text="房间号: "/>
+                  <TextBox MinWidth="200" Text="{Binding VisitorName}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,10" Spacing="5">
+                  <TextBlock VerticalAlignment="Center" Text="房间密钥: "/>
+                  <TextBox  MinWidth="200" Text="{Binding VisitorPassword}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,0" Spacing="5">
+                  <TextBlock VerticalAlignment="Center" Text="绑定本地端口(默认25565): " Margin="0,0,3,0"/>
+                  <NumericUpDown MinWidth="150" Value="{Binding VisitorPort}" />
+                </StackPanel>
+                <Button Content="{Binding BtnCreateVisitor}" Command="{Binding LaunchVisitorCommand}" Classes="Flat" MinWidth="80"/>
+              </WrapPanel>
+            </Expander>
+          </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+          <TextBox Text="{Binding ConsoleLogs}" IsReadOnly="True" VerticalContentAlignment="Top" TextWrapping="Wrap"/>
+        </Grid>
+      </Grid>
+    </suki:GlassCard>
+  </Grid>
 </UserControl>

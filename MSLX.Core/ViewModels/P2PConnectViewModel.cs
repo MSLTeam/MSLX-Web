@@ -28,7 +28,7 @@ public partial class P2PConnectViewModel : ViewModelBase
     
     [ObservableProperty] private string _hostPassword;
     
-    [ObservableProperty] private string _hostPort;
+    [ObservableProperty] private int _hostPort;
     
     [ObservableProperty] private string _visitorName;
     
@@ -42,7 +42,7 @@ public partial class P2PConnectViewModel : ViewModelBase
     {
         HostName = StringHelper.GetRandomNumber(10000, 999999).ToString();
         HostPassword = StringHelper.GenerateRandomString(6, "MSLX");
-        HostPort = "25565";
+        HostPort = 25565;
         VisitorPort = "25565";
         try
         {
@@ -66,7 +66,7 @@ public partial class P2PConnectViewModel : ViewModelBase
                         // 配置是房主
                         HostName = frpcToml["proxies"][0]["name"].ToString();
                         HostPassword = frpcToml["proxies"][0]["secretKey"].ToString();
-                        HostPort = frpcToml["proxies"][0]["localPort"].ToString();
+                        HostPort = frpcToml["proxies"][0]["localPort"];
                     }
                 }
                 else
