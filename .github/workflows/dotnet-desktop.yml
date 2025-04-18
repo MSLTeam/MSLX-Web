@@ -45,7 +45,7 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: 构建核心类库
-        run: dotnet build -c Release -p:TargetFramework=net8.0 ./MSLX.Core/MSLX.Core.csproj
+        run: dotnet build -c Release -p:TargetFramework=net9.0 ./MSLX.Core/MSLX.Core.csproj
 
       - name: 执行发布流程
         run: |
@@ -58,7 +58,7 @@ jobs:
               -p:RuntimeIdentifier=${{ matrix.runtime }} \
               -property:Configuration=Release \
               -p:UseAppHost=true \
-              -p:TargetFramework=net8.0 \
+              -p:TargetFramework=net9.0 \
               -p:SelfContained=true \
               -p:PublishSingleFile=true \
               -p:OutputPath="$output_dir" \
